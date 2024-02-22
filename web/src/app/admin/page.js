@@ -1,7 +1,7 @@
 export default function AdminDashboard(){
     return (
-        <p>
-            Test 
-        </p>
+        <div>
+            <h1>Dashboard place holder</h1>
+        </div>
     )
 }
