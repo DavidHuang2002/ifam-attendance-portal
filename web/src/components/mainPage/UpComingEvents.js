@@ -18,12 +18,26 @@ export function UpcomingEvents() {
         { title: 'Event 1', description: 'Event Details' },
         { title: 'Event 2', description: 'Event Details' },
         { title: 'Event 3', description: 'Event Details' },
+        { title: 'Event 1', description: 'Event Details' },
+        { title: 'Event 2', description: 'Event Details' },
+        { title: 'Event 3', description: 'Event Details' },
+        { title: 'Event 1', description: 'Event Details' },
+        { title: 'Event 2', description: 'Event Details' },
+        { title: 'Event 3', description: 'Event Details' },
+        { title: 'Event 1', description: 'Event Details' },
+        { title: 'Event 2', description: 'Event Details' },
+        { title: 'Event 3', description: 'Event Details' },
     ];
   return (
     <div>
         <h1 style={{ marginBottom: '20px' }}>Our Upcoming Events</h1>
-            <div style={{ background: '#ECECEC', padding: '30px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ background: '#ECECEC' }}>
+                <div style={{ 
+                    display: 'flex', flexDirection: 'column', gap: '20px',
+                    maxHeight: "60vh",
+                    overflowY: "auto",
+                    padding: "30px"
+                }}>
                     {events.map((event, index) => (
                         <EventCard key={index} event={event} />
                     ))}
