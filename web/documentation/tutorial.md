@@ -1,3 +1,17 @@
+## Coding Style
+
+Extract logic into small components. The file should never be too long. The component for a page should be in directory appropriately named after that page. 
+
+Add comments whenever you think is possibility for confusion
+
+## Workflow
+
+Everytime you are tasked with a development. Create a new branch, work on it and make pull request when you are done.
+
+If you are unfaimilar with git. Go download Github Desktop. It will make your life easier.
+
+
+## Note on possible common problem
 If you are encountering weird bugs with using Ant Design in your page like the following:
 
 ```
