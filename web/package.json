@@ -18,6 +18,7 @@
     "react-firebase-hooks": "^5.1.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-private-methods": "^7.23.3",
     "eslint": "^8",
     "eslint-config-next": "14.1.0"
   }
