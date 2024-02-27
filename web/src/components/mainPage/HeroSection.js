@@ -5,7 +5,7 @@ const HeroImage = ({
     imagePath,
     imageAlt
 }) => {
-    console.log(imagePath);
+    // console.log(imagePath);
     return (
         <div
             style={{

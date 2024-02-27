@@ -22,9 +22,6 @@ const firebaseConfig = {
 };
 
 
-// console.log(process.env);
-console.log(firebaseConfig);
-
 // Initialize Firebase
 export const app = getApps().length === 0? initializeApp(firebaseConfig) : getApps()[0];
 
