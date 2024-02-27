@@ -7,9 +7,8 @@ Record all the trouble you debugged here with resources. Let's help each other o
 solution:
 https://www.perssondennis.com/articles/how-to-make-a-hero-image-in-nextjs
 
-
-
 ## Separate the admin portal from the rest
+
 Initially tried with a spacer element, like
 
 ```
@@ -23,6 +22,7 @@ Menu mode="horizontal" defaultSelectedKeys={['1']} style={{ flex: 1 }}>
 ```
 
 But the spacer just wont appear in the order I set (it always appear before About Us) for some reason. But margin-left auto does the job
+
 ```
 <Menu mode="horizontal" defaultSelectedKeys={['1']} style={{ flex: 1 }}>
     <Menu.Item key="1">Home Page</Menu.Item>
@@ -40,4 +40,9 @@ Non-Flexbox Context: In a standard block formatting context (not flexbox or grid
 
 Flexbox Context: In a flex container, margin-left: auto will absorb any extra space on the left side of the element, pushing the element to the right within the flex container. This can be used to separate a flex item from its peers and push it to the far right edge of the flex container.
 
+## Firebase API
 
+conflicting APIs from different versions
+There are so many ways to do the same thing. I was looking at a tutorial but the code just wont work on this project
+Turns out the API I was try to call was from an old version
+https://www.reddit.com/r/Firebase/comments/vp8ugv/error_dbcollection_is_not_a_function/
