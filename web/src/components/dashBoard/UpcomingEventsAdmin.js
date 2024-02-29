@@ -1,6 +1,7 @@
 import { Card, Avatar } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 const { Meta } = Card;
+import Link from 'next/link';
 
 const EventCard = ({
     event,
@@ -11,8 +12,12 @@ const EventCard = ({
             style={{ 
                 width: '100%' }} 
             actions={[
-                <SettingOutlined key="setting" />,
-                <EditOutlined key="edit" />,
+                <Link href="../admin/editEvent"> 
+                <SettingOutlined key="setting" />
+                </Link>,
+                <Link href="../admin/attendanceOld"> 
+                <EditOutlined key="edit" />
+                </Link>,
                 <EllipsisOutlined key="ellipsis" />,
           ]}>
             <Meta title={event.title} description={event.description} />
