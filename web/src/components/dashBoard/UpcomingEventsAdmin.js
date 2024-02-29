@@ -37,7 +37,7 @@ export function UpcomingEvents() {
     ];
   return (
     <div>
-        <h1 style={{ marginBottom: '20px' }}>Manage Upcoming Events</h1>
+        <h1 style={{ marginBottom: '20px' }}>Upcoming Events</h1>
             <div style={{ background: '#ECECEC' }}>
                 <div style={{ 
                     display: 'flex', flexDirection: 'column', gap: '20px',

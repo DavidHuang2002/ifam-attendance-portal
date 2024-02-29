@@ -6,9 +6,9 @@ import React from 'react';
 import Link from 'next/link';
 
 import { UpcomingEvents } from '../../components/dashBoard/UpcomingEventsAdmin';
-//import { SideBar } from '@/components/SideBar';
-import { QuitPortal } from '../../components/dashBoard/QuitPortalButton';
-import { UpcomingEvents2 } from '@/components/dashBoard/UpcomingEventsAdmin2';
+import { SideBar } from '../../components/dashBoard/SideBar';
+
+
 
 import { Layout, Menu, Button, theme } from 'antd';
 import { Footer } from 'antd/es/layout/layout';
@@ -30,22 +30,7 @@ const Dashboard = () => {
             position: 'fixed', left: 0, top: 0, bottom: 0,
             }}
       >
-        <div className="demo-logo-vertical" />
-        <Menu
-          style={{marginTop: 200,}}
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}>
-          <Menu.Item key="1">Upcoming Events</Menu.Item>
-          <Menu.Item key="2">
-            <Link href="/createEvent">
-              Create Event
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="3">Manage Past Events</Menu.Item>
-          <Menu.Item key="4">Event Activities</Menu.Item>
-          </Menu>
-        <QuitPortal />
+        <SideBar />
       </Sider> 
       <Layout style={{ marginLeft: 192 }}> 
         <Header style={{ padding: 0, background: colorBgContainer, minHeight: 200, position: 'sticky'}} >
