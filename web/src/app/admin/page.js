@@ -6,8 +6,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import { UpcomingEvents } from '../../components/dashBoard/UpcomingEventsAdmin';
-import { SideBar } from '../../components/dashBoard/SideBar';
-
+import { LayoutSider } from '../../components/dashBoard/LayoutSider';
 
 
 import { Layout, Menu, Button, theme } from 'antd';
@@ -21,17 +20,7 @@ const Dashboard = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   return (
-    <Layout hasSider>
-        {/* TODO separate the sider to its own component*/}
-      <Sider trigger={null}
-        style={{ 
-            overflow: 'auto', 
-            height: '100vh', 
-            position: 'fixed', left: 0, top: 0, bottom: 0,
-            }}
-      >
-        <SideBar />
-      </Sider> 
+    <LayoutSider>
       <Layout style={{ marginLeft: 192 }}> 
         <Header style={{ padding: 0, background: colorBgContainer, minHeight: 200, position: 'sticky'}} >
             <h1 style={{ marginTop: 100, marginLeft: 40, fontSize: 50, }}>
@@ -60,7 +49,7 @@ const Dashboard = () => {
         </Content>
         <Footer style={{minHeight: 50}}></Footer>
       </Layout>
-      </Layout>
+      </LayoutSider>
   );
 };
 export default Dashboard;
