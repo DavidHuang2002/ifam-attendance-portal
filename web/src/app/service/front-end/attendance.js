@@ -1,4 +1,6 @@
 
+// define logic that interacts with the API for attedndance pages in front-end
+
 import {POST_ATTENDANCE} from '@/constants/api-endpoints';
 
 export const postAttednace = async (eventId, participantEmail) => {
@@ -17,3 +19,4 @@ export const postAttednace = async (eventId, participantEmail) => {
 
     return res;
 }
+

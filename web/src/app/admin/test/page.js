@@ -1,7 +1,7 @@
 "use client"
 // test the API
 import { Button } from "antd";
-import { postAttednace } from "@/utils/service";
+import { postAttednace } from "@/service/front-end/attendance";
 
 
 export default function Test(){

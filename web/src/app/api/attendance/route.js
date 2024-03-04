@@ -1,16 +1,23 @@
-import {collection,  addDoc, getDocs, getFirestore} from 'firebase/firestore';
-import {app} from '@/firebase/config';
+// API endpoint for attendance
 
-const db = getFirestore(app);
+import { createAttendance, getAllAttendance } from '@/app/service/back-end/attendance';
 
 export async function POST(request) {
   const newAttedance = await request.json()
   try {
-    // add new attendace to the database
-    const result = await addDoc(collection(db, "attendance"), newAttedance);
-    const docRef = result._key.path.segments.join('/');
-    return Response.json(docRef);
+    const newAttendanceDocRef = await createAttendance(newAttedance);
+    return Response.json(newAttendanceDocRef);
   
+  } catch (e) {
+    return Response.error({error: e});
+  }
+}
+
+
+export async function GET(request) {
+  try {
+    const attendance = await getAllAttendance();
+    return Response.json(attendance);
   } catch (e) {
     return Response.error({error: e});
   }
