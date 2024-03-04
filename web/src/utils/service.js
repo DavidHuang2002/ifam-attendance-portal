@@ -5,7 +5,7 @@ export const postAttednace = async (eventId, participantEmail) => {
     const params = {
         ...POST_ATTENDANCE.param,
         body: JSON.stringify({
-            evevnt: eventId,
+            event: eventId,
             email: participantEmail
         })
     }
