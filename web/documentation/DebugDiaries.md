@@ -46,3 +46,17 @@ conflicting APIs from different versions
 There are so many ways to do the same thing. I was looking at a tutorial but the code just wont work on this project
 Turns out the API I was try to call was from an old version
 https://www.reddit.com/r/Firebase/comments/vp8ugv/error_dbcollection_is_not_a_function/
+
+## Jest doesnt recogniza import with @
+
+```
+  src/__tests__/landingPage.test.jsx
+  ● Test suite failed to run
+
+    Cannot find module '@/components/mainPage/HeroSection' from 'src/app/page.js'
+```
+
+Solved by following this answer:
+https://stackoverflow.com/questions/55400845/jest-cant-resolve-import-with-at-character
+
+But instead of putting in package.json, our configuration has to be in jest.config.js
