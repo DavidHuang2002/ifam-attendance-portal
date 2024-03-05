@@ -1,10 +1,11 @@
 "use client";
-
+import Attendance from "@/app/admin/attendance/old/page";
+import { LayoutSider } from "@/components/dashBoard/LayoutSider";
 
 export default function AttendanceOld(){
     return (
         <div>
-            <h1>Attendance Form for Returning Members Page place holder</h1>
+            <Attendance />
         </div>
     )
 }
