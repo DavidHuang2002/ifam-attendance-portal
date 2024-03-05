@@ -1,5 +1,5 @@
 import { Carousel } from "antd";
-import Image from "next/legacy/image";
+import Image from "next/image";
 
 const HeroImage = ({
     imagePath,
@@ -16,14 +16,15 @@ const HeroImage = ({
             }}
         >
             <Image
-            alt={imageAlt}
-            src={imagePath}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
-        />
+                alt={imageAlt}
+                src={imagePath}
+                fill
+                sizes="100vw"
+                style={{
+                    objectFit: "cover",
+                    objectPosition: "center"
+                }} />
         </div>
-        
     );
 }
 
