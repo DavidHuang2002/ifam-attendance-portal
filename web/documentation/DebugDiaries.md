@@ -60,3 +60,10 @@ Solved by following this answer:
 https://stackoverflow.com/questions/55400845/jest-cant-resolve-import-with-at-character
 
 But instead of putting in package.json, our configuration has to be in jest.config.js
+
+## Firebase inconsistency
+
+FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+https://stackoverflow.com/questions/69047904/how-to-solve-firebaseerror-expected-first-argument-to-collection-to-be-a-coll
+
+Found out I imported from teh wrong firebase in my config
