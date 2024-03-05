@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button, Form, Input, InputNumber, Select, Checkbox, AutoComplete } from "antd";
+import { Button, Form, Input } from "antd";
 import Link from 'next/link';
 
 const layout = {
@@ -12,81 +12,65 @@ const layout = {
   overflow: 'hidden'
 };
 
-/* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: "${label} is required!",
   types: {
     email: "${label} is not a valid email!",
   },
 };
-/* eslint-enable no-template-curly-in-string */
 
 const onFinish = (values) => {
   console.log(values);
 };
 
-const onChange = (value) => {
-  console.log(`selected ${value}`);
-};
-
-const onSearch = (value) => {
-  console.log('search:', value);
-};
-
-const filterOption = (input, option) =>
-  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
 
 export default function Attendance() {
   return (
-    <Form
-      {...layout}
-      name="nest-messages"
-      onFinish={onFinish}
-      style={{
-        maxWidth: 500,
-        marginTop: '250px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center'
-      }}
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <Form
+        {...layout}
+        name="nest-messages"
+        onFinish={onFinish}
+        style={{
+          maxWidth: 500,
+          margin: 'auto',
+          textAlign: "center",
+        }}
       validateMessages={validateMessages}
     >
       
       <h1>Returning Member Attendance</h1>
       <Link href="/admin/attendance/page">
         <Button type="primary">
-          I'm a returning member
-          </Button>
-        </Link>
-      {/* <Button type="default" htmlType="returningmember">
           I'm a new member
-      </Button> */}
+        </Button>
+      </Link>
       <h2>Record your attendance</h2>
-      { <Form.Item
+      <Form.Item
         name={["user", "email"]}
         label="Email"
         rules={[
           {
+            required: true,
             type: "email",
           },
         ]}
       >
         <Input />
-      </Form.Item> }
-      {/* <Form.Item
-        name={["user", "grade"]}
-        label="Grade"
-      >
-        </Form.Item> */}
+      </Form.Item>
       <Form.Item>
       <Button type="primary" htmlType="submit">
-        <Link href="/admin">
+        <Link href="/admin/attendance/old">
           Submit
         </Link>
         </Button>
       </Form.Item>
+      <Form.Item>
+        <Link href= "/admin">
+            Return to Dashboard
+        </Link>
+      </Form.Item>
     </Form>
+    </div>
   );
 }
-// export default App;

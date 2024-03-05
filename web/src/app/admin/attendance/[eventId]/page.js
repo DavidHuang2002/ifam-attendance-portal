@@ -4,12 +4,9 @@ import {
   Button,
   Form,
   Input,
-  InputNumber,
   Select,
   Checkbox,
-  AutoComplete,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 const layout = {
@@ -19,26 +16,14 @@ const layout = {
   right: 0,
   bottom: 0,
   overflow: "hidden",
-  // labelCol: {
-  //   span: 8,
-  // },
-  // wrapperCol: {
-  //   span: 12,
-  // },
 };
 
-/* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: "${label} is required!",
   types: {
     email: "${label} is not a valid email!",
-    // number: "${label} is not a valid number!",
   },
-  // number: {
-  // range: "${label} must be between ${min} and ${max}",
-  // },
 };
-/* eslint-enable no-template-curly-in-string */
 
 const onFinish = (values) => {
   console.log(values);
@@ -57,17 +42,16 @@ const filterOption = (input, option) =>
 
 export default function Attendance() {
   return (
-    <Form
-      {...layout}
-      name="nest-messages"
-      onFinish={onFinish}
-      style={{
-        marginTop: '70px',
-        maxWidth: 500,
-        marginLeft: "auto",
-        marginRight: "auto",
-        textAlign: "center",
-      }}
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <Form
+        {...layout}
+        name="nest-messages"
+        onFinish={onFinish}
+        style={{
+          maxWidth: 500,
+          margin: 'auto',
+          textAlign: "center",
+        }}
       validateMessages={validateMessages}
     >
       <h1>New Member Attendance</h1>
@@ -80,11 +64,6 @@ export default function Attendance() {
       <Form.Item
         name={["user", "name"]}
         label="Name"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
       >
         <Input />
       </Form.Item>
@@ -93,6 +72,7 @@ export default function Attendance() {
         label="Email"
         rules={[
           {
+            required: true,
             type: "email",
           },
         ]}
@@ -134,30 +114,22 @@ export default function Attendance() {
       <Form.Item>
       <p>What I-Fam program are you interested in?</p>
       <Checkbox onChange={onChange}>I-FAM Vanderbilt</Checkbox>
-      {/* <br /> */}
       <Checkbox onChange={onChange}>Nashville xxx Community</Checkbox>
-      {/* <br /> */}
       <Checkbox onChange={onChange}>Program c</Checkbox>
-      {/* <br />
-      <br /> */}
       </Form.Item>
-      {/* <Form.Item name={["user", "website"]} label="Website">
-        <Input />
-      </Form.Item>
-      <Form.Item name={["user", "introduction"]} label="Introduction">
-        <Input.TextArea />
-      </Form.Item> */}
-      <Form.Item
-      // wrapperCol={{
-      //   ...layout.wrapperCol,
-      //   offset: 8,
-      // }}
-      >
+      <Form.Item>
         <Button type="primary" htmlType="submit">
-          <Link href="/admin">Submit</Link>
+          <Link href="/admin/attendance/old">
+            Submit
+          </Link>
         </Button>
       </Form.Item>
+      <Form.Item>
+      <Link href= "/admin">
+          Return to Dashboard
+        </Link>
+      </Form.Item>
     </Form>
+    </div>
   );
 }
-// export default App;
