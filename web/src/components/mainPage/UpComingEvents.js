@@ -1,32 +1,9 @@
-import { Card } from 'antd';
-
-const { Meta } = Card;
-
-const EventCard = ({
-    event,
-}) => {
-    const {title, description} = event;
-    return (
-        <Card hoverable style={{ width: '100%' }}>
-            <Meta title={event.title} description={event.description} />
-        </Card>
-    );
-}
+import React from 'react';
+import EventCard from '@/components/event/EventCard';
 
 export function UpcomingEvents() {
     const events = [
-        { title: 'Event 1', description: 'Event Details' },
-        { title: 'Event 2', description: 'Event Details' },
-        { title: 'Event 3', description: 'Event Details' },
-        { title: 'Event 1', description: 'Event Details' },
-        { title: 'Event 2', description: 'Event Details' },
-        { title: 'Event 3', description: 'Event Details' },
-        { title: 'Event 1', description: 'Event Details' },
-        { title: 'Event 2', description: 'Event Details' },
-        { title: 'Event 3', description: 'Event Details' },
-        { title: 'Event 1', description: 'Event Details' },
-        { title: 'Event 2', description: 'Event Details' },
-        { title: 'Event 3', description: 'Event Details' },
+        { eventName: 'Event 1', eventDetails: 'Event Details', eventTime: '2024-03-05T17:14:29.659Z', eventLocation: 'FGH 100' },
     ];
   return (
     <div id='events'>
