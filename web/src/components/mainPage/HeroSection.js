@@ -44,13 +44,13 @@ export default function HeroSection() {
                 />
 
                 <HeroImage
-                    imagePath="/hero-section/ifam-dinner.jpeg"
-                    imageAlt="dinner and discussion event"
+                    imagePath="/hero-section/dinner.jpg"
+                    imageAlt="I-Fam Logo"
                 />
 
                 <HeroImage
-                    imagePath="/hero-section/dinner.jpeg"
-                    imageAlt="I-Fam Logo"
+                    imagePath="/hero-section/ifam-dinner.jpeg"
+                    imageAlt="dinner and discussion event"
                 />
             </Carousel>
         </div>

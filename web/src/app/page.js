@@ -19,7 +19,9 @@ export default function HomePage() {
         <Menu mode="horizontal" defaultSelectedKeys={['1']} style={{ flex: 1 }}>
           <Menu.Item key="1">Home Page</Menu.Item>
           <Menu.Item key="2">About Us</Menu.Item>
-          <Menu.Item key="3">Events</Menu.Item>
+          <Menu.Item key="3">
+            <a href="#events">Events</a>
+          </Menu.Item>
           <Menu.Item key="4" style={{ marginLeft: 'auto' }}>
             <Link href="/admin">
               Admin Portal

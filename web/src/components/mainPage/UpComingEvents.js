@@ -29,7 +29,7 @@ export function UpcomingEvents() {
         { title: 'Event 3', description: 'Event Details' },
     ];
   return (
-    <div>
+    <div id='events'>
         <h1 style={{ marginBottom: '20px' }}>Our Upcoming Events</h1>
             <div style={{ background: '#ECECEC' }}>
                 <div style={{ 
