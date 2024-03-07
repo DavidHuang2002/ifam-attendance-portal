@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { Layout } from 'antd';
-import {LayoutSider } from '../../../components/dashBoard/LayoutSider'; // Ensure this path matches your project structure
+import {LayoutSider } from '../../../../components/dashBoard/LayoutSider'; // Ensure this path matches your project structure
 import CreateEvent from './CreateEvent'; // Adjust the import path to where your EventForm.jsx is located
 import { useRouter } from 'next/navigation';
 

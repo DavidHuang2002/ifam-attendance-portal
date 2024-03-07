@@ -7,10 +7,9 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 
-const adminActions = [
-  <Link href="../admin/editEvent">
+const getAdminActions = (eventId) => [
+  <Link href={`../admin/event/${eventId}/edit`}>
     <EditOutlined key="edit" />
-
     <span>Edit</span>
   </Link>,
   <Link href="../admin/attendanceOld">
@@ -64,7 +63,7 @@ export function UpcomingEvents({ admin = false }) {
               <EventCard
                 key={index}
                 event={event}
-                actions={admin ? adminActions : []}
+                actions={admin ? getAdminActions(event.eventId) : []}
               />
             ))
           ) : (

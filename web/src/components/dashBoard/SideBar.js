@@ -1,9 +1,9 @@
-import React from 'react';
-import { Layout, Menu } from 'antd';
-import Sider from 'antd/es/layout/Sider';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { QuitPortal } from '../../components/dashBoard/QuitPortalButton';
+import React from "react";
+import { Layout, Menu } from "antd";
+import Sider from "antd/es/layout/Sider";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { QuitPortal } from "../../components/dashBoard/QuitPortalButton";
 
 export function SideBar() {
   const pathname = usePathname();
@@ -11,49 +11,37 @@ export function SideBar() {
   // Function to determine the selected key based on the current pathname
   const getSelectedKey = () => {
     const pathMap = {
-      '/admin': '1',
-      '/admin/manageMainPage': '2',
-      '/admin/createEvent': '3',
+      "/admin": "1",
+      "/admin/manageMainPage": "2",
+      "/admin/event/create": "3",
       // Add more mappings here for other paths and keys
     };
-    return pathMap[pathname] || '';
+    return pathMap[pathname] || "";
   };
 
   // Dynamically creating menu items
   const menuItems = [
     {
-      key: '1',
-      label: (
-        <Link href="/admin">
-          Main Dashboard
-        </Link>
-      ),
+      key: "1",
+      label: <Link href="/admin">Main Dashboard</Link>,
     },
     {
-      key: '2',
-      label: (
-        <Link href="/admin/manageMainPage">
-          Manage Main Page
-        </Link>
-      ),
+      key: "2",
+      label: <Link href="/admin/manageMainPage">Manage Main Page</Link>,
       disabled: true,
     },
     {
-      key: '3',
-      label: (
-        <Link href="/admin/createEvent">
-          Create Event
-        </Link>
-      ),
+      key: "3",
+      label: <Link href="/admin/event/create">Create Event</Link>,
     },
     {
-      key: '4',
-      label: 'Manage Past Events',
+      key: "4",
+      label: "Manage Past Events",
       disabled: true,
     },
     {
-      key: '5',
-      label: 'Event Activities',
+      key: "5",
+      label: "Event Activities",
       disabled: true,
     },
   ];

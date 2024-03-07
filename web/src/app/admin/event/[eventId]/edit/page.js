@@ -1,12 +1,12 @@
 "use client";
 import React from 'react';
 import { Layout } from 'antd';
-import {LayoutSider } from '../../../components/dashBoard/LayoutSider'; // Ensure this path matches your project structure
+import {LayoutSider } from '../../../../../components/dashBoard/LayoutSider'; // Ensure this path matches your project structure
 import EditEvent from './EditEvent'; // Adjust the import path to where your EventForm.jsx is located
 
 const { Content } = Layout;
 
-function Page() {
+function Page({params: { eventId }}) {
   return (
     <LayoutSider>
       <Layout style={{ marginLeft: 180 }}>
@@ -14,7 +14,7 @@ function Page() {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
             <h1>Modify Event</h1>
           </div>
-          <EditEvent />
+          <EditEvent eventId={eventId} />
         </Content>
       </Layout>
     </LayoutSider>

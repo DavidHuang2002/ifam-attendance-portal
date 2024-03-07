@@ -12,7 +12,6 @@ const getFirstFlyerURL = (flyers) => {
 };
 
 const EventCard = ({ event, actions }) => {
-  console.log("EventCard:", event);
   const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg";
   const { eventName, eventTime, eventLocation, eventDetails, eventFlyer } =
     event;

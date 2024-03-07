@@ -18,8 +18,9 @@ import moment from "moment";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
-//const eventId = "qU620FfHZHOUZdTAm5jZ";
-function EditEventComponent({ eventId = "wJwOXBukA7E0mn2CvBdn" }) {
+
+function EditEventComponent({ eventId }) {
+
   const [formData, setFormData] = useState({
     eventName: "",
     eventLocation: "",
@@ -227,7 +228,7 @@ function EditEventComponent({ eventId = "wJwOXBukA7E0mn2CvBdn" }) {
           </Upload>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled>
             Save Event
           </Button>
         </Form.Item>
