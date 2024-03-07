@@ -13,11 +13,11 @@ import Link from "next/link";
 import { EVENTS } from "@/constants/api-endpoints";
 
 const getAdminActions = (eventId) => [
-  <Link href={`../admin/event/${eventId}/edit`}>
+  <Link href={`/admin/event/${eventId}/edit`}>
     <EditOutlined key="edit" />
     <span>Edit</span>
   </Link>,
-  <Link href="../admin/attendanceOld">
+  <Link href={`/admin/attendance/${eventId}/old`}>
     <TeamOutlined />
     <span>Attendance</span>
   </Link>,
