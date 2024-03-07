@@ -16,11 +16,13 @@ export default function HomePage() {
       <Header style={{ background: "white" }}>
         <div className="logo" />
         {/* TODO menu Item children is deprecated. Fix it by using items*/}
-        <Menu mode="horizontal" defaultSelectedKeys={["1"]} style={{ flex: 1 }}>
-          <Menu.Item key="1">Home Page</Menu.Item>
-          <Menu.Item key="2">About Us</Menu.Item>
-          <Menu.Item key="3">
+        <Menu mode="horizontal" style={{ flex: 1 }} selectable={false}>
+          {/* <Menu.Item key="1">Home Page</Menu.Item> */}
+          <Menu.Item key="2">
             <a href="#events">Events</a>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <a href="#contact">About Us</a>
           </Menu.Item>
           <Menu.Item key="4" style={{ marginLeft: "auto" }}>
             <Link href="/admin">Admin Portal</Link>

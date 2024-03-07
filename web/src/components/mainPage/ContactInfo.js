@@ -1,6 +1,6 @@
 export function ContactInfo() {
     return (
-        <div>
+        <div id="contact">
             <h2>Contact Information</h2>
             <p>Name: John Smith</p>
             <p>Email: john.smith@gmail.com</p>
