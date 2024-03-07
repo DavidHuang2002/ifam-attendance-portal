@@ -4,9 +4,18 @@ import Image from "next/image";
 
 const { Meta } = Card;
 
+const getFirstFlyerURL = (flyers) => {
+  if (flyers && flyers.length > 0) {
+    return flyers[0].url;
+  }
+  return null;
+};
+
 const EventCard = ({ event, actions }) => {
-  const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg"; 
-  const { eventName, eventTime, eventLocation, eventDetails, eventFlyer } = event;
+  console.log("EventCard:", event);
+  const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg";
+  const { eventName, eventTime, eventLocation, eventDetails, eventFlyer } =
+    event;
 
   const formattedTime = new Date(eventTime).toLocaleString();
 
@@ -17,10 +26,12 @@ const EventCard = ({ event, actions }) => {
       style={{ width: "100%" }}
       actions={actions}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}> {/* Adjust alignment and spacing */}
+      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        {" "}
+        {/* Adjust alignment and spacing */}
         <Image
           alt={eventName}
-          src={eventFlyer || defaultFlyer}
+          src={getFirstFlyerURL(eventFlyer) || defaultFlyer}
           width={100}
           height={100}
           style={{
@@ -29,9 +40,15 @@ const EventCard = ({ event, actions }) => {
             borderRadius: "5px",
           }}
         />
-        <div style={{ maxWidth: "calc(100% - 120px)" }}> {/* Ensure text does not overflow */}
-          <p><strong>Time:</strong> <time dateTime={eventTime}>{formattedTime}</time></p>
-          <p><strong>Location:</strong> {eventLocation}</p>
+        <div style={{ maxWidth: "calc(100% - 120px)" }}>
+          {/* Ensure text does not overflow */}
+          <p>
+            <strong>Time:</strong>{" "}
+            <time dateTime={eventTime}>{formattedTime}</time>
+          </p>
+          <p>
+            <strong>Location:</strong> {eventLocation}
+          </p>
           <Meta description={eventDetails} style={{ marginTop: "10px" }} />
         </div>
       </div>
