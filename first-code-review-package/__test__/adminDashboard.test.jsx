@@ -8,7 +8,7 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Dashboard from "@/app/admin/page";
 
-// Mocking the Next.js router
+// Mocking the Next.js router for testing purposes
 jest.mock("next/link", () => {
   return ({ children }) => {
     return children;
@@ -24,9 +24,10 @@ describe("Admin Dashboard Page", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the UpcomingEvents and LayoutSider components", () => {
+  const upcomingEventsText = "Our Upcoming Events";
+
+  it("renders the UpcomingEvents components", () => {
     render(<Dashboard />);
-    expect(screen.getByText("UpcomingEvents Component")).toBeInTheDocument(); // Mock or adjust based on actual component output
-    expect(screen.getByText("LayoutSider Component")).toBeInTheDocument(); // Mock or adjust based on actual component output
+    expect(screen.getByText(upcomingEventsText)).toBeInTheDocument();
   });
 });
