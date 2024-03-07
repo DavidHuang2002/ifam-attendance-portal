@@ -1,23 +1,24 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { db } from '@/firebase/config';
+import { db,storage } from '@/firebase/config';
 import { getDocs,getDoc} from 'firebase/firestore';
 import { collection,doc, updateDoc } from 'firebase/firestore';
-import { Form, Input, Button, TimePicker, DatePicker, Upload } from 'antd';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { Form, Input, Button, TimePicker, DatePicker, Upload,message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 //const eventId = "qU620FfHZHOUZdTAm5jZ";
-function EditEventComponent( { eventId = "aQr01EY0GjA3kkbFOdA3" }) {
+function EditEventComponent( { eventId = "eIsXZf5M5gv6LWrIkTAH" }) {
   const [formData, setFormData] = useState({
     eventName: '',
     eventLocation: '',
     eventDetails: '',
     eventTime: null,
     eventDates: [],
-    eventFlyer: '',
+    eventFlyer: [],
     
   });
   const [fileList, setFileList] = useState([]);
@@ -34,32 +35,35 @@ function EditEventComponent( { eventId = "aQr01EY0GjA3kkbFOdA3" }) {
         //Convert Firestore Timestamps to JavaScript Date objects for UI components
        // const eventTime = data.eventTime ? new Date(data.eventTime.seconds * 1000) : null;
        const eventDatesForPicker = data.eventDates.map(date => moment(date, "YYYY-MM-DD"));
-       if (data.eventFlyer) {
-        setFileList([
-          {
-            uid: '-1', // You can use a unique identifier here
-            name: data.eventFlyer,
-            status: 'done',
-            url: `Your Firebase Storage Path/public/EventFlyer/${data.eventFlyer}`, // Construct URL if needed
-          },
-        ]);
-      }
        
        setFormData({
-          eventName: data.eventName,
-          eventLocation: data.eventLocation,
-          eventDetails: data.eventDetails,
-          eventTime:eventTimeForPicker,
-          eventDates:eventDatesForPicker,
-          eventFlyer: data.eventFlyer,
-          
-        });
-      } else {
-        console.log("No such document!");
-      }
-    };
+        eventName: data.eventName,
+        eventLocation: data.eventLocation,
+        eventDetails: data.eventDetails,
+        eventTime:eventTimeForPicker,
+        eventDates:eventDatesForPicker,
+        eventFlyer: data.eventFlyer || []
+        
+      });
+     
+      const flyers = data.eventFlyer || [];
+      const flyerFileList = await Promise.all(flyers.map(async (filename) => {
+        const flyerRef = ref(storage, `public/EventFlyer/${filename}`);
+        try {
+          const url = await getDownloadURL(flyerRef);
+          return { uid: filename, name: filename, status: 'done', url };
+        } catch (error) {
+          console.error("Error fetching download URL for:", filename, error);
+          return null;
+        }
+      }));
 
-    fetchEventData();
+      setFileList(flyerFileList.filter(f => f)); // Update fileList excluding null values
+    } else {
+      console.log("No such document!");
+    }
+  };
+  fetchEventData();
   }, [eventId]);
 
   const handleChange = (e) => {
@@ -69,17 +73,25 @@ function EditEventComponent( { eventId = "aQr01EY0GjA3kkbFOdA3" }) {
 
   const handleFileUpload = async (options) => {
     const { file, onSuccess, onError } = options;
-    const storageRef = ref(storage, `public/EventFlyer/${file.name}`);
+    // Use the original file name or create a unique name for every upload
+    const uniqueFileName = `${Date.now()}-${file.name}`;
+    const storageRef = ref(storage, `public/EventFlyer/${uniqueFileName}`);
+    
     try {
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
-      // Here you could set the downloadURL or the file name to the state
-      // For simplicity, we'll just use the file name
-      setFormData((prevFormData) => ({
+      
+      // Append the new file info to the existing fileList and formData
+      const newFileListItem = { uid: uniqueFileName, name: uniqueFileName, status: 'done', url: downloadURL };
+      setFileList(currentFileList => [...currentFileList, newFileListItem]);
+      
+      // Also update formData.eventFlyer to include the new filename
+      // This assumes formData.eventFlyer is an array
+      setFormData(prevFormData => ({
         ...prevFormData,
-        eventFlyer: file.name,
+        eventFlyer: [...prevFormData.eventFlyer, uniqueFileName],
       }));
-      onSuccess(null, file);
+      onSuccess(null, file); 
       message.success(`${file.name} uploaded successfully`);
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -87,7 +99,6 @@ function EditEventComponent( { eventId = "aQr01EY0GjA3kkbFOdA3" }) {
       message.error(`Upload failed for ${file.name}`);
     }
   };
-
   const handleTimeChange = (time) => {
     const timeValue = time.map(date => date.toISOString());
       setFormData({
@@ -160,20 +171,7 @@ function EditEventComponent( { eventId = "aQr01EY0GjA3kkbFOdA3" }) {
               />
 
         </Form.Item>
-        <Form.Item label="Upload Flyer" name="eventFlyer">
-        <Upload
-    listType="picture-card"
-    customRequest={handleFileUpload}
-    showUploadList={true}
-  >
-    {!formData.eventFlyer || formData.eventFlyer.length === 0 ? (
-      <div>
-        <PlusOutlined />
-        <div style={{ marginTop: 8 }}>Upload</div>
-      </div>
-    ) :null}
-  </Upload>
-        </Form.Item>
+      
         <Form.Item label="Event Date">
         <RangePicker
         value={formData.eventDates.length ? formData.eventDates : null}
@@ -181,7 +179,19 @@ function EditEventComponent( { eventId = "aQr01EY0GjA3kkbFOdA3" }) {
         format="YYYY-MM-DD"
       />
         </Form.Item>
-        
+        <Form.Item label="Upload Flyer" name="eventFlyer">
+          <Upload
+            listType="picture-card"
+            customRequest={handleFileUpload}
+            showUploadList={true}
+            fileList={fileList}
+          >
+            <div>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </div>
+          </Upload>
+        </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">Save Event</Button>
         </Form.Item>
