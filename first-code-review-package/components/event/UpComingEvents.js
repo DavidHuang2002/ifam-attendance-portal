@@ -34,7 +34,7 @@ export function UpcomingEvents({ admin = false }) {
     // Function to fetch events data from the API.
     const fetchEvents = async () => {
       try {
-        const response = await fetch(EVENTS); 
+        const response = await fetch(EVENTS);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -69,7 +69,7 @@ export function UpcomingEvents({ admin = false }) {
               <EventCard
                 key={index}
                 event={event}
-                actions={admin ? getAdminActions(event.id) : []}
+                actions={admin ? getAdminActions(event.eventId) : []}
               />
             ))
           ) : (

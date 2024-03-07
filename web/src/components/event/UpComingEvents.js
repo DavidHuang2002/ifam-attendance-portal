@@ -69,7 +69,7 @@ export function UpcomingEvents({ admin = false }) {
               <EventCard
                 key={index}
                 event={event}
-                actions={admin ? getAdminActions(event.id) : []}
+                actions={admin ? getAdminActions(event.eventId) : []}
               />
             ))
           ) : (
