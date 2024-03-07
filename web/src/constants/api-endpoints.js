@@ -11,3 +11,6 @@ export const POST_ATTENDANCE = {
         headers: REQUEST_HEADER,
     }
 }
+
+
+export const EVENTS = '/api/events';
