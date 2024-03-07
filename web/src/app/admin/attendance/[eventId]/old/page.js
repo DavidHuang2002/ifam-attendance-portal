@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Form, Input, message } from "antd";
 import Link from "next/link";
 import { getNewMemberAttendanceRoute } from "@/constants/front-end-routes";
+import { postAttednace } from "@/service/front-end/attendance";
 
 const layout = {
   position: "absolute",
@@ -20,18 +21,26 @@ const validateMessages = {
   },
 };
 
-const onFinish = (values) => {
-  console.log(values);
-};
-
 const handleSubmission = () => {
-  message.success("Submitted");
   console.log("Submitted");
 };
 
 export default function Attendance({ params: { eventId } }) {
+  const [form] = Form.useForm();
   const newMemberAttendanceHref = getNewMemberAttendanceRoute(eventId);
-  console.log("eventId", eventId);
+
+  const onFinish = async (formValues) => {
+    const { email } = formValues;
+
+    try {
+      await postAttednace(eventId, email);
+      message.success("Submitted");
+      form.resetFields();
+    } catch (error) {
+      message.error("Failed to submit attendance");
+    }
+  };
+  // console.log("eventId", eventId);
   return (
     <div
       style={{
@@ -42,6 +51,7 @@ export default function Attendance({ params: { eventId } }) {
       }}
     >
       <Form
+        form={form}
         {...layout}
         name="nest-messages"
         onFinish={onFinish}
@@ -58,7 +68,7 @@ export default function Attendance({ params: { eventId } }) {
         </Link>
         <h2>Record your attendance</h2>
         <Form.Item
-          name={["user", "email"]}
+          name={"email"}
           label="Email"
           rules={[
             {

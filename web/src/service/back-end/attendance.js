@@ -20,6 +20,10 @@ export const createAttendance = async (newAttedance) => {
 }
 
 
+/*
+  *  get all attendance records from the database
+  *  @return: a promise that resolves to all attendance records
+  */
 export const getAllAttendance = async () => {
   return await getAllDocs("attendance");
 }

@@ -20,10 +20,6 @@ const validateMessages = {
   },
 };
 
-const onFinish = (values) => {
-  console.log(values);
-};
-
 const onChange = (value) => {
   console.log(`selected ${value}`);
 };
@@ -41,7 +37,20 @@ const handleSubmission = () => {
 };
 
 export default function Attendance({ params: { eventId } }) {
+  const [form] = Form.useForm();
   const oldMemberAttendanceHref = getOldMemberAttendanceRoute(eventId);
+
+  const onFinish = async (formValues) => {
+    const { email } = formValues;
+
+    try {
+      await postAttednace(eventId, email);
+      message.success("Submitted");
+      form.resetFields();
+    } catch (error) {
+      message.error("Failed to submit attendance");
+    }
+  };
 
   return (
     <div
@@ -53,6 +62,7 @@ export default function Attendance({ params: { eventId } }) {
       }}
     >
       <Form
+        form={form}
         {...layout}
         name="nest-messages"
         onFinish={onFinish}
