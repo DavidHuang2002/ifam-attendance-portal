@@ -2,6 +2,7 @@
 import React from "react";
 import { Button, Form, Input, message } from "antd";
 import Link from "next/link";
+import { getNewMemberAttendanceRoute } from "@/constants/front-end-routes";
 
 const layout = {
   position: "absolute",
@@ -29,6 +30,7 @@ const handleSubmission = () => {
 };
 
 export default function Attendance({ params: { eventId } }) {
+  const newMemberAttendanceHref = getNewMemberAttendanceRoute(eventId);
   console.log("eventId", eventId);
   return (
     <div
@@ -51,7 +53,7 @@ export default function Attendance({ params: { eventId } }) {
         validateMessages={validateMessages}
       >
         <h1>Returning Member Attendance</h1>
-        <Link href={`/admin/attendance/${eventId}`}>
+        <Link href={newMemberAttendanceHref}>
           <Button type="primary">I'm a new member</Button>
         </Link>
         <h2>Record your attendance</h2>
@@ -69,7 +71,7 @@ export default function Attendance({ params: { eventId } }) {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" onClick={handleSubmission}>
-            <Link href="/admin/attendance/old">Submit</Link>
+            Submit
           </Button>
         </Form.Item>
         <Form.Item>

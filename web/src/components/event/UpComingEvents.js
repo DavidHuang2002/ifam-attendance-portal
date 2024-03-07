@@ -11,13 +11,14 @@ import {
 import Link from "next/link";
 // this file defines constant for api endpoints route
 import { EVENTS } from "@/constants/api-endpoints";
+import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 
 const getAdminActions = (eventId) => [
   <Link href={`/admin/event/${eventId}/edit`}>
     <EditOutlined key="edit" />
     <span>Edit</span>
   </Link>,
-  <Link href={`/admin/attendance/${eventId}/old`}>
+  <Link href={getOldMemberAttendanceRoute(eventId)}>
     <TeamOutlined />
     <span>Attendance</span>
   </Link>,
@@ -34,7 +35,7 @@ export function UpcomingEvents({ admin = false }) {
     // Function to fetch events data from the API.
     const fetchEvents = async () => {
       try {
-        const response = await fetch(EVENTS); 
+        const response = await fetch(EVENTS);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
