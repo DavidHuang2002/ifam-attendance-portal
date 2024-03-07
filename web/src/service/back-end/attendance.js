@@ -1,7 +1,8 @@
 // define attendance related logic for back-end. Like querying database or creating document in database etc.
 
 import { addDoc, collection } from "firebase/firestore";
-import { getAllDocs, db } from "@/firebase/dbUtils";
+import { getAllDocs } from "@/firebase/dbUtils";
+import { db } from "@/firebase/config";
 
 /*
  *  given an event id and participant email, create a new attendance record in the database

@@ -67,3 +67,32 @@ FirebaseError: Expected first argument to collection() to be a CollectionReferen
 https://stackoverflow.com/questions/69047904/how-to-solve-firebaseerror-expected-first-argument-to-collection-to-be-a-coll
 
 Found out I imported from teh wrong firebase in my config
+
+## Invalid Status code 0
+
+```
+⨯ RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: 0
+    at ServerResponse.writeHead (node:_http_server:352:11)
+    at ServerResponse.writeHead (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/compiled/compression/index.js:46:263)
+    at ServerResponse._implicitHeader (node:_http_server:338:8)
+    at ServerResponse.end (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/compiled/compression/index.js:22:749)
+    at sendResponse (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/send-response.js:42:30)
+    at doRender (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:1363:62)
+    at async cacheEntry.responseCache.get.routeKind (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:1555:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:1463:28)
+    at async DevServer.renderPageComponent (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:1856:24)
+    at async DevServer.renderToResponseImpl (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:1894:32)
+    at async DevServer.pipeImpl (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:911:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/next-server.js:271:17)
+    at async DevServer.handleRequestImpl (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/base-server.js:807:17)
+    at async /Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/dev/next-dev-server.js:331:20
+    at async Span.traceAsyncFn (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/trace/trace.js:151:20)
+    at async DevServer.handleRequest (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/dev/next-dev-server.js:328:24)
+    at async invokeRender (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/lib/router-server.js:163:21)
+    at async handleRequest (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/lib/router-server.js:342:24)
+    at async requestHandlerImpl (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/lib/router-server.js:366:13)
+    at async Server.requestListener (/Users/davidhuang/Desktop/Project/ifam-attendance-portal/web/node_modules/next/dist/server/lib/start-server.js:140:13) {
+  code: 'ERR_HTTP_INVALID_STATUS_CODE'
+```
+
+Reasons: the db for firebase is null because I imported it from the wrong place.

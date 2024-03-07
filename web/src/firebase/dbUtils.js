@@ -1,9 +1,7 @@
 // common utility functions for database operations
-import {collection, getDocs, getFirestore} from 'firebase/firestore';
-import {app} from '@/firebase/config';
-
-
-export const db = getFirestore(app);
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { app } from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 /**
  * get all documents from a collection
@@ -12,12 +10,11 @@ export const db = getFirestore(app);
  * @return: a promise that resolves to an array of all documents in the collection
  */
 export const getAllDocs = async (colectionName) => {
-    const querySnapshot = await getDocs(collection(db, colectionName));
-    const docs = [];
+  const querySnapshot = await getDocs(collection(db, colectionName));
+  const docs = [];
 
-    
-    querySnapshot.forEach((doc) => {
-        docs.push(doc.data());
-    });
-    return docs;
-}
+  querySnapshot.forEach((doc) => {
+    docs.push(doc.data());
+  });
+  return docs;
+};
