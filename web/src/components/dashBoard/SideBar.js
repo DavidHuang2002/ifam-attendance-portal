@@ -16,7 +16,7 @@ export function SideBar() {
       '/admin/createEvent': '3',
       // Add more mappings here for other paths and keys
     };
-    return pathMap[pathname] || '1';
+    return pathMap[pathname] || '';
   };
 
   // Dynamically creating menu items
@@ -36,6 +36,7 @@ export function SideBar() {
           Manage Main Page
         </Link>
       ),
+      disabled: true,
     },
     {
       key: '3',
@@ -48,10 +49,12 @@ export function SideBar() {
     {
       key: '4',
       label: 'Manage Past Events',
+      disabled: true,
     },
     {
       key: '5',
       label: 'Event Activities',
+      disabled: true,
     },
   ];
 
