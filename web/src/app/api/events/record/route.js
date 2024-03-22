@@ -53,8 +53,7 @@ const fakeEventRecord = [
 
 export async function GET(requests, { params }) {
   try {
-
-    return Response.json(eventRecord);
+    return Response.json(fakeEventRecord);
   } catch (e) {
     return Response.error({ error: e });
   }
