@@ -28,7 +28,8 @@ export const get_event_record_export_route = (eventId) => {
 
 // ------- participants -------
 export const PARTICIPANTS = "/api/participants";
+export const PARTICIPANTS_RECORD = `${PARTICIPANTS}/record`;
 
-export const get_participant_attendance_route = (participantId) => {
-  return `${PARTICIPANTS}/attendance/${participantId}`;
+export const get_participant_record_route = (participantId) => {
+  return `${PARTICIPANTS_RECORD}/${participantId}`;
 };
