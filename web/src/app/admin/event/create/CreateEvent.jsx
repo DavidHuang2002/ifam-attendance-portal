@@ -6,6 +6,7 @@ import {
   Form,
   Input,
   Button,
+  Select,
   TimePicker,
   DatePicker,
   Upload,
@@ -26,12 +27,15 @@ function CreateEventComponent({afterSave}) {
     eventTime: null,
     eventDates: [],
     eventFlyer: "",
+    eventCategory
+
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  
 
   const handleDateTimeChange = (value, name) => {
     if (name === "eventTime") {

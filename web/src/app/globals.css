@@ -1,0 +1,11 @@
+/* global.css */
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+
+h2, .ant-form-item-explain-error {
+  text-align: center;
+  color: #ffffff; /* Adjust text color as needed */
+}
