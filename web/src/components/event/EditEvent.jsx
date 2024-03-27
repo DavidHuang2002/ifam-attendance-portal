@@ -1,15 +1,26 @@
-// TODO: refactor so both create and edit use the same component
-
+// Component for editing an event. It fetches the event data from Firestore and initializes the form with the data.
+// It also handles form submission to update the event data in Firestore.
+// In next iteration, we plan to extract the data based related logic into API services
 
 import React, { useEffect } from "react";
 import { db } from "@/firebase/config";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore"; // Added updateDoc for editing functionality
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Form, Input, Button, Upload, message } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Upload,
+  message,
+  DatePicker,
+  TimePicker,
+} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import dayjs from "dayjs"; // Added for handling date and time conversion
 
 const { TextArea } = Input;
 const storage = getStorage();
+const { RangePicker } = DatePicker;
 
 function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
   console.log("CreateEventComponent", { afterSave, editMode, eventData });
@@ -18,7 +29,6 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
   useEffect(() => {
     console.log("CreateEventComponent useEffect", { editMode, eventData });
     if (editMode && eventData.eventFlyer?.length > 0) {
-      // Assume eventData.eventFlyer is an array of filenames
       const loadFlyers = async (eventFlyers) => {
         const flyerFileList = await Promise.all(
           eventFlyers.map(async (eventFlyer) => {
@@ -45,9 +55,15 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
       };
 
       loadFlyers(eventData.eventFlyer);
-    } else {
-      form.setFieldsValue(eventData);
     }
+    form.setFieldsValue({
+      ...eventData,
+      eventFlyer: [],
+      eventTime: eventData.eventTime ? dayjs(eventData.eventTime) : null,
+      eventDates: eventData.eventDates
+        ? eventData.eventDates.map((date) => dayjs(date))
+        : [],
+    });
   }, [editMode, eventData, form]);
 
   const handleFileChange = async (options) => {
@@ -75,21 +91,28 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
   const handleSave = async (values) => {
     const eventDataToSave = {
       ...values,
+      eventTime: values.eventTime ? values.eventTime.toISOString() : null,
+      eventDates: values.eventDates
+        ? values.eventDates.map((date) => date.toISOString())
+        : [],
       eventFlyer: values.eventFlyer.map((f) => f.name),
-    }; // Save filenames or URLs
-    try {
+    };
+
+    if (editMode && eventData.eventId) {
+      const eventRef = doc(db, "events", eventData.eventId);
+      await updateDoc(eventRef, eventDataToSave);
+      message.success("Event Updated Successfully!");
+    } else {
       await addDoc(collection(db, "events"), eventDataToSave);
       message.success("Event Created Successfully!");
-      afterSave?.();
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      message.error("Error creating event. Contact Admin for support.");
     }
+
+    afterSave?.();
   };
 
   return (
     <div>
-      <Form form={form} onFinish={handleSave} initialValues={eventData}>
+      <Form form={form} onFinish={handleSave}>
         <Form.Item name="eventName" label="Event Name">
           <Input placeholder="Enter the event name" />
         </Form.Item>
@@ -99,18 +122,12 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
         <Form.Item name="eventDetails" label="Event Details">
           <TextArea rows={4} placeholder="Describe the event details" />
         </Form.Item>
-        {/* <Form.Item label="Event Time" name="eventTime">
-          <TimePicker
-            value={formData.eventTime}
-            // onChange={(time) => handleDateTimeChange(time, "eventTime")}
-          />
+        <Form.Item name="eventTime" label="Event Time">
+          <TimePicker showTime format="HH:mm" />
         </Form.Item>
-        <Form.Item label="Event Date" name="eventDates">
-          <RangePicker
-            value={formData.eventDates}
-            // onChange={(dates) => handleDateTimeChange(dates, "eventDates")}
-          />
-        </Form.Item> */}
+        <Form.Item name="eventDates" label="Event Dates">
+          <RangePicker />
+        </Form.Item>
         <Form.Item
           name="eventFlyer"
           label="Upload Flyer"
@@ -144,7 +161,7 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Save Event
+            {editMode ? "Update Event" : "Save Event"}
           </Button>
         </Form.Item>
       </Form>

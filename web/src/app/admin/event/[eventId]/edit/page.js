@@ -6,10 +6,12 @@ import { LayoutSider } from "../../../../../components/dashBoard/LayoutSider"; /
 import EditEvent from "@/components/event/EditEvent"; // Ensure this path matches your project structure
 import { upcomingEventsAtom } from "@/store";
 import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
 
 const { Content } = Layout;
 
 function Page({ params: { eventId } }) {
+  const router = useRouter();
   const [events] = useAtom(upcomingEventsAtom);
   console.log("events in page", events);
   const eventData = events.find((event) => event.eventId === eventId);
@@ -29,7 +31,11 @@ function Page({ params: { eventId } }) {
           >
             <h1>Modify Event</h1>
           </div>
-          <EditEvent editMode eventData={eventData} />
+          <EditEvent 
+          editMode 
+          eventData={eventData} 
+          afterSave={() => router.push("/admin/")}
+          />
         </Content>
       </Layout>
     </LayoutSider>
