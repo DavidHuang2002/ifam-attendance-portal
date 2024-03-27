@@ -5,10 +5,16 @@ import { getAllDocs } from "@/firebase/dbUtils";
 import { db } from "@/firebase/config";
 import { getParticipantByEmail } from "@/service/back-end/participant";
 
-// attendance logic
-// check if participant info match existing participant info in the database
-// if there is a match, create a new attendance record in the database, including the participant id
-// if there is no match, create a new member record in the database, then create a new attendance record in the database, including the new participant id
+
+
+export class ParticipantNotFound extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name; // Set the name of the error to the class name
+    this.message = message; // Set the error message
+    this.stack = new Error().stack; // Capture the stack trace
+  }
+}
 
 /*
  *  given an event id and participant email, create a new attendance record in the database
@@ -25,7 +31,11 @@ export const createAttendance = async (newAttedance) => {
   const participant = await getParticipantByEmail(email);
 
   // if there is a match, create a new attendance record in the database, including the participant id
-  // if there is no match, create a new member record in the database, then create a new attendance record in the database, including the new participant id
+  if (participant) {
+    newAttedance.participantId = participant.participantId;
+  } else {
+    throw new ParticipantNotFound(`Participant not found with email: ${email}`);
+  }
 
   // timestamp the attendance record
   newAttedance.timestamp = new Date().toISOString();

@@ -19,9 +19,12 @@ const layout = {
 const getGraduationYear = (text) => {
   const currentYear = new Date().getFullYear();
   const grade = text.split(" ")[1];
-  const year = currentYear + 4 - ["Freshman", "Sophomore", "Junior", "Senior"].indexOf(grade);
+  const year =
+    currentYear +
+    4 -
+    ["Freshman", "Sophomore", "Junior", "Senior"].indexOf(grade);
   return year;
-}
+};
 
 const validateMessages = {
   required: "${label} is required!",

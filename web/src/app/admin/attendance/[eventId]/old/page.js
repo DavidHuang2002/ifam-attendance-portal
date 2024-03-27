@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, message, Modal } from "antd";
 import Link from "next/link";
 import { getNewMemberAttendanceRoute } from "@/constants/front-end-routes";
-import { postAttednace } from "@/constants/api-endpoints" 
+import { postAttednace } from "@/constants/api-endpoints";
+import { useRouter } from "next/navigation";
+const { confirm } = Modal;
 
 const layout = {
   position: "absolute",
@@ -28,14 +30,30 @@ const handleSubmission = () => {
 export default function Attendance({ params: { eventId } }) {
   const [form] = Form.useForm();
   const newMemberAttendanceHref = getNewMemberAttendanceRoute(eventId);
+  const router = useRouter();
+
+  const showGoToNewMemberPageConfirm = () => {
+    confirm({
+      title: "New member?",
+      content:
+        "You are not registered yet. Go to the new member page to register",
+      onOk() {
+        router.push(newMemberAttendanceHref);
+      },
+    });
+  };
 
   const onFinish = async (formValues) => {
     const { email } = formValues;
 
     try {
-      await postAttednace(eventId, email);
-      message.success("Submitted");
-      form.resetFields();
+      const res = await postAttednace(eventId, email);
+      if (res.status == 200) {
+        message.success("Submitted");
+        form.resetFields();
+      } else if (res.status == 404) {
+        showGoToNewMemberPageConfirm();
+      }
     } catch (error) {
       message.error("Failed to submit attendance");
     }
