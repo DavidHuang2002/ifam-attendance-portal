@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Form, Input, message } from "antd";
 import Link from "next/link";
 import { getNewMemberAttendanceRoute } from "@/constants/front-end-routes";
-import { postAttednace } from "@/service/front-end/attendance";
+import { postAttednace } from "@/constants/api-endpoints" 
 
 const layout = {
   position: "absolute",

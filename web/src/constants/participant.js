@@ -1,0 +1,1 @@
+export const GRAD_STUDENT_CLASS = -1;

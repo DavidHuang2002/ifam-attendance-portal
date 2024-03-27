@@ -3,6 +3,9 @@ import React from "react";
 import { Button, Form, Input, Select, Checkbox, message } from "antd";
 import Link from "next/link";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
+import { postAttednace, postParticipant } from "@/constants/api-endpoints";
+import { GRAD_STUDENT_CLASS } from "@/constants/participant";
+import { useRouter } from "next/navigation";
 
 const layout = {
   position: "absolute",
@@ -12,6 +15,13 @@ const layout = {
   bottom: 0,
   overflow: "hidden",
 };
+
+const getGraduationYear = (text) => {
+  const currentYear = new Date().getFullYear();
+  const grade = text.split(" ")[1];
+  const year = currentYear + 4 - ["Freshman", "Sophomore", "Junior", "Senior"].indexOf(grade);
+  return year;
+}
 
 const validateMessages = {
   required: "${label} is required!",
@@ -31,24 +41,36 @@ const onSearch = (value) => {
 const filterOption = (input, option) =>
   (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
-const handleSubmission = () => {
-  message.success("Submitted");
-  console.log("Submitted");
-};
-
 export default function Attendance({ params: { eventId } }) {
+  const router = useRouter();
+
   const [form] = Form.useForm();
   const oldMemberAttendanceHref = getOldMemberAttendanceRoute(eventId);
 
   const onFinish = async (formValues) => {
-    const { email } = formValues;
-
+    const { email } = formValues.user;
+    console.log("formValues", formValues);
     try {
-      await postAttednace(eventId, email);
-      message.success("Submitted");
+      const newMemberRes = await postParticipant(formValues.user);
+      const attendanceRes = await postAttednace(eventId, email);
+
+      if (attendanceRes.status == 200) {
+        message.success("Attendance recorded");
+      } else {
+        message.error("Failed to submit attendance");
+      }
+
+      if (newMemberRes.status == 200) {
+        message.success("registered as a new member");
+      } else {
+        message.error("Failed to register as a new member");
+      }
+
       form.resetFields();
+      router.push(oldMemberAttendanceHref);
     } catch (error) {
       message.error("Failed to submit attendance");
+      console.error(error);
     }
   };
 
@@ -93,7 +115,7 @@ export default function Attendance({ params: { eventId } }) {
         >
           <Input />
         </Form.Item>
-        <Form.Item name={["user", "grade"]} label="Grade">
+        <Form.Item name={["user", "class"]} label="Class">
           <Select
             showSearch
             placeholder="Select your grade"
@@ -103,23 +125,23 @@ export default function Attendance({ params: { eventId } }) {
             filterOption={filterOption}
             options={[
               {
-                value: "Undergraduate Freshman",
+                value: getGraduationYear("Undergraduate Freshman"),
                 label: "Undergraduate Freshman",
               },
               {
-                value: "Undergraduate Sophomore",
+                value: getGraduationYear("Undergraduate Sophomore"),
                 label: "Undergraduate Sophomore",
               },
               {
-                value: "Undergraduate Junior",
+                value: getGraduationYear("Undergraduate Junior"),
                 label: "Undergraduate Junior",
               },
               {
-                value: "Undergraduate Senior",
+                value: getGraduationYear("Undergraduate Senior"),
                 label: "Undergraduate Senior",
               },
               {
-                value: "Graduate",
+                value: GRAD_STUDENT_CLASS,
                 label: "Graduate",
               },
             ]}
@@ -132,8 +154,8 @@ export default function Attendance({ params: { eventId } }) {
           <Checkbox onChange={onChange}>Program c</Checkbox>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" onClick={handleSubmission}>
-            <Link href={oldMemberAttendanceHref}> Submit </Link>
+          <Button type="primary" htmlType="submit">
+            Submit
           </Button>
         </Form.Item>
         <Form.Item>
