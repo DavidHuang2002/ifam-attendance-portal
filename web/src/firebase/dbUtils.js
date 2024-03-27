@@ -18,3 +18,7 @@ export const getAllDocs = async (colectionName) => {
   });
   return docs;
 };
+
+export const resultToDocRef = (result) => {
+  return result._key.path.segments.join("/");
+}
