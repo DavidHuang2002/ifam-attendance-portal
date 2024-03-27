@@ -2,6 +2,15 @@ export const REQUEST_HEADER = {
   "Content-Type": "application/json",
 };
 
+// ------- utils -------
+export const setSearchParams = (route, params) => {
+  const searchParams = new URLSearchParams({
+    ...params,
+  });
+
+  return route + "?" + searchParams.toString();
+};
+
 // ------- attendance -------
 export const ATTENDANCE = "/api/attendance";
 
@@ -24,7 +33,12 @@ export const get_event_record_route = (eventId) => {
 
 export const get_event_record_export_route = (eventId) => {
   return `${EVENTS_RECORD}/${eventId}/export`;
-}
+};
+
+// fetch upcoming events by setting the search parameter to upcoming
+export const fetchUpComingEvents = () => {
+  return fetch(setSearchParams(EVENTS, { upcoming: true }));
+};
 
 // ------- participants -------
 export const PARTICIPANTS = "/api/participants";

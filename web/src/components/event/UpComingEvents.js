@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 // this file defines constant for api endpoints route
-import { EVENTS } from "@/constants/api-endpoints";
+import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { upcomingEventsAtom } from "@/store";
 import { useAtom } from "jotai";
@@ -38,7 +38,7 @@ export function UpcomingEvents({ admin = false }) {
     // Function to fetch events data from the API.
     const fetchEvents = async () => {
       try {
-        const response = await fetch(EVENTS);
+        const response = await fetchUpComingEvents();
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

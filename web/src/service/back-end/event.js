@@ -76,3 +76,13 @@ export async function getAllEvents() {
   // Return the array of events, each now potentially containing flyer URL(s).
   return events;
 }
+
+// get upcoming events, sorted by eventTime in ascending order
+export async function getUpComingEvents() {
+  const events = await getAllEvents();
+  const today = moment();
+  return events.filter((event) => {
+    const eventDate = moment(event.eventTime);
+    return eventDate.isAfter(today);
+  }).sort((a, b) => moment(a.eventTime).diff(moment(b.eventTime)));
+}

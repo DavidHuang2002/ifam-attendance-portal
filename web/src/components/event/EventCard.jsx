@@ -7,12 +7,25 @@ const { Meta } = Card;
 
 const EventCard = ({ event, actions }) => {
   const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg";
-  const { eventName, eventTime, eventLocation, eventDetails, eventFlyer } =
-    event;
+  const {
+    eventName,
+    eventTime,
+    eventLocation,
+    eventDetails,
+    eventFlyer,
+    eventDates,
+  } = event;
+  // only taking the first date for now (assuming there is no multi-day event)
+  const eventDate = eventDates[0];
 
   // console.log("event", event);
 
-  const formattedTime = new Date(eventTime).toLocaleString();
+  // format time to only keep the time without the date
+  const formattedTime = new Date(eventTime).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
 
   return (
     <Card
@@ -40,6 +53,16 @@ const EventCard = ({ event, actions }) => {
           <p>
             <strong>Time:</strong>{" "}
             <time dateTime={eventTime}>{formattedTime}</time>
+          </p>
+          <p>
+            <strong>Dates: </strong>
+            <time dateTime={eventDate}>
+              {new Date(eventDate).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </time>
           </p>
           <p>
             <strong>Location:</strong> {eventLocation}
