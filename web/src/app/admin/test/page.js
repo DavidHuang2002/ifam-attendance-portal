@@ -1,7 +1,7 @@
 "use client"
 // test the API
 import { Button } from "antd";
-import { postAttednace } from "@/service/front-end/attendance";
+import { postAttednace } from "@/constants/api-endpoints";
 
 
 export default function Test(){
