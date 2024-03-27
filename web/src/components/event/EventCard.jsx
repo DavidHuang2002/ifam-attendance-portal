@@ -1,20 +1,16 @@
 import React from "react";
 import { Card, Avatar } from "antd";
 import Image from "next/image";
+import { getFirstFlyerURL } from "@/service/front-end/event";
 
 const { Meta } = Card;
-
-const getFirstFlyerURL = (flyers) => {
-  if (flyers && flyers.length > 0) {
-    return flyers[0].url;
-  }
-  return null;
-};
 
 const EventCard = ({ event, actions }) => {
   const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg";
   const { eventName, eventTime, eventLocation, eventDetails, eventFlyer } =
     event;
+
+  // console.log("event", event);
 
   const formattedTime = new Date(eventTime).toLocaleString();
 

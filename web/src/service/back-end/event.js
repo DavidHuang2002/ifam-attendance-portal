@@ -30,14 +30,9 @@ export async function getAllEvents() {
     const eventData = {
       ...data,
       eventId: doc.id, // Include the document ID as 'eventId'.
-      // Convert 'eventTime' to a JavaScript Date object, if it exists.
-      eventTime: data.eventTime
-        ? moment(data.eventTime, "HH:mm:ss").toDate()
-        : null,
+      eventTime: data.eventTime,
       // Convert each 'eventDate' to a JavaScript Date object, if any exist.
-      eventDates: data.eventDates
-        ? data.eventDates.map((date) => moment(date, "YYYY-MM-DD").toDate())
-        : [],
+      eventDates: data.eventDates,
     };
 
     // If there are flyers associated with the event, prepare to fetch their URLs.
