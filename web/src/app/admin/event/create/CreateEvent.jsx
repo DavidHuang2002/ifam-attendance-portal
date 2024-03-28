@@ -15,13 +15,13 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { redirect } from "next/navigation";
+import { EventTimePicker } from "@/components/event/EventTimePicker";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 const storage = getStorage();
 
-
-function CreateEventComponent({afterSave}) {
+function CreateEventComponent({ afterSave }) {
   const [formData, setFormData] = useState({
     eventName: "",
     eventLocation: "",
@@ -31,7 +31,6 @@ function CreateEventComponent({afterSave}) {
     eventFlyer: "",
     eventCategory: "",
     eventPublished: false,
-
   });
 
   const handleChange = (e) => {
@@ -105,43 +104,45 @@ function CreateEventComponent({afterSave}) {
   return (
     <div>
       <Form onFinish={handleSave}>
-        <Form.Item 
-        label="Event Name" 
-        name="eventName"
-        rules={[
-          {
-            required: true,
-            message: 'Please input the event name!',
-          },
-          {
-            len: 10,
-            message: 'Event name must be exactly 10 characters long!',
-          },
-        ]}>
+        <Form.Item
+          label="Event Name"
+          name="eventName"
+          rules={[
+            {
+              required: true,
+              message: "Please input the event name!",
+            },
+            {
+              // len: 10,
+              // message: 'Event name must be exactly 10 characters long!',
+            },
+          ]}
+        >
           <Input
             name="eventName"
             onChange={handleChange}
-            
             placeholder="Enter the event name"
           />
         </Form.Item>
-        <Form.Item 
-        label="Event Location" 
-        name="eventLocation"
-        rules={[
-          {
-            required: true,
-            message: 'Please input the event location!',
-          },
-          {
-            max: 20,
-            message: 'Location must be up to 20 characters long!',
-          },
-          {
-            pattern: new RegExp(/^[a-z0-9]+$/i),
-            message: 'Location must be alphanumeric!',
-          },
-        ]}>
+        <Form.Item
+          label="Event Location"
+          name="eventLocation"
+          rules={[
+            {
+              required: true,
+              message: "Please input the event location!",
+            },
+            {
+              max: 20,
+              message: "Location must be up to 20 characters long!",
+            },
+            {
+              // TODO - we must also allow for space
+              // pattern: new RegExp(/^[a-z0-9]+$/i),
+              // message: "Location must be alphanumeric!",
+            },
+          ]}
+        >
           <Input
             name="eventLocation"
             onChange={handleChange}
@@ -153,13 +154,13 @@ function CreateEventComponent({afterSave}) {
             placeholder="Select a category"
             onChange={handleChange}
             options={[
-              { value: 'Weekly', label: 'Weekly' },
-              { value: 'Special', label: 'Special' },
-              { value: 'Monthly', label: 'Monthly' },
+              { value: "Weekly", label: "Weekly" },
+              { value: "Special", label: "Special" },
+              { value: "Monthly", label: "Monthly" },
             ]}
           />
         </Form.Item>
-        <Form.Item label="Event Publish" name="eventPublished">
+        <Form.Item label="Send email notification" name="eventPublished">
           <Checkbox onChange={handleCheckboxChange}></Checkbox>
         </Form.Item>
         <Form.Item label="Event Details" name="eventDetails">
@@ -171,7 +172,7 @@ function CreateEventComponent({afterSave}) {
           />
         </Form.Item>
         <Form.Item label="Event Time" name="eventTime">
-          <TimePicker
+          <EventTimePicker
             onChange={(time) => handleDateTimeChange(time, "eventTime")}
           />
         </Form.Item>
