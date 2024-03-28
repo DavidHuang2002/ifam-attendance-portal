@@ -10,7 +10,7 @@ import moment from "moment";
 
 /**
  * Asynchronously fetches all events from the Firestore database.
- * @return {Promise<Array>} A promise that resolves to an array of event objects, 
+ * @return {Promise<Array>} A promise that resolves to an array of event objects,
  * each enhanced with event flyer URLs from Firebase Storage.
  */
 export async function getAllEvents() {
@@ -81,8 +81,16 @@ export async function getAllEvents() {
 export async function getUpComingEvents() {
   const events = await getAllEvents();
   const today = moment();
-  return events.filter((event) => {
-    const eventDate = moment(event.eventTime);
-    return eventDate.isAfter(today);
-  }).sort((a, b) => moment(a.eventTime).diff(moment(b.eventTime)));
+  return (
+    events
+      .filter((event) => {
+        // const eventDate = moment(event.eventTime);
+        const { eventDates } = event;
+        const eventDate = moment(eventDates[0]);
+        // filter out event dates that is before. But keep the ones that are today
+        return eventDate.isSameOrAfter(today, "day");
+      })
+      // sort the events by eventTime in ascending order
+      .sort((a, b) => moment(a.eventDates[0]).diff(moment(b.eventDates[0])))
+  );
 }
