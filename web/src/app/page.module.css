@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  max-width: 500px;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(41, 4, 115, 0.1);
+  background-color: #f0f0f0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-weight: bold;
+  text-align: center;
+}
+
+.subtitle {
+  color: #6c757d; /* Adjust based on your theme */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.loginButton {
+  /* Style your login button */
+}
