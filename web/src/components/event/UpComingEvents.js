@@ -10,8 +10,10 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 // this file defines constant for api endpoints route
-import { EVENTS } from "@/constants/api-endpoints";
+import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
+import { upcomingEventsAtom } from "@/store";
+import { useAtom } from "jotai";
 
 const getAdminActions = (eventId) => [
   <Link href={`/admin/event/${eventId}/edit`}>
@@ -29,13 +31,14 @@ const getAdminActions = (eventId) => [
 ];
 
 export function UpcomingEvents({ admin = false }) {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useAtom(upcomingEventsAtom);
+  // console.log("events", events);
 
   useEffect(() => {
     // Function to fetch events data from the API.
     const fetchEvents = async () => {
       try {
-        const response = await fetch(EVENTS);
+        const response = await fetchUpComingEvents();
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -43,6 +46,7 @@ export function UpcomingEvents({ admin = false }) {
         // TODO: sort events by date - do it in backend
         const data = await response.json();
         setEvents(data);
+        // console.log("Fetched events:", data);
       } catch (error) {
         console.error("Failed to fetch events:", error);
       }
