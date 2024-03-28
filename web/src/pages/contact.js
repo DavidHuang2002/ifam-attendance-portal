@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, Typography } from 'antd';
 import emailjs from 'emailjs-com';
+import { useRouter } from 'next/router'; // Import useRouter from next/router
 
 const { Title } = Typography;
 
@@ -17,18 +18,42 @@ const validateMessages = {
 };
 
 const ContactForm = () => {
+  const router = useRouter(); // Create an instance of useRouter
+
   const onFinish = (values) => {
     console.log('Success:', values);
+    
+    // First email: Send the user's message to the intended recipient
     emailjs.send('service_z6ftge9', 'template_skqdme9', values, 'VYHdyH1a8DTcRyrEv')
-      .then(response => {
-        console.log('SUCCESS!', response.status, response.text);
-        // Optionally, handle successful form submission (e.g., showing a success message)
-      }, error => {
-        console.log('FAILED...', error.text);
-        // Optionally, handle form submission error (e.g., showing an error message)
-      });
-  };
+    .then(response => {
+      console.log('SUCCESS!', response.status, response.text);
+      
+      // Formatted message for the second email
+      const formattedMessage = `Hi ${values.user_name},<br/><br/>
+        We wish to inform you that your email has been successfully received.<br/>
+        Rest assured, we will provide a response at the earliest opportunity.<br/><br/>
+        We appreciate your patience and cooperation.<br/><br/>
+        Best regards,<br/>
+        IFAM team`;
 
+      const userNotificationData = {
+        user_email: values.user_email, // Correctly passing the user's email to 'user_email'
+        message: formattedMessage, // Assuming the template uses 'message_html' for HTML content
+      };
+
+      // Second email: Send a notification to the user
+      return emailjs.send('service_z6ftge9', 'template_qfyxrv3', userNotificationData, 'VYHdyH1a8DTcRyrEv');
+    })
+    .then(notificationResponse => {
+      console.log('User notification email sent!', notificationResponse.status, notificationResponse.text);
+      // After sending both emails, navigate to HomePage or show a success message
+      router.push('/');
+    })
+    .catch(error => {
+      console.log('FAILED...', error.text);
+      // Handle errors
+    });
+};
   return (
     <div style={{ paddingTop: '20px', maxWidth: 600, margin: '20px auto' }}>
       <Title level={2} style={{ textAlign: 'center' }}>Contact Us</Title>

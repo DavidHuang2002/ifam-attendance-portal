@@ -1,45 +1,21 @@
-
 import React, { useState } from 'react';
-
 import { Button, Form, Input, Upload, Select, Avatar, message } from 'antd';
-
-import { LoadingOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; // Firestore imports
 import { auth } from "@/firebase/config";
+import emailjs from 'emailjs-com';
 const { Option } = Select;
 
 const formItemLayout = {
-  labelCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 8,
-    },
-  },
-  wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 16,
-    },
-  },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
 const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-  },
+  wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 8 } },
 };
-
+const db = getFirestore(); 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -50,61 +26,86 @@ const getBase64 = (file) =>
 
 const beforeUpload = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG files!');
-  }
+  if (!isJpgOrPng) message.error('You can only upload JPG/PNG files!');
   const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('Image must be smaller than 2MB!');
-  }
+  if (!isLt2M) message.error('Image must be smaller than 2MB!');
   return isJpgOrPng && isLt2M;
 };
 
-function Users() {
-  const [form] = Form.useForm();
+const Users = () => {
+  const [form] = Form.useForm(); // Initialize form
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
+
   const onFinish = async (values) => {
-    const { email, password } = values;
+    const { email, password, Name: name, phone, Role: role } = values;
+
+    // Check if the user already exists in Firestore
+    const userRef = doc(db, "users", email);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      message.error('This email is already in use. Please login or reset your password if you forgot it.');
+      return;
+    }
+
+    // Create user in Firebase Auth
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // User account created successfully
-        console.log('Account created for:', userCredential.user);
-        message.success('Registration successful');
-        // Optionally, redirect the user or perform other actions
+      .then(async () => {
+        await setDoc(userRef, { name, phone, role });
+
+        emailjs.send('service_z6ftge9', 'template_qfyxrv3', {
+          user_email: email,
+          user_subject: "IFAM-PORTAL",
+          message: `Hi ${name},<br/><br/>
+          Your account has been successfully created. Here are your login details:<br/>
+          <strong>Username:</strong> ${email}<br/>
+          <strong>Password:</strong> ${password}<br/><br/>
+          For your security, please ensure to change your password upon your first login.<br/><br/>
+          Best regards,<br/>
+          IFAM team`}, 'VYHdyH1a8DTcRyrEv')
+        .then(() => {
+          message.success('User created successfully and email sent.');
+          form.resetFields(); // Reset form fields
+          setImageUrl(''); // Clear avatar image
+          setLoading(false); // Stop loading after successful creation and email sending
+        })
+        .catch((emailError) => {
+          console.error('Failed to send email:', emailError);
+          setLoading(false); // Stop loading on email error
+          // Optionally, handle email sending failure
+        });
       })
       .catch((error) => {
+        setLoading(false); // Stop loading on auth error
         if (error.code === 'auth/email-already-in-use') {
           message.error('This email is already in use. Please login or reset your password if you forgot it.');
         } else {
-          // Handle other errors
           console.error("Error creating user:", error);
           message.error(`Registration failed: ${error.message}`);
         }
       });
   };
-
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select style={{ width: 70 }}>
-        <Option value="86">+1</Option>
-       
-      </Select>
-    </Form.Item>
-  );
   const handleChange = info => {
     if (info.file.status === 'uploading') {
       setLoading(true);
       return;
     }
     if (info.file.status === 'done') {
-      // Convert file to Base64 for preview
       getBase64(info.file.originFileObj, imageUrl => {
         setImageUrl(imageUrl);
         setLoading(false);
       });
     }
   };
+
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Option value="86">+1</Option>
+      </Select>
+    </Form.Item>
+  );
 
   const uploadButton = (
     <div>
@@ -114,20 +115,21 @@ function Users() {
   );
 
   return (
-    <Form {...formItemLayout} form={form} name="register" onFinish={onFinish} scrollToFirstError>
-      <Form.Item name="avatar" label="Avatar">
-        <Upload
-          name="avatar"
-          listType="picture-card"
-          className="avatar-uploader"
-          showUploadList={false}
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76" // Your actual upload endpoint
-          beforeUpload={beforeUpload}
-          onChange={handleChange}
-        >
-          {imageUrl ? <Avatar src={imageUrl} size={64} alt="avatar" /> : uploadButton}
-        </Upload>
-      </Form.Item>
+    <Form {...formItemLayout} name="register" onFinish={onFinish} scrollToFirstError>
+    {/* Form Items including avatar upload and other fields */}
+   {/* <Form.Item name="avatar" label="Avatar">
+      <Upload
+        name="avatar"
+        listType="picture-card"
+        className="avatar-uploader"
+        showUploadList={false}
+        action="/api/upload" // Make sure this points to your actual file upload handling endpoint
+        beforeUpload={beforeUpload}
+        onChange={handleChange}
+      >
+        {imageUrl ? <Avatar src={imageUrl} size={64} alt="avatar" /> : uploadButton}
+      </Upload>
+    </Form.Item>*/}
       <Form.Item
         name="Name"
         label="Name"
@@ -231,15 +233,20 @@ function Users() {
           
         </Select>
       </Form.Item>
-
-      
       <Form.Item {...tailFormItemLayout}>
                 <Button type="primary" htmlType="submit">
                   Register
                 </Button>
               </Form.Item>
-            </Form>
-          
+    </Form>
   );
 };
+
+const uploadButton = (loading) => (
+  <div>
+    {loading ? <LoadingOutlined /> : <PlusOutlined />}
+    <div style={{ marginTop: 8 }}>Upload</div>
+  </div>
+);
+
 export default Users;
