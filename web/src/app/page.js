@@ -6,6 +6,7 @@ import Link from "next/link";
 import HeroSection from "@/components/mainPage/HeroSection";
 //import {UpcomingEvents} from "@/components/event/UpComingEvents"; // Assuming default export
 import {ContactInfo} from "@/components/mainPage/ContactInfo"; // Assuming default export
+import { UpcomingEvents } from "@/components/event/UpComingEvents";
 
 
 const { Header, Content, Footer } = Layout;
@@ -62,6 +63,7 @@ export default function HomePage() {
           <HeroSection />
           
           {/* Since ContactUs is directly used here, ensure this is the intended usage */}
+          <UpcomingEvents />
          
           <ContactInfo />
         </div>
