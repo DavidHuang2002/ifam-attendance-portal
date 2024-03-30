@@ -11,7 +11,6 @@ const columns = [
     title: 'Event Name',
     dataIndex: 'EventName',
     key: 'EventName',
-    // render: (text) => <a>{text}</a>,
     align: 'center',
   },
   {
@@ -38,36 +37,6 @@ const columns = [
     key: 'Export',
     align: 'center',
   },
-  // {
-  //   title: 'Tags',
-  //   key: 'tags',
-  //   dataIndex: 'tags',
-  //   render: (_, { tags }) => (
-  //     <>
-  //       {tags.map((tag) => {
-  //         let color = tag.length > 5 ? 'geekblue' : 'green';
-  //         if (tag === 'loser') {
-  //           color = 'volcano';
-  //         }
-  //         return (
-  //           <Tag color={color} key={tag}>
-  //             {tag.toUpperCase()}
-  //           </Tag>
-  //         );
-  //       })}
-  //     </>
-  //   ),
-  // },
-  // {
-  //   title: 'Action',
-  //   key: 'action',
-  //   render: (_, record) => (
-  //     <Space size="middle">
-  //       <a>Invite {record.name}</a>
-  //       <a>Delete</a>
-  //     </Space>
-  //   ),
-  // },
 ];
 const data = [
   {
@@ -106,10 +75,10 @@ const data = [
 export default function ManagePastEvents() {
     return (
         <LayoutSider>
-            <Content style={{ marginLeft: '200px', padding: '24px', minHeight: '280px' }}>
+            <Content style={{ marginLeft: '200px', padding: '24px', minHeight: '100vh' }}>
+                <h1>Past events</h1>
                 <Table columns={columns} dataSource={data} />
             </Content>
         </LayoutSider>
     );
 }
-// export default App;
