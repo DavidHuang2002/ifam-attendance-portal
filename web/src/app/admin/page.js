@@ -28,7 +28,6 @@ const Dashboard = () => {
             padding: 0,
             background: colorBgContainer,
             minHeight: 200,
-            position: "sticky",
           }}
         >
           <h1 style={{ marginTop: 100, marginLeft: 40, fontSize: 50 }}>

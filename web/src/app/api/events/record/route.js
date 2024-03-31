@@ -1,3 +1,6 @@
+import { getPastEventsOverview } from "@/service/back-end/event";
+import { NextResponse } from "next/server";
+
 const fakeEventRecord = [
   {
     eventTime: "2024-03-23T01:02:44.000Z",
@@ -53,8 +56,10 @@ const fakeEventRecord = [
 
 export async function GET(requests, { params }) {
   try {
-    return Response.json(fakeEventRecord);
+    const pastEventsRecord = await getPastEventsOverview();
+    return NextResponse.json(pastEventsRecord);
   } catch (e) {
-    return Response.error({ error: e });
+    console.log(e);
+    return NextResponse.error({ error: e });
   }
 }

@@ -20,6 +20,8 @@ export function SideBar() {
       "/admin": "1",
       "/admin/manageMainPage": "2",
       "/admin/event/create": "3",
+      "/admin/events/past": "4",
+      "/admin/user": "6",
       // Additional mappings can be added to handle more paths.
     };
     return pathMap[pathname] || ""; // Returns the corresponding key or an empty string if the path is not mapped.
@@ -43,13 +45,17 @@ export function SideBar() {
     // Additional disabled menu items serving as placeholders for future features.
     {
       key: "4",
-      label: "Manage Past Events",
-      disabled: true,
+      label: <Link href="/admin/events/past"> Past Events </Link>,
+      // disabled: true,
     },
     {
       key: "5",
       label: "Event Activities",
       disabled: true,
+    },
+    {
+      key: "6",
+      label: <Link href="/admin/user">Users</Link>,
     },
   ];
 

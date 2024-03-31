@@ -6,6 +6,7 @@ import {
   addDoc,
   doc,
 } from "firebase/firestore";
+import { getAttendanceByEventId } from "./attendance";
 
 export const getParticipantByEmail = async (email) => {
   // query firebase with email
@@ -46,3 +47,17 @@ export const createNewParticipant = async (newParticipant) => {
   const docRef = result._key.path.segments.join("/");
   return docRef;
 };
+
+// returned the details of all participants who attendend a specific event
+export const getParticipantByEventId = async (eventId) => {
+  const attendace = await getAttendanceByEventId(eventId);
+
+  const participants = [];
+  for (let i = 0; i < attendace.length; i++) {
+    const attendanceEmail = attendace[i].email;
+    const participant = await getParticipantByEmail(attendanceEmail) || {attendanceEmail};
+    participants.push(participant);
+  }
+
+  return participants;
+}

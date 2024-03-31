@@ -6,19 +6,22 @@ import {
   Form,
   Input,
   Button,
+  Select,
   TimePicker,
   DatePicker,
   Upload,
+  Checkbox,
   message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { redirect } from "next/navigation";
+import { EventTimePicker } from "@/components/event/EventTimePicker";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 const storage = getStorage();
 
-function CreateEventComponent({afterSave}) {
+function CreateEventComponent({ afterSave }) {
   const [formData, setFormData] = useState({
     eventName: "",
     eventLocation: "",
@@ -26,11 +29,18 @@ function CreateEventComponent({afterSave}) {
     eventTime: null,
     eventDates: [],
     eventFlyer: "",
+    eventCategory: "",
+    eventPublished: false,
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    // This now checks if the event is from an input or a Select component
+    const target = e.target ? e.target : { name: "eventCategory", value: e };
+    const { name, value } = target;
     setFormData({ ...formData, [name]: value });
+  };
+  const handleCheckboxChange = (e) => {
+    setFormData({ ...formData, eventPublished: e.target.checked });
   };
 
   const handleDateTimeChange = (value, name) => {
@@ -94,19 +104,64 @@ function CreateEventComponent({afterSave}) {
   return (
     <div>
       <Form onFinish={handleSave}>
-        <Form.Item label="Event Name" name="eventName">
+        <Form.Item
+          label="Event Name"
+          name="eventName"
+          rules={[
+            {
+              required: true,
+              message: "Please input the event name!",
+            },
+            {
+              // len: 10,
+              // message: 'Event name must be exactly 10 characters long!',
+            },
+          ]}
+        >
           <Input
             name="eventName"
             onChange={handleChange}
             placeholder="Enter the event name"
           />
         </Form.Item>
-        <Form.Item label="Event Location" name="eventLocation">
+        <Form.Item
+          label="Event Location"
+          name="eventLocation"
+          rules={[
+            {
+              required: true,
+              message: "Please input the event location!",
+            },
+            {
+              max: 20,
+              message: "Location must be up to 20 characters long!",
+            },
+            {
+              // TODO - we must also allow for space
+              // pattern: new RegExp(/^[a-z0-9]+$/i),
+              // message: "Location must be alphanumeric!",
+            },
+          ]}
+        >
           <Input
             name="eventLocation"
             onChange={handleChange}
             placeholder="Enter the event location"
           />
+        </Form.Item>
+        <Form.Item label="Event Category" name="eventCategory">
+          <Select
+            placeholder="Select a category"
+            onChange={handleChange}
+            options={[
+              { value: "Weekly", label: "Weekly" },
+              { value: "Special", label: "Special" },
+              { value: "Monthly", label: "Monthly" },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item label="Send email notification" name="eventPublished">
+          <Checkbox onChange={handleCheckboxChange}></Checkbox>
         </Form.Item>
         <Form.Item label="Event Details" name="eventDetails">
           <TextArea
@@ -117,7 +172,7 @@ function CreateEventComponent({afterSave}) {
           />
         </Form.Item>
         <Form.Item label="Event Time" name="eventTime">
-          <TimePicker
+          <EventTimePicker
             onChange={(time) => handleDateTimeChange(time, "eventTime")}
           />
         </Form.Item>

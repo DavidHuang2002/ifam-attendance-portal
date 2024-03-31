@@ -17,6 +17,7 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs"; // Added for handling date and time conversion
+import { EventTimePicker } from "./EventTimePicker";
 
 const { TextArea } = Input;
 const storage = getStorage();
@@ -64,6 +65,10 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
         ? eventData.eventDates.map((date) => dayjs(date))
         : [],
     });
+
+    console.log("Form values set:", form.getFieldsValue());
+    // print ou the form's eventTime value in readable format
+    console.log("eventTime: ", form.getFieldValue("eventTime").format("HH:mm"));
   }, [editMode, eventData, form]);
 
   const handleFileChange = async (options) => {
@@ -123,7 +128,13 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
           <TextArea rows={4} placeholder="Describe the event details" />
         </Form.Item>
         <Form.Item name="eventTime" label="Event Time">
-          <TimePicker showTime format="HH:mm" />
+          {/* <EventTimePicker
+            onChange={() => {
+              console.log("Event Time Changed");
+              console.log(form.getFieldValue("eventTime"));
+            }}
+          /> */}
+          <EventTimePicker />
         </Form.Item>
         <Form.Item name="eventDates" label="Event Dates">
           <RangePicker />
