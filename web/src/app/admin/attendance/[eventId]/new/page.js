@@ -6,6 +6,7 @@ import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { postAttednace, postParticipant } from "@/constants/api-endpoints";
 import { GRAD_STUDENT_CLASS } from "@/constants/participant";
 import { useRouter } from "next/navigation";
+import { getGraduationYear } from "@/utils/utils";
 
 const layout = {
   position: "absolute",
@@ -14,16 +15,6 @@ const layout = {
   right: 0,
   bottom: 0,
   overflow: "hidden",
-};
-
-const getGraduationYear = (text) => {
-  const currentYear = new Date().getFullYear();
-  const grade = text.split(" ")[1];
-  const year =
-    currentYear +
-    4 -
-    ["Freshman", "Sophomore", "Junior", "Senior"].indexOf(grade);
-  return year;
 };
 
 const validateMessages = {

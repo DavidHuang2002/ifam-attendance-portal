@@ -8,6 +8,8 @@ import { db, storage } from "@/firebase/config";
 // Moment.js is used for date manipulation and formatting.
 import moment from "moment";
 
+import { getEventAttendanceNumber } from "./attendance";
+import { getParticipantByEventId } from "./participant";
 /**
  * Asynchronously fetches all events from the Firestore database.
  * @return {Promise<Array>} A promise that resolves to an array of event objects,
@@ -93,4 +95,71 @@ export async function getUpComingEvents() {
       // sort the events by eventTime in ascending order
       .sort((a, b) => moment(a.eventDates[0]).diff(moment(b.eventDates[0])))
   );
+}
+
+// get past events, sorted by eventTime in descending order
+export async function getPastEvents() {
+  const events = await getAllEvents();
+  const today = moment();
+  return (
+    events
+      .filter((event) => {
+        const { eventDates } = event;
+        const eventDate = moment(eventDates[0]);
+        // filter out event dates that is before. But keep the ones that are today
+        // return eventDate.isBefore(today, "day");
+        return true
+      })
+      // sort the events by eventTime in descending order
+      .sort((a, b) => moment(b.eventDates[0]).diff(moment(a.eventDates[0])))
+  );
+}
+
+// get past event with participant and rsvp numbers
+export async function getPastEventsOverview() {
+  const pastEvents = await getPastEvents()
+
+  // add participant and rsvp numbers to each event
+  const pastEventsOverview = await Promise.all(
+    pastEvents.map(async (event) => {
+      const participantNumber = await getEventAttendanceNumber(event.eventId);
+      return {
+        ...event,
+        participantNumber,
+      };
+    })
+  );
+
+  return pastEventsOverview;
+}
+
+export async function getEventById(eventId) {
+  const events = await getAllEvents();
+  return events.find((event) => event.eventId === eventId);
+}
+
+export async function getEventAttendanceDetail(eventId) {
+  const participants = await getParticipantByEventId(eventId);
+  return participants;
+}
+
+export async function exportEventDetails(eventId) {
+  const participants = await getParticipantByEventId(eventId);
+
+  const event = await getEventById(eventId);
+  const { eventName, eventDates, eventTime, evnentLocation, eventDetails } =
+    event;
+
+  const eventDate = eventDates[0];
+
+  const eventDetailsExport = {
+    eventName,
+    eventDate,
+    eventTime,
+    evnentLocation,
+    eventDetails,
+    participants,
+  };
+
+  return eventDetailsExport;
 }

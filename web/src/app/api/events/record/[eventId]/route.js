@@ -1,32 +1,9 @@
-const makeFakeEventRecord = (eventId) => ({
-  eventId: eventId,
+import { makeGetEndpoint } from "@/service/api-template";
+import { getEventAttendanceDetail } from "@/service/back-end/event";
 
-  participants: [
-    {
-      participantId: "1",
-      name: "John Doe",
-      email: "john.doe@vanderbilt.edu",
-      grade: "Undergraduate Freshman",
-      interests: ["I-FAM Vanderbilt", "Nashville xxx Community"],
-    },
+const getEventRecord = async (requests, { params }) => {
+  const { eventId } = params;
+  return getEventAttendanceDetail(eventId);
+};
 
-    {
-      participantId: "2",
-      name: "Jane Doe",
-      email: "jane.doe@vanderbilt.edu",
-      grade: "Graduate",
-      interests: ["I-FAM Vanderbilt"],
-    },
-  ],
-});
-
-export async function GET(requests, { params }) {
-  try {
-    const { eventId } = params;
-    const eventRecord = makeFakeEventRecord(eventId);
-
-    return Response.json(eventRecord);
-  } catch (e) {
-    return Response.error({ error: e });
-  }
-}
+export const GET = makeGetEndpoint(getEventRecord);
