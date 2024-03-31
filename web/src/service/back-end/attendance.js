@@ -1,11 +1,9 @@
 // define attendance related logic for back-end. Like querying database or creating document in database etc.
 
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { getAllDocs } from "@/firebase/dbUtils";
 import { db } from "@/firebase/config";
 import { getParticipantByEmail } from "@/service/back-end/participant";
-
-
 
 export class ParticipantNotFound extends Error {
   constructor(message) {
@@ -54,4 +52,30 @@ export const createAttendance = async (newAttedance) => {
  */
 export const getAllAttendance = async () => {
   return await getAllDocs("attendance");
+};
+
+export const getEventAttendanceNumber = async (eventId) => {
+  const query = collection(db, "attendance");
+  const snapshot = await getDocs(query);
+  let count = 0;
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.eventId === eventId) {
+      count++;
+    }
+  });
+  return count;
+};
+
+export const getAttendanceByEventId = async (eventId) => {
+  const query = collection(db, "attendance");
+  const snapshot = await getDocs(query);
+  const attendance = [];
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.eventId === eventId) {
+      attendance.push(data);
+    }
+  });
+  return attendance;
 };
