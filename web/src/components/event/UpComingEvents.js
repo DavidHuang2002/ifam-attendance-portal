@@ -75,6 +75,7 @@ export function UpcomingEvents({ admin = false }) {
                 key={index}
                 event={event}
                 actions={admin ? getAdminActions(event.eventId) : []}
+                admin={admin}
               />
             ))
           ) : (
