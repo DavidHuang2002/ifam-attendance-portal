@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import AttendancePageNew from '../../app/admin/attendance/new/page'
-import AttendancePageOld from '../../app/admin/attendance/old/page'
+import AttendancePageNew from '../../app/admin/attendance/new/page.js'
+import AttendancePageOld from '../../app/admin/attendance/old/page.js'
+
+import { createAttendance } from '@/service/back-end/attendance'
+import { ParticipantNotFound } from '@/service/back-end/attendance'
+
+// Unit Tests
 
 describe('Attendance Page for Returning Members', () => {
     /*beforeEach(() => {
@@ -28,3 +33,38 @@ describe('Attendance Page for Returning Members', () => {
     
   
   })
+
+  // Integration Tests
+
+  jest.mock('@/service/back-end/attendance');
+
+  describe('createAttendance', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+  
+    it('should create a new attendance record with participantId for an existing participant', async () => {
+      const newAttendance = {
+        email: 'test@example.com',
+        // other attendance data
+      };
+      const existingParticipant = { participantId: '123' };
+      getParticipantByEmail.mockResolvedValue(existingParticipant);
+  
+      const result = await createAttendance(newAttendance);
+  
+      expect(getParticipantByEmail).toHaveBeenCalledWith(newAttendance.email);
+      expect(result).toEqual({ ...newAttendance, participantId: existingParticipant.participantId });
+    });
+  
+    it('should throw ParticipantNotFound error for a non-existing participant', async () => {
+      const newAttendance = {
+        email: 'unknown@example.com',
+        // other attendance data
+      };
+      getParticipantByEmail.mockResolvedValue(null);
+  
+      await expect(createAttendance(newAttendance)).rejects.toThrow(ParticipantNotFound);
+      expect(getParticipantByEmail).toHaveBeenCalledWith(newAttendance.email);
+    });
+  });

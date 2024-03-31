@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import LandingPage from '../../app/page'
+import LandingPage from '../../app/page.js'
+
+
+// Unit Tests -- Testing individual components on the page 
  
 describe('Landing Page', () => {
   /*beforeEach(() => {
@@ -34,3 +37,5 @@ describe('Landing Page', () => {
 
 
 })
+
+// Integration Tests -- Testing information retreival from firebase 

@@ -30,14 +30,9 @@ export async function getAllEvents() {
     const eventData = {
       ...data,
       eventId: doc.id, // Include the document ID as 'eventId'.
-      // Convert 'eventTime' to a JavaScript Date object, if it exists.
-      eventTime: data.eventTime
-        ? moment(data.eventTime, "HH:mm:ss").toDate()
-        : null,
+      eventTime: data.eventTime,
       // Convert each 'eventDate' to a JavaScript Date object, if any exist.
-      eventDates: data.eventDates
-        ? data.eventDates.map((date) => moment(date, "YYYY-MM-DD").toDate())
-        : [],
+      eventDates: data.eventDates,
     };
 
     // If there are flyers associated with the event, prepare to fetch their URLs.
@@ -80,4 +75,14 @@ export async function getAllEvents() {
 
   // Return the array of events, each now potentially containing flyer URL(s).
   return events;
+}
+
+// get upcoming events, sorted by eventTime in ascending order
+export async function getUpComingEvents() {
+  const events = await getAllEvents();
+  const today = moment();
+  return events.filter((event) => {
+    const eventDate = moment(event.eventTime);
+    return eventDate.isAfter(today);
+  }).sort((a, b) => moment(a.eventTime).diff(moment(b.eventTime)));
 }

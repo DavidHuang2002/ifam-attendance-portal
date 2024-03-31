@@ -34,7 +34,7 @@ export function SideBar() {
     {
       key: "2",
       label: <Link href="/admin/manageMainPage">Manage Main Page</Link>,
-      disabled: true, // Placeholder item, currently disabled.
+      disabled: false, // Placeholder item, currently disabled.
     },
     {
       key: "3",
@@ -55,7 +55,7 @@ export function SideBar() {
 
   return (
     <Sider>
-      <div className="demo-logo-vertical" /> 
+      <div className="demo-logo-vertical" />
       <Menu
         style={{ marginTop: 200 }} // Positioning the menu below a logo or top section.
         theme="dark" // Dark theme for the sidebar.
@@ -63,7 +63,7 @@ export function SideBar() {
         selectedKeys={[getSelectedKey()]} // Array with the current active menu item based on the pathname.
         items={menuItems} // Dynamically generated menu items.
       />
-      <QuitPortal /> 
+      <QuitPortal />
     </Sider>
   );
 }
