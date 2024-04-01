@@ -1,70 +1,56 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import AttendancePageNew from '../../app/admin/attendance/new/page.js'
-import AttendancePageOld from '../../app/admin/attendance/old/page.js'
+import { AttendancePageNew } from '../../app/admin/attendance/new/page.js'
+import { AttendancePageOld } from '../../app/admin/attendance/old/page.js'
 
-import { createAttendance } from '@/service/back-end/attendance'
-import { ParticipantNotFound } from '@/service/back-end/attendance'
+import { ParticipantNotFound, getAllAttendance, createAttendance } from '@/service/back-end/attendance'
 
-// Unit Tests
+const mockSubmitForm = jest.fn()
 
-describe('Attendance Page for Returning Members', () => {
+describe('Attendance Page for New Members', () => {
     /*beforeEach(() => {
       render(<AttendancePageNew />)
     })*/
+
+    describe('Basic Frontend Components', () => {
   
-    it('heading should render properly', () => {
-      render(<AttendancePageNew />)
-      const heading = screen.getByRole('heading', { level: 1 })
-   
-      expect(heading).toBeInTheDocument()
-      expect(heading).toHaveTextContent("New Member Attendance")
-    })
-  
-    it('should have link to the returning members form', () => {
-      render(<AttendancePageNew />)
-      const oldMember = screen.getByRole('link', { name: 'I\'m a returning memberAdmin Portal' })
-   
-      expect(oldMember).toBeInTheDocument()
-      // need to be updated to the link
-      //expect(oldMember).toHaveAttribute('href', '/admin')
-    })
-  
+      it('heading should render properly', () => {
+        render(<AttendancePageNew />)
+        const heading = screen.getByRole('heading', { level: 1 })
     
+        expect(heading).toBeInTheDocument()
+        expect(heading).toHaveTextContent("New Member Attendance")
+      })
+    
+      it('should have link to the returning members form', () => {
+        render(<AttendancePageNew />)
+        const oldMember = screen.getByRole('link', { name: 'I\'m a returning memberAdmin Portal' })
+    
+        expect(oldMember).toBeInTheDocument()
+        // need to be updated to the link
+        //expect(oldMember).toHaveAttribute('href', '/admin')
+      })
   
+    })
   })
 
-  // Integration Tests
+const mockOldParticipant = {email: "testemail@gmail.com", participantID: "participant1"}
 
-  jest.mock('@/service/back-end/attendance');
+describe('Attendance Page for Old Members', () => {
 
-  describe('createAttendance', () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
+  describe('Form Submission', () => {
+    it('it should call createAttendance when submitted', async () => {
+      render(<AttendancePageOld />)
+
+      const input = screen.getByRole('Form.Item')
+      await userEvent.type(input, "testemail@gmail.com")
+
+      const button = screen.getByRole('button', { name: 'Submit'})
+      await userEvent.click(button)
   
-    it('should create a new attendance record with participantId for an existing participant', async () => {
-      const newAttendance = {
-        email: 'test@example.com',
-        // other attendance data
-      };
-      const existingParticipant = { participantId: '123' };
-      getParticipantByEmail.mockResolvedValue(existingParticipant);
-  
-      const result = await createAttendance(newAttendance);
-  
-      expect(getParticipantByEmail).toHaveBeenCalledWith(newAttendance.email);
-      expect(result).toEqual({ ...newAttendance, participantId: existingParticipant.participantId });
-    });
-  
-    it('should throw ParticipantNotFound error for a non-existing participant', async () => {
-      const newAttendance = {
-        email: 'unknown@example.com',
-        // other attendance data
-      };
-      getParticipantByEmail.mockResolvedValue(null);
-  
-      await expect(createAttendance(newAttendance)).rejects.toThrow(ParticipantNotFound);
-      expect(getParticipantByEmail).toHaveBeenCalledWith(newAttendance.email);
-    });
-  });
+      expect(button).toBeInEnabled()
+      expect(input).toHaveValue("")
+      expect(createAttendance).toBeCalled()
+    })
+ })
+})
