@@ -106,6 +106,7 @@ export async function getPastEvents() {
       .filter((event) => {
         const { eventDates } = event;
         const eventDate = moment(eventDates[0]);
+        // TODO: no filtering for now for testing, change it later
         // filter out event dates that is before. But keep the ones that are today
         // return eventDate.isBefore(today, "day");
         return true
@@ -126,6 +127,7 @@ export async function getPastEventsOverview() {
       return {
         ...event,
         participantNumber,
+        rsvpNumber: 0,
       };
     })
   );
@@ -143,23 +145,3 @@ export async function getEventAttendanceDetail(eventId) {
   return participants;
 }
 
-export async function exportEventDetails(eventId) {
-  const participants = await getParticipantByEventId(eventId);
-
-  const event = await getEventById(eventId);
-  const { eventName, eventDates, eventTime, evnentLocation, eventDetails } =
-    event;
-
-  const eventDate = eventDates[0];
-
-  const eventDetailsExport = {
-    eventName,
-    eventDate,
-    eventTime,
-    evnentLocation,
-    eventDetails,
-    participants,
-  };
-
-  return eventDetailsExport;
-}
