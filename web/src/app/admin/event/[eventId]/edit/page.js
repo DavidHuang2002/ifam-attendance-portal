@@ -4,7 +4,7 @@ import { Layout } from "antd";
 import { LayoutSider } from "../../../../../components/dashBoard/LayoutSider"; // Ensure this path matches your project structure
 // import EditEvent from './EditEvent'; // Adjust the import path to where your EventForm.jsx is located
 import EditEvent from "@/components/event/EditEvent"; // Ensure this path matches your project structure
-import { upcomingEventsAtom } from "@/store";
+import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 
@@ -31,10 +31,10 @@ function Page({ params: { eventId } }) {
           >
             <h1>Modify Event</h1>
           </div>
-          <EditEvent 
-          editMode 
-          eventData={eventData} 
-          afterSave={() => router.push("/admin/")}
+          <EditEvent
+            editMode
+            eventData={eventData}
+            afterSave={() => router.push("/admin/")}
           />
         </Content>
       </Layout>
