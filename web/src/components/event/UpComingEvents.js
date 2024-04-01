@@ -12,7 +12,7 @@ import Link from "next/link";
 // this file defines constant for api endpoints route
 import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
-import { upcomingEventsAtom } from "@/store";
+import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
 
 const getAdminActions = (eventId) => [
