@@ -57,6 +57,10 @@ export function SideBar() {
       key: "6",
       label: <Link href="/admin/user">Users</Link>,
     },
+    {
+      key: "8",
+      label: <Link href="/admin/user/UserManagement">User Management</Link>,
+    },
   ];
 
   return (
