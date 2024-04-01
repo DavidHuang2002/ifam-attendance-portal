@@ -23,7 +23,7 @@ describe('Landing Page', () => {
  
     expect(adminPortal).toBeInTheDocument()
     // need to be updated to the login page href
-    expect(adminPortal).toHaveAttribute('href', '/admin')
+    expect(adminPortal).toHaveAttribute('href', '/signin')
   })
 
   it('should have Events tab', () => {
@@ -33,6 +33,15 @@ describe('Landing Page', () => {
     expect(events).toBeInTheDocument()
     // need to be updated to the login page href
     expect(events).toHaveAttribute('href', "#events")
+  })
+
+  it('should have About Us tab', () => {
+    render(<LandingPage />)
+    const events = screen.getByRole('link', { name: 'About Us' })
+  
+    expect(events).toBeInTheDocument()
+    // need to be updated to the login page href
+    expect(events).toHaveAttribute('href', "#contact")
   })
 
 

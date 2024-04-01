@@ -32,7 +32,7 @@ jest.mock("moment", () => {
       return actualMoment(...args);
     }
   };
-});
+}); 
 
 jest.mock("@/firebase/config", () => {
   return {
