@@ -1,4 +1,4 @@
-import { createAttendance } from '@/service/back-end/attendance';
+import { createAttendance, getAllAttendance, getEventAttendanceNumber } from '@/service/back-end/attendance';
 import { getParticipantByEmail } from '@/service/back-end/participant';
 
 import { db, storage } from "@/firebase/config"; // This might need to be mocked if it performs any operation
@@ -12,6 +12,8 @@ jest.mock('@/service/back-end/participant', () => ({
 
 jest.mock("@/service/back-end/attendance", () => ({
     createAttendance: jest.fn(),
+    getEventAttendanceNumber: jest.fn(),
+    getAllAttendance: jest.fn()
 }));
   
 
@@ -44,13 +46,19 @@ describe('createAttendance function', () => {
     };
     getParticipantByEmail.mockResolvedValue(existingParticipant);
 
+    const mockResult = {
+        path: 'attendance/abc123', // Assuming the `result` object has a `path` property
+      };
+      addDoc.mockResolvedValue(mockResult);
+    
+
     const newAttendance = {
       eventId: 'event123',
       email: 'test@example.com',
     };
 
     const docRef = await createAttendance(newAttendance);
-    //expect(docRef).toBeTruthy();
+    expect(docRef).toBe('attendance/abc123');
     expect(getParticipantByEmail).toHaveBeenCalledWith('test@example.com');
     expect(newAttendance).toHaveProperty('participantId', 'abc123');
     expect(newAttendance).toHaveProperty('timestamp');
@@ -81,7 +89,10 @@ describe('checking Attendance Record', () => {
           { id: 'doc1', data: () => ({ eventId: 'event1' }) },
           { id: 'doc2', data: () => ({ eventId: 'event2' }) },
         ];
-        getDocs.mockResolvedValue({ docs: mockDocs });
+        getDocs.mockResolvedValue({
+            docs: mockDocs,
+            forEach: (callback) => mockDocs.forEach(callback),
+          });
   
         const docs = await getAllAttendance();
         expect(docs).toEqual(mockDocs);
@@ -95,7 +106,10 @@ describe('checking Attendance Record', () => {
           { id: 'doc2', data: () => ({ eventId: 'event1' }) },
           { id: 'doc3', data: () => ({ eventId: 'event2' }) },
         ];
-        getDocs.mockResolvedValue({ docs: mockDocs });
+        getDocs.mockResolvedValue({
+            docs: mockDocs,
+            forEach: (callback) => mockDocs.forEach(callback),
+          });
   
         const count = await getEventAttendanceNumber('event1');
         expect(count).toBe(2);
@@ -106,7 +120,10 @@ describe('checking Attendance Record', () => {
           { id: 'doc1', data: () => ({ eventId: 'event1' }) },
           { id: 'doc2', data: () => ({ eventId: 'event2' }) },
         ];
-        getDocs.mockResolvedValue({ docs: mockDocs });
+        getDocs.mockResolvedValue({
+            docs: mockDocs,
+            forEach: (callback) => mockDocs.forEach(callback),
+          });
   
         const count = await getEventAttendanceNumber('event3');
         expect(count).toBe(0);
