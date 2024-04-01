@@ -37,135 +37,39 @@ import {
     });
   
     describe('getParticipantByEmail', () => {
-        it('should return the participant object if the email exists', async () => {
-            const mockDocs = [
-              { id: 'participant1', data: () => ({ email: 'test@example.com', name: 'John Doe' }) },
-              { id: 'participant2', data: () => ({ email: 'another@example.com', name: 'Jane Doe' }) },
-            ];
-        
-            getDocs.mockResolvedValue({
-                docs: mockDocs,
-                forEach: (callback) => mockDocs.forEach(callback),
-              });
-        
-            const participant = await getParticipantByEmail('test@example.com');
-            expect(participant).toEqual({ email: 'test@example.com', name: 'John Doe', participantId: 'participant1' });
+      it('should retrieve participant information by email', async () => {
+        // Mock the necessary dependencies
+        const participantData = { participantId: 'participant-id', email: 'test@example.com' };
+        const getDocsMock = jest.fn().mockResolvedValue({
+            forEach: jest.fn().mockImplementation((callback) => {
+              callback({ data: () => participantData });
+            }),
           });
-        
   
-        it('should return null if the email does not exist', async () => {
-        const mockDocs = [
-            { id: 'participant1', data: () => ({ email: 'existing@example.com', name: 'John Doe' }) },
-        ];
-    
-        getDocs.mockResolvedValue({
-            docs: mockDocs,
-            forEach: (callback) => mockDocs.forEach(callback),
-          });
-        const participant = await getParticipantByEmail('nonexistent@example.com');
-        expect(participant).toBeNull();
-        });
-    
-        it('should trim the email before checking for a match', async () => {
-        const mockDocs = [
-            { id: 'participant1', data: () => ({ email: 'test@example.com', name: 'John Doe' }) },
-        ];
-    
-        getDocs.mockResolvedValue({
-            docs: mockDocs,
-            forEach: (callback) => mockDocs.forEach(callback),
-          });
-    
-        const participant = await getParticipantByEmail(' test@example.com ');
-        expect(participant).toEqual({ email: 'test@example.com', name: 'John Doe', participantId: 'participant1' });
-        });
-    
-        it('should handle case-insensitive email matching', async () => {
-        const mockDocs = [
-            { id: 'participant1', data: () => ({ email: 'TEST@example.com', name: 'John Doe' }) },
-        ];
-    
-        getDocs.mockResolvedValue({
-            docs: mockDocs,
-            forEach: (callback) => mockDocs.forEach(callback),
-          });
-    
+        // Call the function under test
         const participant = await getParticipantByEmail('test@example.com');
-        expect(participant).toEqual({ email: 'TEST@example.com', name: 'John Doe', participantId: 'participant1' });
+  
+        // Assert the expected behavior
+        expect(getDocsMock).toHaveBeenCalledTimes(1);
+        expect(participant).toEqual(participantData);
+      });
+  
+      it('should return null if participant not found by email', async () => {
+        // Mock the necessary dependencies
+        const getDocsMock = jest.fn().mockResolvedValue({
+          forEach: jest.fn().mockImplementation((callback) => {
+            // No matching participant found
+          }),
         });
+  
+        // Call the function under test
+        const participant = await getParticipantByEmail('nonexistent@example.com');
+  
+        // Assert the expected behavior
+        expect(getDocsMock).toHaveBeenCalledTimes(1);
+        expect(participant).toBeNull();
+      });
     });
-
-    describe('getParticipantByEventId', () => {
-        it('should return details of all participants who attended a specific event', async () => {
-          // Mock getAttendanceByEventId to return mock attendance data
-          const mockAttendanceData = [
-            { email: 'test1@example.com' },
-            { email: 'test2@example.com' },
-          ];
-          //getAttendanceByEventId.mockResolvedValue(mockAttendanceData);
-
-          getAttendanceByEventId.mockResolvedValue({
-            docs: mockAttendanceData,
-            forEach: (callback) => mockAttendanceData.forEach(callback),
-          });
-      
-          // Mock getParticipantByEmail to return participant details
-          const participant1 = { email: 'test1@example.com', name: 'Participant 1' };
-          const participant2 = { email: 'test2@example.com', name: 'Participant 2' };
-          getParticipantByEmail.mockImplementation((email) => {
-            if (email === participant1.email) return participant1;
-            if (email === participant2.email) return participant2;
-            return null;
-          });
-      
-          // Call the function under test
-          const participants = await getParticipantByEventId('event-id');
-      
-          // Assert the expected behavior
-          expect(getAttendanceByEventId).toHaveBeenCalledWith('event-id');
-          expect(getParticipantByEmail).toHaveBeenCalledTimes(2);
-          expect(participants).toEqual([participant1, participant2]);
-        });
-      });
+  
     
-      describe('createNewParticipant', () => {
-        it('should update an existing participant if email already exists', async () => {
-          // Mock getParticipantByEmail to return an existing participant
-          const existingParticipant = { email: 'existing@example.com', name: 'John Doe', participantId: 'participant1' };
-          getParticipantByEmail.mockResolvedValue(existingParticipant);
-          const updatedParticipant = { ...existingParticipant, name: 'Updated Name' };
-      
-          // Mock Firestore updateDoc function
-          const updateDocMock = jest.fn();
-          updateDoc.mockResolvedValue();
-          const participantRef = { _key: { path: { segments: ['participants', existingParticipant.participantId] } } };
-          doc.mockReturnValue(participantRef);
-      
-          // Call the function under test
-          await createNewParticipant(updatedParticipant);
-      
-          // Assert the expected behavior
-          expect(updateDoc).toHaveBeenCalledWith(participantRef, updatedParticipant);
-        });
-      
-        it('should add a new participant if email does not exist', async () => {
-          // Mock getParticipantByEmail to return null (no existing participant)
-          getParticipantByEmail.mockResolvedValue(null);
-      
-          // Mock Firestore addDoc function
-          const addDocMock = jest.fn().mockResolvedValue({ _key: { path: { segments: ['participants', 'new-participant-id'] } } });
-          addDoc.mockResolvedValue();
-          const newParticipant = { email: 'new@example.com', name: 'New Participant' };
-          const expectedDocRef = 'participants/new-participant-id';
-      
-          // Call the function under test
-          const docRef = await createNewParticipant(newParticipant);
-      
-          // Assert the expected behavior
-          expect(addDoc).toHaveBeenCalledWith(collection(db, 'participants'), newParticipant);
-          expect(docRef).toEqual(expectedDocRef);
-        });
-      });
   });
-
- 

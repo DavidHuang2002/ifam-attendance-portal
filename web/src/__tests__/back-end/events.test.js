@@ -49,6 +49,16 @@ jest.mock("@/service/back-end/participant", () => ({
   getParticipantByEventId: jest.fn(),
 }));
 
+jest.mock("@/utils/dateUtils", () => ({
+  dateTimeToDate: jest.fn().mockImplementation((dateTime) => "2024-04-04"),
+  dateTimeToTime: jest.fn().mockImplementation((dateTime) => "12:00"),
+  makeCSV: jest
+    .fn()
+    .mockImplementation(
+      (data) => "name,email,class\nJohn Doe,john@example.com,Class A"
+    ),
+}));
+
 // Importing the functions to be tested
 import {
   getAllEvents,
@@ -57,13 +67,14 @@ import {
   getPastEventsOverview,
   getEventById,
   getEventAttendanceDetail,
-  exportEventDetails,
 } from "@/service/back-end/event"; // Adjust the path as necessary
+import { exportEventDetails } from "@/service/back-end/exportRecord";
 import { getEventAttendanceNumber } from "@/service/back-end/attendance";
 import { getParticipantByEventId } from "@/service/back-end/participant";
+import { dateTimeToDate, dateTimeToTime } from "@/utils/dateUtils";
 
 // Mocking external dependencies
-import { db, storage } from "@/firebase/config"; // This might need to be mocked if it performs any operation
+import { db, storage } from "@/firebase/config";
 import { collection, getDocs } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import moment from "moment";
@@ -297,15 +308,21 @@ describe("Event Functions", () => {
   });
 
   describe("exportEventDetails", () => {
-    it("exports details for a specific event ID", async () => {
-      // Mock getParticipantByEventId as in the getEventAttendanceDetail test
+    it("exports details for a specific event ID including CSV generation", async () => {
+      // Mock getParticipantByEventId to return specific participant details
+      getParticipantByEventId.mockResolvedValue([
+        { name: "John Doe", email: "john@example.com", class: "Class A" },
+      ]);
 
-      const eventId = "event1"; // Use an ID from your mocked data
+      const eventId = "event1"; // Ensure this ID matches what getDocs is mocked to return
       const details = await exportEventDetails(eventId);
 
-      expect(details).toHaveProperty("eventName");
-      expect(details).toHaveProperty("eventDate");
-      expect(details.participants.length).toBeGreaterThan(0);
+      // Assertions to verify the behavior of exportEventDetails
+      expect(details).toHaveProperty("data");
+      expect(details.data).toContain("John Doe");
+      expect(details).toHaveProperty("fileType", "text/csv");
+      // The file name assertion depends on the implementation details of dateTimeToDate and the event data
+      expect(details.fileName).toBe("2024-04-04-Old Event.csv");
     });
   });
 });
