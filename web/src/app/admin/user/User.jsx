@@ -1,252 +1,236 @@
-import React, { useState } from 'react';
-import { Button, Form, Input, Upload, Select, Avatar, message } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore"; // Firestore imports
-import { auth } from "@/firebase/config";
-import emailjs from 'emailjs-com';
+import React, { useEffect, useState } from 'react';
+import { db } from "@/firebase/config";
+import { Modal, Form, Input, Select, Button, Space, Table } from 'antd';
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { EditOutlined, DeleteOutlined, StopOutlined , PlusOutlined, DownloadOutlined} from '@ant-design/icons';
+import * as XLSX from 'xlsx';
+import { useRouter } from "next/navigation"; // Correct import for Next.js
+// Define the columns for your table with specified widths
+
+
 const { Option } = Select;
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
+const User = () => {
+ const router = useRouter(); // Use useRouter hook for navigation
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [form] = Form.useForm();
+  const fetchUserData = async () => {
+    const querySnapshot = await getDocs(collection(db, 'users'));
+    const usersData = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      key: doc.id, // Using the document ID as key
+      email: doc.id, // Assuming the document ID is the user's email
+    }));
+    setData(usersData);
+    setFilteredData(usersData); // Initialize filteredData with fetched data
+  };
 
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 8 } },
-};
-const db = getFirestore(); 
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
-const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) message.error('You can only upload JPG/PNG files!');
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) message.error('Image must be smaller than 2MB!');
-  return isJpgOrPng && isLt2M;
-};
-
-const Users = () => {
-  const [form] = Form.useForm(); // Initialize form
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-
-  const onFinish = async (values) => {
-    const { email, password, Name: name, phone, Role: role } = values;
-
-    // Check if the user already exists in Firestore
-    const userRef = doc(db, "users", email);
-    const docSnap = await getDoc(userRef);
-
-    if (docSnap.exists()) {
-      message.error('This email is already in use. Please login or reset your password if you forgot it.');
-      return;
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredData(data);
+    } else {
+      const lowercasedFilter = searchTerm.toLowerCase();
+      const filteredData = data.filter(item => {
+        return (
+          item.name?.toLowerCase().includes(lowercasedFilter) ||
+          item.email?.toLowerCase().includes(lowercasedFilter)
+        );
+      });
+      setFilteredData(filteredData);
     }
-
-    // Create user in Firebase Auth
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async () => {
-        await setDoc(userRef, { name, phone, role });
-
-        emailjs.send('service_z6ftge9', 'template_qfyxrv3', {
-          user_email: email,
-          user_subject: "IFAM-PORTAL",
-          message: `Hi ${name},<br/><br/>
-          Your account has been successfully created. Here are your login details:<br/>
-          <strong>Username:</strong> ${email}<br/>
-          <strong>Password:</strong> ${password}<br/><br/>
-          For your security, please ensure to change your password upon your first login.<br/><br/>
-          Best regards,<br/>
-          IFAM team`}, 'VYHdyH1a8DTcRyrEv')
-        .then(() => {
-          message.success('User created successfully and email sent.');
-          form.resetFields(); // Reset form fields
-          setImageUrl(''); // Clear avatar image
-          setLoading(false); // Stop loading after successful creation and email sending
-        })
-        .catch((emailError) => {
-          console.error('Failed to send email:', emailError);
-          setLoading(false); // Stop loading on email error
-          // Optionally, handle email sending failure
-        });
-      })
-      .catch((error) => {
-        setLoading(false); // Stop loading on auth error
-        if (error.code === 'auth/email-already-in-use') {
-          message.error('This email is already in use. Please login or reset your password if you forgot it.');
-        } else {
-          console.error("Error creating user:", error);
-          message.error(`Registration failed: ${error.message}`);
+  }, [searchTerm, data]);
+  
+  const onSave = async (id) => {
+    const fields = form.getFieldsValue();
+    await updateDoc(doc(db, 'users', id), {
+      name: fields.name,
+      role: fields.role,
+      phone: fields.phone,
+    });
+    setIsModalVisible(false);
+    setEditingUser(null);
+    // Fetch the updated data
+    fetchUserData();
+  };
+  const handleEdit = (record) => {
+    setEditingUser(record);
+    form.setFieldsValue(record);
+    setIsModalVisible(true);
+  };
+  const handleDelete = (record) => {
+    Modal.confirm({
+      title: 'Are you sure delete this user?',
+      content: 'This action cannot be undone and will permanently delete the user from the system.',
+      okText: 'Yes, delete it',
+      okType: 'danger',
+      cancelText: 'No, cancel',
+      onOk: async () => {
+        try {
+          // Delete from Firestore
+          await deleteDoc(doc(db, 'users', record.email));
+  
+          // Delete from Firebase Authentication (Client-side example, see note below)
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if(user && user.email === record.email) { // This check is simplistic, you likely need a more secure approach
+            await deleteUser(user);
+          }
+  
+          console.log('User deleted successfully');
+          // Optionally, refresh the data in your component to reflect the deletion
+        } catch (error) {
+          console.error('Error deleting user:', error);
+          Modal.error({
+            title: 'Error',
+            content: 'Failed to delete the user. Please try again later.',
+          });
         }
-      });
+      },
+    });
   };
-  const handleChange = info => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, imageUrl => {
-        setImageUrl(imageUrl);
-        setLoading(false);
-      });
-    }
+  const handleDisable = (record) => {
+    Modal.confirm({
+      title: 'Are you sure you want to disable this user?',
+      content: 'Disabling the user will prevent them from logging in and accessing the system.',
+      okText: 'Yes, disable',
+      okType: 'danger',
+      cancelText: 'No, cancel',
+      onOk: async () => {
+        try {
+          // Update the user document in Firestore to mark as disabled
+          await updateDoc(doc(db, 'users', record.email), {
+            isDisabled: true,
+          });
+  
+          // Optionally, disable Firebase Authentication user server-side (see below)
+          console.log('User disabled successfully');
+          // Optionally, refresh the component's state or data to reflect the change
+        } catch (error) {
+          console.error('Error disabling user:', error);
+          Modal.error({
+            title: 'Error',
+            content: 'Failed to disable the user. Please try again later.',
+          });
+        }
+      },
+    });
+  };
+  const onAddUser = () => {
+    router.push("/admin/user/createuser/")
   };
 
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select style={{ width: 70 }}>
-        <Option value="86">+1</Option>
-      </Select>
-    </Form.Item>
-  );
+  const onExportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(data.map(({ key, ...item }) => item));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+    XLSX.writeFile(wb, "users.xlsx");
+  };
+  const handleSearch = () => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filteredData = data.filter(item => {
+      return (
+        item.name.toLowerCase().includes(lowercasedFilter) ||
+        item.email.toLowerCase().includes(lowercasedFilter)
+      );
+    });
+    setFilteredData(filteredData);
+  };
 
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200, // Set your desired width
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      width: 300, // Set your desired width
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      width: 200, // Set your desired width
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+      width: 200, // Set your desired width
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      width: 300, // Adjust width as needed for the action buttons
+      render: (_, record) => (
+        <Space size="middle">
+           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Edit</Button>
+          <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>Delete</Button>
+          <Button icon={<StopOutlined />} onClick={() => handleDisable(record)}>Disable</Button>
+        </Space>
+      ),
+    },
+  ];
   return (
-    <Form {...formItemLayout} name="register" onFinish={onFinish} scrollToFirstError>
-    {/* Form Items including avatar upload and other fields */}
-   {/* <Form.Item name="avatar" label="Avatar">
-      <Upload
-        name="avatar"
-        listType="picture-card"
-        className="avatar-uploader"
-        showUploadList={false}
-        action="/api/upload" // Make sure this points to your actual file upload handling endpoint
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-      >
-        {imageUrl ? <Avatar src={imageUrl} size={64} alt="avatar" /> : uploadButton}
-      </Upload>
-    </Form.Item>*/}
-      <Form.Item
-        name="Name"
-        label="Name"
-        tooltip="User name?"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your name!',
-            whitespace: true,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="email"
-        label="E-mail"
-        rules={[
-          {
-            type: 'email',
-            message: 'The input is not valid E-mail!',
-          },
-          {
-            required: true,
-            message: 'Please input your E-mail!',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="password"
-        label="Password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your password!',
-          },
-        ]}
-        hasFeedback
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name="confirm"
-        label="Confirm Password"
-        dependencies={['password']}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: 'Please confirm your password!',
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('The new password that you entered do not match!'));
-            },
-          }),
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name="phone"
-        label="Phone Number"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your phone number!',
-          },
-        ]}
-      >
-        <Input
-          addonBefore={prefixSelector}
-          style={{
-            width: '100%',
-          }}
+    <div style={{ margin: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px', alignItems: 'center' }}>
+       <Input
+          placeholder="Search by name or email"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          sstyle={{ flexGrow: 2, marginRight: '20px' }}
         />
-      </Form.Item>
-
-      <Form.Item
-        name="Role"
-        label="Role"
-        rules={[
-          {
-            required: true,
-            message: 'Please select gender!',
-          },
-        ]}
-      >
-        <Select placeholder="select the role">
-          <Option value="admin">Administrator</Option>
-          <Option value="attandance">Attandance</Option>
-          <Option value="exprot">Export</Option>
-          
-        </Select>
-      </Form.Item>
-      <Form.Item {...tailFormItemLayout}>
-                <Button type="primary" htmlType="submit">
-                  Register
-                </Button>
-              </Form.Item>
-    </Form>
+         
+      </div>
+      
+    <Space direction="vertical" size="left" style={{ width: '100%' }}>
+    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+    <Space>
+    <Button type="primary" icon={<PlusOutlined />} onClick={onAddUser}>Add User</Button>
+          <Button type="primary" icon={<DownloadOutlined />} onClick={onExportToExcel}>Export to Excel</Button>
+        </Space>
+        
+        </div>
+        {filteredData.length > 0 ? (
+        <Table columns={columns} dataSource={filteredData} pagination={false} />
+      ) : (
+        <div>No results found.</div>
+      )}
+      <Modal title="Edit User" visible={isModalVisible} onOk={() => onSave(editingUser.email)} onCancel={() => setIsModalVisible(false)}>
+        <Form form={form} layout="vertical">
+          <Form.Item name="name" label="Name">
+            <Input />
+          </Form.Item>
+          <Form.Item name="email" label="Email">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item name="role" label="Role">
+            <Select>
+              <Option value="admin">Admin</Option>
+              <Option value="attendance">Attendance</Option>
+              <Option value="student">Student</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item name="phone" label="Phone">
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Space>
+    
+  </div>
   );
 };
 
-const uploadButton = (loading) => (
-  <div>
-    {loading ? <LoadingOutlined /> : <PlusOutlined />}
-    <div style={{ marginTop: 8 }}>Upload</div>
-  </div>
-);
-
-export default Users;
+export default User;

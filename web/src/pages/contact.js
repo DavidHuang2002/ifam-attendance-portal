@@ -28,17 +28,14 @@ const ContactForm = () => {
     .then(response => {
       console.log('SUCCESS!', response.status, response.text);
       
-      // Formatted message for the second email
-      const formattedMessage = `Hi ${values.user_name},<br/><br/>
-        We wish to inform you that your email has been successfully received.<br/>
-        Rest assured, we will provide a response at the earliest opportunity.<br/><br/>
-        We appreciate your patience and cooperation.<br/><br/>
-        Best regards,<br/>
-        IFAM team`;
+      // Formatted message for the second emai
 
       const userNotificationData = {
+        user_subject:"IFAM-PORTAL - Acknowledgment of Contact Form Submission.",
         user_email: values.user_email, // Correctly passing the user's email to 'user_email'
-        message: formattedMessage, // Assuming the template uses 'message_html' for HTML content
+        message1:`We wish to inform you that your email has been successfully received.`, // Assuming the template uses 'message_html' for HTML content
+        message2:`Rest assured, we will provide a response at the earliest opportunity.`,
+        message3:`We appreciate your patience and cooperation.`,
       };
 
       // Second email: Send a notification to the user

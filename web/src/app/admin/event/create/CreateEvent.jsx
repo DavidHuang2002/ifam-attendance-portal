@@ -160,7 +160,7 @@ function CreateEventComponent({ afterSave }) {
             ]}
           />
         </Form.Item>
-        <Form.Item label="Send email notification" name="eventPublished">
+        <Form.Item label="Event Published" name="eventPublished">
           <Checkbox onChange={handleCheckboxChange}></Checkbox>
         </Form.Item>
         <Form.Item label="Event Details" name="eventDetails">
