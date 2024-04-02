@@ -68,7 +68,7 @@ function CreateEventComponent({ afterSave, editMode = false, eventData = {} }) {
 
     console.log("Form values set:", form.getFieldsValue());
     // print ou the form's eventTime value in readable format
-    console.log("eventTime: ", form.getFieldValue("eventTime").format("HH:mm"));
+    // console.log("eventTime: ", form.getFieldValue("eventTime").format("HH:mm"));
   }, [editMode, eventData, form]);
 
   const handleFileChange = async (options) => {

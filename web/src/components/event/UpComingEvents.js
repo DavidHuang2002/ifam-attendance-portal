@@ -1,11 +1,16 @@
 import React, { useEffect } from "react";
 import { Button, message } from "antd";
-import emailjs from 'emailjs-com';
-import { collection, getDocs } from 'firebase/firestore';
+import emailjs from "emailjs-com";
+import { collection, getDocs } from "firebase/firestore";
 
 import { db } from "@/firebase/config"; // Ensure this path matches your Firebase config
 import EventCard from "@/components/event/EventCard";
-import { EditOutlined, EllipsisOutlined, TeamOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  TeamOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
 import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
@@ -25,29 +30,36 @@ export function UpcomingEvents({ admin = false }) {
       const participantsColRef = collection(db, "participants");
       const querySnapshot = await getDocs(participantsColRef);
       const participantsList = querySnapshot.docs
-        .map(doc => doc.data().email)
-        .filter(email => email && email.trim() !== ''); // Filter out empty emails
-  
-      const sendEmailPromises = participantsList.map(email => {
+        .map((doc) => doc.data().email)
+        .filter((email) => email && email.trim() !== ""); // Filter out empty emails
+
+      const sendEmailPromises = participantsList.map((email) => {
         const templateParams = {
           email, // Other parameters your email template requires
         };
-        return emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID)
-          .then(response => console.log('Email successfully sent to:', email, response))
-          .catch(error => console.error('Failed to send email to:', email, error));
+        return emailjs
+          .send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID)
+          .then((response) =>
+            console.log("Email successfully sent to:", email, response)
+          )
+          .catch((error) =>
+            console.error("Failed to send email to:", email, error)
+          );
       });
-  
+
       await Promise.all(sendEmailPromises);
-      message.success('All participants with valid emails have been notified!');
+      message.success("All participants with valid emails have been notified!");
     } catch (error) {
-      console.error('Error sending notifications:', error);
-      message.error('Failed to notify some participants.');
+      console.error("Error sending notifications:", error);
+      message.error("Failed to notify some participants.");
     }
   };
 
   const getAdminActions = (event) => {
-    const isNotifyEnabled = event.eventPublished && event.eventFlyer !== '';
-  
+    // For now we assume that an event is notify-able, so admin can notify whenever they want
+    // const isNotifyEnabled = event.eventPublished && event.eventFlyer !== "";
+    const isNotifyEnabled = true;
+
     let actions = [
       <Link href={`/admin/event/${event.eventId}/edit`} key="edit" passHref>
         <span className="ant-btn ant-btn-link" style={{ padding: 0 }}>
@@ -55,18 +67,27 @@ export function UpcomingEvents({ admin = false }) {
           <span>Edit</span>
         </span>
       </Link>,
-      <Link href={getOldMemberAttendanceRoute(event.eventId)} key="attendance" passHref>
+      <Link
+        href={getOldMemberAttendanceRoute(event.eventId)}
+        key="attendance"
+        passHref
+      >
         <span className="ant-btn ant-btn-link" style={{ padding: 0 }}>
           <TeamOutlined />
           <span>Attendance</span>
         </span>
-      </Link>
+      </Link>,
     ];
-  
+
     // For actions like "Notify" that don't require navigation
     if (isNotifyEnabled) {
       actions.push(
-        <span onClick={() => notifyAllParticipants(event.eventId)} key="notify" className="ant-btn ant-btn-link" style={{ padding: 0, cursor: "pointer" }}>
+        <span
+          onClick={() => notifyAllParticipants(event.eventId)}
+          key="notify"
+          className="ant-btn ant-btn-link"
+          style={{ padding: 0, cursor: "pointer" }}
+        >
           <MailOutlined />
           <span>Email</span>
         </span>
@@ -79,15 +100,14 @@ export function UpcomingEvents({ admin = false }) {
         </span>
       );
     }
-    
-  
+
     actions.push(
       <span key="more">
         <EllipsisOutlined />
         More Actions
       </span>
     );
-  
+
     return actions;
   };
 
@@ -95,11 +115,11 @@ export function UpcomingEvents({ admin = false }) {
     const fetchEvents = async () => {
       try {
         const response = await fetchUpComingEvents();
-        if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setEvents(data);
       } catch (error) {
-        console.error('Failed to fetch events:', error);
+        console.error("Failed to fetch events:", error);
       }
     };
 
@@ -125,7 +145,7 @@ export function UpcomingEvents({ admin = false }) {
               <EventCard
                 key={index}
                 event={event}
-                actions={admin ? getAdminActions(event.eventId) : []}
+                actions={admin ? getAdminActions(event) : []}
                 admin={admin}
               />
             ))
