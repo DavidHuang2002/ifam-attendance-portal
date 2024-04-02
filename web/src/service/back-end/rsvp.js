@@ -13,17 +13,17 @@ export async function createRSVP(email, eventId) {
 
   // check if the any participant with the email exists, if so link the participantId
   const participant = await getParticipantByEmail(email);
-  console.log("Participant found:", participant);
+  // console.log("Participant found:", participant);
   if (participant) {
     rsvp.participantId = participant.participantId;
   }
 
-  console.log("Creating new RSVP:", rsvp);
+  // console.log("Creating new RSVP:", rsvp);
   // add the new RSVP document to the RSVP collection
   const result = await addDoc(collection(db, "rsvp"), rsvp);
 
   const rsvpDocRef = resultToDocRef(result);
 
-  console.log("New RSVP created:", rsvpDocRef);
+  // console.log("New RSVP created:", rsvpDocRef);
   return rsvpDocRef;
 }
