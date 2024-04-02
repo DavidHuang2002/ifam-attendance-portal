@@ -96,3 +96,26 @@ Found out I imported from teh wrong firebase in my config
 ```
 
 Reasons: the db for firebase is null because I imported it from the wrong place.
+
+## MockResolveValue
+
+```
+Q:
+for some reason the mockResolvedValue is not playing an effect. Inside my getUpComing events. The result of const events = await getAllEvents();
+  console.log("all events in getUpcoming", events);
+is still what is mocked with firestore not the one specified in mockRsolvedValue
+
+---
+can the reason be both getUpComing events and getAllEvents are in the same file?
+
+A:
+Yes, the reason you're encountering this issue is likely because both getUpComingEvents and getAllEvents are in the same file. When functions are in the same module, overriding them using jest.spyOn and then trying to mock their implementation with mockResolvedValue won't work as expected. This is because the internal calls within the module use the original implementations, not the jest-mocked versions.
+
+In cases like this, where you want to test functions that depend on each other within the same module, you have a few options:
+
+Integration Testing Approach: Instead of mocking getAllEvents when testing getUpComingEvents or getPastEvents, you rely on the actual implementation of getAllEvents and mock the underlying Firestore and Storage interactions instead. This approach tests the integration of your functions within the module and ensures they work together as expected. You've already mocked Firestore and Storage at the beginning of your test file, so this approach is partially implemented.
+
+Manual Mocking: Manually mock the module in a way that allows you to replace the implementation of getAllEvents for the tests of getUpComingEvents and getPastEvents. This can get complex and somewhat against the principle of isolating unit tests because it may require significant restructuring or specific jest configurations.
+
+Refactor Your Code: If possible, refactor your code to separate the functions into different modules/files. This makes it easier to mock one function while testing another. For instance, you could move getAllEvents into its own module and then import it both in your original module and in the test file. This way, you can use jest.mock() to mock the entire module when testing getUpComingEvents and getPastEvents.
+```
