@@ -6,7 +6,7 @@ import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { postAttednace, postParticipant } from "@/constants/api-endpoints";
 import { GRAD_STUDENT_CLASS } from "@/constants/participant";
 import { useRouter } from "next/navigation";
-import { getGraduationYear } from "@/utils/utils";
+import { getGraduationYear } from "@/utils/dateUtils";
 
 const layout = {
   position: "absolute",
@@ -135,7 +135,7 @@ export default function Attendance({ params: { eventId } }) {
                 label: "Undergraduate Senior",
               },
               {
-                value: GRAD_STUDENT_CLASS,
+                value: getGraduationYear("Graduate"),
                 label: "Graduate",
               },
             ]}

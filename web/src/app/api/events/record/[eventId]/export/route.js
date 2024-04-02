@@ -1,32 +1,21 @@
-const makeFakeEventRecord = (eventId) => ({
-  eventId: eventId,
-
-  participants: [
-    {
-      participantId: "1",
-      name: "John Doe",
-      email: "john.doe@vanderbilt.edu",
-      grade: "Undergraduate Freshman",
-      interests: ["I-FAM Vanderbilt", "Nashville xxx Community"],
-    },
-
-    {
-      participantId: "2",
-      name: "Jane Doe",
-      email: "jane.doe@vanderbilt.edu",
-      grade: "Graduate",
-      interests: ["I-FAM Vanderbilt"],
-    },
-  ],
-});
+import { exportEventDetails } from "@/service/back-end/exportRecord";
+import { NextResponse } from "next/server";
 
 export async function GET(requests, { params }) {
   try {
     const { eventId } = params;
-    const eventRecord = makeFakeEventRecord(eventId);
+    const exportFile = await exportEventDetails(eventId);
 
-    return Response.json(eventRecord);
+    return new Response(exportFile.data, {
+      status: 200,
+      statusText: "OK",
+      headers: {
+        "Content-Type": exportFile.fileType,
+        "Content-Disposition": `attachment; filename="${exportFile.fileName}"`,
+      },
+    });
   } catch (e) {
-    return Response.error({ error: e });
+    console.log("Error: ", e);
+    return NextResponse.error({ error: e });
   }
 }

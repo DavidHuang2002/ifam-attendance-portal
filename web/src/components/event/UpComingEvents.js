@@ -9,7 +9,7 @@ import { EditOutlined, EllipsisOutlined, TeamOutlined, MailOutlined } from "@ant
 import Link from "next/link";
 import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
-import { upcomingEventsAtom } from "@/store";
+import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
 
 // Define your EmailJS service IDs and template IDs
@@ -125,7 +125,8 @@ export function UpcomingEvents({ admin = false }) {
               <EventCard
                 key={index}
                 event={event}
-                actions={getAdminActions(event)}
+                actions={admin ? getAdminActions(event.eventId) : []}
+                admin={admin}
               />
             ))
           ) : (

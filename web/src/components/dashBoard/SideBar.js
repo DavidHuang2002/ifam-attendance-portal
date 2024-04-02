@@ -35,8 +35,8 @@ export function SideBar() {
     },
     {
       key: "2",
-      label: "Manage Main Page",
-      disabled: true, // Placeholder item, currently disabled.
+      label: <Link href="/admin/manageMainPage">Manage Main Page</Link>,
+      disabled: false, // Placeholder item, currently disabled.
     },
     {
       key: "3",
@@ -56,6 +56,10 @@ export function SideBar() {
     {
       key: "6",
       label: <Link href="/admin/user">Users</Link>,
+    },
+    {
+      key: "6",
+      label: <Link href="/admin/roster">Roster</Link>,
     },
   ];
 

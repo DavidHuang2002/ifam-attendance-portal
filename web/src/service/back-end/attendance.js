@@ -28,6 +28,8 @@ export const createAttendance = async (newAttedance) => {
   // get participant info from the database
   const participant = await getParticipantByEmail(email);
 
+  // console.log("attendance participant: ", participant);
+
   // if there is a match, create a new attendance record in the database, including the participant id
   if (participant) {
     newAttedance.participantId = participant.participantId;
