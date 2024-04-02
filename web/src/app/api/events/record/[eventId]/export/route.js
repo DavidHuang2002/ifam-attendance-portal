@@ -1,5 +1,4 @@
 import { exportEventDetails } from "@/service/back-end/exportRecord";
-import { NextResponse } from "next/server";
 
 export async function GET(requests, { params }) {
   try {
@@ -16,6 +15,6 @@ export async function GET(requests, { params }) {
     });
   } catch (e) {
     console.log("Error: ", e);
-    return NextResponse.error({ error: e });
+    return Response.error({ error: e });
   }
 }

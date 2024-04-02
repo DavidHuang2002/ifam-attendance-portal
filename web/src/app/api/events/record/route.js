@@ -1,5 +1,4 @@
 import { getPastEventsOverview } from "@/service/back-end/event";
-import { NextResponse } from "next/server";
 
 const fakeEventRecord = [
   {
@@ -57,9 +56,9 @@ const fakeEventRecord = [
 export async function GET(requests, { params }) {
   try {
     const pastEventsRecord = await getPastEventsOverview();
-    return NextResponse.json(pastEventsRecord);
+    return Response.json(pastEventsRecord);
   } catch (e) {
     console.log(e);
-    return NextResponse.error({ error: e });
+    return Response.error({ error: e });
   }
 }

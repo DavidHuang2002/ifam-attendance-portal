@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { createRSVP } from "@/service/back-end/rsvp";
 
 export async function POST(request) {
@@ -6,9 +5,9 @@ export async function POST(request) {
   try {
     const { email, eventId } = newRsvp;
     const createdRSVP = await createRSVP(email, eventId);
-    return NextResponse.json(createdRSVP);
+    return Response.json(createdRSVP);
   } catch (e) {
     console.error(e);
-    return NextResponse.error({ error: e }, { status: 500 });
+    return Response.error({ error: e }, { status: 500 });
   }
 }

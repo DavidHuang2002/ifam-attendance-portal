@@ -4,7 +4,6 @@
 // It utilizes a custom service function `getAllEvents` to fetch all events from the database or external source.
 
 import { getAllEvents, getUpComingEvents } from "@/service/back-end/event"; // Importing the `getAllEvents` function from a custom backend service module.
-import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
@@ -20,9 +19,9 @@ export async function GET(req) {
       events = await getAllEvents(); // Attempting to fetch all events using the imported service function.
     }
 
-    return NextResponse.json(events); // Returning the fetched events as a JSON response if successful.
+    return Response.json(events); // Returning the fetched events as a JSON response if successful.
   } catch (e) {
     console.error("Failed to fetch events:", e);
-    return NextResponse.error({ error: e }, { status: 500 }); // Returning an error response with a 500 status code if an error occurs.
+    return Response.error({ error: e }, { status: 500 }); // Returning an error response with a 500 status code if an error occurs.
   }
 }
