@@ -135,7 +135,7 @@ export default function Attendance({ params: { eventId } }) {
                 label: "Undergraduate Senior",
               },
               {
-                value: GRAD_STUDENT_CLASS,
+                value: getGraduationYear("Graduate"),
                 label: "Graduate",
               },
             ]}
