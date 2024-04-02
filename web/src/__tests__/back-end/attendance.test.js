@@ -1,13 +1,19 @@
 import {
   getAttendanceByEventId,
   getEventAttendanceNumber,
+  getAllAttendance,
+  createAttendance, // Added import for the new function
 } from "@/service/back-end/attendance";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import { getAllDocs } from "@/firebase/dbUtils";
+import { getParticipantByEmail } from "@/service/back-end/participant";
+import { ParticipantNotFound } from "@/service/back-end/attendance";
 
 jest.mock("firebase/firestore", () => ({
   collection: jest.fn(),
   getDocs: jest.fn(),
+  addDoc: jest.fn(), // Mocking the addDoc function
 }));
 
 jest.mock("@/firebase/dbUtils", () => ({
@@ -16,6 +22,10 @@ jest.mock("@/firebase/dbUtils", () => ({
 
 jest.mock("@/firebase/config", () => ({
   db: jest.fn(),
+}));
+
+jest.mock("@/service/back-end/participant", () => ({
+  getParticipantByEmail: jest.fn(),
 }));
 
 describe("getAttendanceByEventId", () => {
@@ -138,5 +148,77 @@ describe("getEventAttendanceNumber", () => {
     expect(collection).toHaveBeenCalledWith(db, "attendance");
     expect(getDocs).toHaveBeenCalledTimes(1);
     expect(result).toEqual(0);
+  });
+});
+
+describe("createAttendance", () => {
+  it("creates a new attendance record in the database", async () => {
+    // Mock Firestore response
+    const mockParticipant = {
+      participantId: "participant1",
+    };
+    const mockFirestoreData = [
+      {
+        id: "participant1",
+        data: () => mockParticipant,
+      },
+    ];
+    getDocs.mockResolvedValue({
+      forEach: (callback) => mockFirestoreData.forEach(callback),
+    });
+
+    // including the mock for getParticipantByEmail
+    getParticipantByEmail.mockResolvedValue({
+      participantId: "participant1",
+    });
+
+    // Mock Firestore addDoc function
+    const mockAddDocResult = {
+      _key: {
+        path: {
+          segments: ["attendance", "newAttendanceId"], // Mocked path of the new attendance record
+        },
+      },
+    };
+    addDoc.mockResolvedValue(mockAddDocResult);
+
+    // Call the function to test
+    const newAttendance = {
+      email: "john.doe@example.com",
+      // other properties...
+    };
+    const result = await createAttendance(newAttendance);
+
+    // Assertions to verify the behavior
+    expect(getParticipantByEmail).toHaveBeenCalledWith(newAttendance.email);
+    expect(addDoc).toHaveBeenCalledWith(collection(db, "attendance"), {
+      ...newAttendance,
+      participantId: mockParticipant.participantId,
+      timestamp: expect.any(String),
+    });
+    expect(result).toEqual("attendance/newAttendanceId");
+  });
+
+  it("throws an error if participant is not found", async () => {
+    // clear the mock implementation of getParticipantByEmail
+    getParticipantByEmail.mockReset();
+
+    // Mock Firestore response with no matching participant
+    getDocs.mockResolvedValue({
+      forEach: (callback) => [], // Empty array
+    });
+
+    // Call the function to test
+    const newAttendance = {
+      email: "john.doe@example.com",
+      // other properties...
+    };
+    await expect(createAttendance(newAttendance)).rejects.toThrow(
+      ParticipantNotFound
+    );
+
+    // Assertions to verify the behavior
+    expect(getParticipantByEmail).toHaveBeenCalledWith(newAttendance.email);
+    expect(addDoc).not.toHaveBeenCalled();
   });
 });
