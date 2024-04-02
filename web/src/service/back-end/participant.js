@@ -13,9 +13,9 @@ export const getParticipantByEmail = async (email) => {
   const query = collection(db, "participants");
   const snapshot = await getDocs(query);
   let participant = null;
-  console.log("email: ", email);
+  // console.log("email: ", email);
   snapshot.forEach((doc) => {
-    console.log(doc.data());
+    // console.log(doc.data());
     if (doc.data().email == email.trim()) {
       participant = doc.data();
       participant.participantId = doc.id;
@@ -31,10 +31,10 @@ export const createNewParticipant = async (newParticipant) => {
 
   // if the participant already exists, simply update the participant info with the new info
   if (participant) {
-    console.log("participant exists: ", participant);
-    console.log("new participant: ", newParticipant);
+    // console.log("participant exists: ", participant);
+    // console.log("new participant: ", newParticipant);
     const participantRef = doc(db, "participants", participant.participantId);
-    console.log("participantRef: ", participantRef);
+    // console.log("participantRef: ", participantRef);
     await updateDoc(participantRef, newParticipant);
 
     // TODO the update participant is not working
