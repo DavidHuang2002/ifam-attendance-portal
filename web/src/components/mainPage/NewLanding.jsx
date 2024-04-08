@@ -88,7 +88,7 @@ const HeroImage = styled.img`
 
 const HeroHeading = styled.h1`
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 55%;
   transform: translate(-50%, -50%);
   font-size: 4.5rem;
@@ -98,7 +98,7 @@ const HeroHeading = styled.h1`
 
 const HeroText = styled.p`
   position: absolute;
-  top: 45%;
+  top: 65%;
   left: 55%;
   font-size: 1.5rem
   color: #2C5C9B;
@@ -106,7 +106,7 @@ const HeroText = styled.p`
 
 const HeroButton = styled.a`
   position: absolute;
-  top: 65%;
+  top: 80%;
   left: 48%;
   background-color: #2C5C9B; /* Blue background */
   color: white; /* White text */
@@ -127,7 +127,7 @@ const HeroButton = styled.a`
 
 // Who We Are Intro Section
 const WhoWeAreSection = styled.section`
-  padding: 12rem 2rem;
+  padding: 4rem 2rem;
   text-align: center;
   font-family: 'Quicksand', sans-serif;
 
@@ -137,6 +137,7 @@ const WhoWeAreHeading = styled.h2`
   font-weight: bold;
   margin-bottom: 1rem;
   font-size: 2.8rem;
+  color: black;
 `;
 
 const WhoWeAreText = styled.p`
@@ -148,7 +149,7 @@ const WhoWeAreText = styled.p`
 // Popular Events Section
 const PopularEventsSection = styled.section`
  display: flex;
- padding: 4rem 2rem;
+ padding: 4rem 6rem;
  font-family: 'Quicksand', sans-serif;
 `;
 
@@ -161,6 +162,7 @@ const PopularEventsHeading = styled.h2`
  font-weight: bold;
  margin-bottom: 1.5rem;
  font-size: 2rem;
+ color: black;
 `;
 
 const PopularEventsDivider = styled.p`
@@ -217,25 +219,9 @@ const FooterText = styled.div`
 `;
 
 
-
-const LandingPage = () => {
+export default function LandingPage() {
   return (
     <Wrapper>
-      <Navbar>
-        <NavLeft>
-          <NavLinks>
-            <li>About Us</li>
-            <li>Events</li>
-            <li>Contact Us</li>
-          </NavLinks>
-        </NavLeft>
-        <NavRight>
-          <NavLinks>
-            <li>Admin Login</li>
-          </NavLinks>
-        </NavRight>
-      </Navbar>
-
       <HeroImgSection>
         <HeroImage src="/hero-section/I-FAM.png" alt="Hero Image" />
         <HeroHeading>I-FAM</HeroHeading>
@@ -269,16 +255,8 @@ const LandingPage = () => {
        </PopularEventsText>
        <PopularEventsImageWrapper>
           <PopularEventsImage src="/hero-section/I-FAM.png" alt="Hero Image" />
-      </PopularEventsImageWrapper>
+       </PopularEventsImageWrapper>
      </PopularEventsSection>
-
-    <FooterSection>
-      <FooterText>
-        Contact Us: 
-      </FooterText>
-    </FooterSection>
     </Wrapper>
   );
-};
-
-export default LandingPage;
+}

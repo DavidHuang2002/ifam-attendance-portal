@@ -2,14 +2,19 @@
 import React from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
 import Link from "next/link";
+import styled from 'styled-components';
+import 'typeface-quicksand';
 
 import HeroSection from "@/components/mainPage/HeroSection";
 //import {UpcomingEvents} from "@/components/event/UpComingEvents"; // Assuming default export
 import {ContactInfo} from "@/components/mainPage/ContactInfo"; // Assuming default export
 import { UpcomingEvents } from "@/components/event/UpComingEvents";
+import LandingPage from "@/components/mainPage/NewLanding";
+
 
 
 const { Header, Content, Footer } = Layout;
+
 
 export default function HomePage() {
   // Define menu items
@@ -59,16 +64,19 @@ export default function HomePage() {
   ];
 
   return (
-    <Layout className="layout">
-      <Header style={{ background: "white" }}>
+    <Layout className="layout" style={{background: '#fff'}}>
+      <Header style={{ background: "#2C5C9B"}}>
         <div className="logo" />
-        <Menu mode="horizontal" items={menuItems} selectable={false} style={{ flex: 1 }} />
+        <Menu mode="horizontal" items={menuItems} selectable={false} 
+          style={{ 
+            flex: 1,
+            background: "#2C5C9B",
+            color: "white" }} />
       </Header>
-      <Content style={{ padding: "0 50px" }}>
-        <Breadcrumb style={{ margin: "16px 0" }}>
-          {/* Breadcrumb items can be added here if needed */}
-        </Breadcrumb>
+      <LandingPage />
+      <Content style={{ padding: "0 60px"}}>
         <div className="site-layout-content" style={{ background: "#fff", padding: 24, minHeight: 280 }}>
+          
           <HeroSection />
           
           {/* Since ContactUs is directly used here, ensure this is the intended usage */}
