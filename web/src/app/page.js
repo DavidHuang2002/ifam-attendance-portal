@@ -37,9 +37,18 @@ export default function HomePage() {
         </Link>
       ),
     },
-    // Admin Portal link
+    // Test Landing Page
     {
       key: "5",
+      label: (
+        <Link href="/testLanding" passHref>
+          Test Landing
+        </Link>
+      ),
+    },
+    // Admin Portal link
+    {
+      key: "6",
       label: (
         <Link href="/signin" passHref>
          Admin Portal
