@@ -5,6 +5,8 @@ import 'typeface-quicksand';
 
 import HeroSection from '@/components/mainPage/HeroSection';
 
+
+
 /*import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
@@ -24,7 +26,7 @@ const Navbar = styled.nav`
   align-items: center;
   background-color: #2C5C9B;
   color: #FFFFFF;
-  padding: 1rem;
+  padding: 1.2rem;
   font-family: 'Quicksand', sans-serif;
 `;
 
@@ -74,7 +76,7 @@ const NavRight = styled.div`
 // Hero Section
 const HeroImgSection = styled.section`
   position relative;
-  height: 550px;
+  height: 800px;
   overflow: hidden;
 `;
 
@@ -86,12 +88,41 @@ const HeroImage = styled.img`
 
 const HeroHeading = styled.h1`
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 40%;
+  left: 55%;
   transform: translate(-50%, -50%);
-  font-size: 4rem;
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 4.5rem;
+  color: #2C5C9B;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0);
+`;
+
+const HeroText = styled.p`
+  position: absolute;
+  top: 45%;
+  left: 55%;
+  font-size: 1.5rem
+  color: #2C5C9B;
+`;
+
+const HeroButton = styled.a`
+  position: absolute;
+  top: 65%;
+  left: 48%;
+  background-color: #2C5C9B; /* Blue background */
+  color: white; /* White text */
+  padding: 20px 20px; /* Adjust padding as needed */
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none; /* Remove default underline */
+  font-family: 'Quicksand', sans-serif;
+
+
+  /* Hover effect */
+  &:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
 `;
 
 // Who We Are Intro Section
@@ -147,6 +178,7 @@ const PopularEventsList = styled.ul`
  line-height: 2;
  margin-top: 1.5rem;
  font-size: 1.2rem;
+ width: 50%
 
  li {
    margin-bottom: 1rem;
@@ -157,6 +189,12 @@ const PopularEventsImage = styled(HeroSection)`
  flex: 1;
 `;
 */
+const PopularEventsImageWrapper = styled.div`
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+`;
+
 const PopularEventsImage = styled.img`
   flex: 1;
   width: 100%;
@@ -199,8 +237,11 @@ const LandingPage = () => {
       </Navbar>
 
       <HeroImgSection>
-        <HeroImage src="/I-FAM.jpg" alt="Hero Image" />
+        <HeroImage src="/hero-section/I-FAM.png" alt="Hero Image" />
         <HeroHeading>I-FAM</HeroHeading>
+        <HeroButton href="/events">
+          Our Upcoming Events &rarr;
+        </HeroButton>
       </HeroImgSection>
 
       <WhoWeAreSection>
@@ -226,7 +267,9 @@ const LandingPage = () => {
            <li>Airport Pickups</li>
          </PopularEventsList>
        </PopularEventsText>
-       <PopularEventsImage src="/I-FAM.jpg" alt="Hero Image" />
+       <PopularEventsImageWrapper>
+          <PopularEventsImage src="/hero-section/I-FAM.png" alt="Hero Image" />
+       </PopularEventsImageWrapper>
      </PopularEventsSection>
 
     <FooterSection>
