@@ -23,7 +23,7 @@ export default function HomePage() {
     {
       key: "2",
       label: (
-        <Link href="#events">Events</Link>
+        <Link href="/events">Events</Link>
       ),
     },
     // Assuming "About Us" is meant to be an anchor link to a section on this page
@@ -43,14 +43,6 @@ export default function HomePage() {
       ),
     },
     // Test Landing Page
-    {
-      key: "5",
-      label: (
-        <Link href="/testLanding" passHref>
-          Test Landing
-        </Link>
-      ),
-    },
     // Admin Portal link
     {
       key: "6",
@@ -74,17 +66,6 @@ export default function HomePage() {
             color: "white" }} />
       </Header>
       <LandingPage />
-      <Content style={{ padding: "0 60px"}}>
-        <div className="site-layout-content" style={{ background: "#fff", padding: 24, minHeight: 280 }}>
-          
-          <HeroSection />
-          
-          {/* Since ContactUs is directly used here, ensure this is the intended usage */}
-          <UpcomingEvents />
-         
-          <ContactInfo />
-        </div>
-      </Content>
       <Footer style={{ textAlign: "center" }}>
         I-Fam International Family ©2024
       </Footer>
