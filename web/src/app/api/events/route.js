@@ -9,11 +9,11 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
   try {
     // get search parameters
-    const { searchParams } = new URL(req.url);
-    const upcomingParam = searchParams.get("upcoming"); // Extracting the "upcoming" search parameter from the request URL.
+    // const { searchParams } = new URL(req.url);
+    // const upcomingParam = searchParams.get("upcoming"); // Extracting the "upcoming" search parameter from the request URL.
 
     let events;
-    if (upcomingParam) {
+    if (true) {
       // If the "upcoming" parameter is present, attempt to fetch only upcoming events.
       events = await getUpComingEvents(); // Fetching upcoming events using a custom service function.
     } else {
