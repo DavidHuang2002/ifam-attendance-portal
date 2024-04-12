@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, Avatar, Button, Modal, Form, Input } from "antd";
 import Image from "next/image";
 import { getFirstFlyerURL } from "@/service/front-end/event";
+import RsvpModal from "./RsvpModal";
 
 const { Meta } = Card;
 
@@ -14,6 +15,7 @@ const EventCard = ({ event, actions, admin }) => {
     eventDetails,
     eventFlyer,
     eventDates,
+    eventId,
   } = event;
   // only taking the first date for now (assuming there is no multi-day event)
   const eventDate = eventDates[0];
@@ -27,43 +29,12 @@ const EventCard = ({ event, actions, admin }) => {
     hour12: true,
   });
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [email, setEmail] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    // Handle form submission here
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleSubmit = () => {
-    // Handle form submission here
-    // console.log("Thank you for you RSVP", email);
-    setShowMessage(true);
-    setIsModalVisible(false);
-  };
-
-  const handleChange = (e) => {
-    setEmail(e.target.value);
-  };
-
   return (
     <Card
       title={eventName}
       hoverable
       style={{ width: "100%" }}
-      actions={!admin ? [<Button key="rsvp" onClick={showModal}>
-        RSVP
-      </Button>, ...actions] :
-      actions}
+      actions={actions}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
         {" "}
@@ -101,37 +72,10 @@ const EventCard = ({ event, actions, admin }) => {
           <Meta description={eventDetails} style={{ marginTop: "10px" }} />
         </div>
       </div>
-      <Modal
-        title="RSVP"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleSubmit}>
-            Submit
-          </Button>
-        ]}
-      >
-        <Form>
-          <p>RSVP Details</p>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Please enter your email" },
-              { type: "email", message: "Please enter a valid email" }
-            ]}
-          >
-            <Input value={email} onChange={handleChange}/>
-          </Form.Item>
-        </Form>
-      </Modal>
-      {showMessage && (
-        <p style={{ marginTop: "10px", color: "green" }}>Thank you for your RSVP. We have received your email: {email}</p>
-      )}
+      <RsvpModal 
+        eventId={eventId} 
+        eventName={eventName}
+      />
     </Card>
   );
 };
