@@ -16,6 +16,7 @@ import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
+import { RsvpModalOpenAtom } from "@/jotaiStore/store";
 
 // Define your EmailJS service IDs and template IDs
 const SERVICE_ID = "service_z6ftge9";
@@ -24,6 +25,26 @@ const USER_ID = "VYHdyH1a8DTcRyrEv"; // Corrected for illustration
 
 export function UpcomingEvents({ admin = false }) {
   const [events, setEvents] = useAtom(upcomingEventsAtom);
+  const [_, setRsvpModalOpen] = useAtom(RsvpModalOpenAtom);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetchUpComingEvents();
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const openRsvpModal = () => {
+    setRsvpModalOpen(true);
+  };
 
   const notifyAllParticipants = async () => {
     try {
@@ -111,20 +132,14 @@ export function UpcomingEvents({ admin = false }) {
     return actions;
   };
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetchUpComingEvents();
-        if (!response.ok) throw new Error("Network response was not ok");
-        const data = await response.json();
-        setEvents(data);
-      } catch (error) {
-        console.error("Failed to fetch events:", error);
-      }
-    };
+  const getPublicActions = (event) => {
+    return [
+      <Button key="rsvp" onClick={() => openRsvpModal()}>
+        RSVP
+      </Button>,
+    ];
+  }
 
-    fetchEvents();
-  }, []);
 
   return (
     <div id="events">
@@ -145,7 +160,7 @@ export function UpcomingEvents({ admin = false }) {
               <EventCard
                 key={index}
                 event={event}
-                actions={admin ? getAdminActions(event) : []}
+                actions={admin ? getAdminActions(event) : getPublicActions()}
                 admin={admin}
               />
             ))
