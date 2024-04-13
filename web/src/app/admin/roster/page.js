@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Layout, Button, Modal, Divider } from "antd";
 import { LayoutSider } from "@/components/dashBoard/LayoutSider";
+import {getAllParticipants} from "@/service/back-end/participant";
+import { renderGrade } from "@/utils/dateUtils";
 
 const { Content } = Layout;
 
@@ -45,8 +47,16 @@ const detailData = [
 ];
 
 export default function Roster() {
+  const [data, setData] = useState([]);
+
   const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+
+  useEffect( () => {
+    // fetch data
+    getAllParticipants().then((data) => setData(data));
+  }, []);
+
 
   const showAttendanceModal = () => {
     setAttendanceModalVisible(true);
@@ -74,7 +84,7 @@ export default function Roster() {
 
   const ActionButton = [
     <div>
-      <Button onClick={showAttendanceModal}>See Attendance</Button> |
+      <Button onClick={showAttendanceModal}>See Attendance</Button> <Divider type="vertical" />
       <Button onClick={showDetailsModal}>See Details</Button>
     </div>,
   ];
@@ -82,54 +92,29 @@ export default function Roster() {
   const columns = [
     {
       title: "Name",
-      dataIndex: "Name",
-      key: "Name",
+      dataIndex: "name",
+      key: "name",
       align: "center",
     },
     {
       title: "Email",
-      dataIndex: "Email",
-      key: "Email",
+      dataIndex: "email",
+      key: "email",
       align: "center",
     },
     {
       title: "Class",
-      dataIndex: "Class",
-      key: "Class",
+      dataIndex: "class",
+      key: "class",
       align: "center",
+      render: renderGrade,
     },
     {
       title: "Action",
-      dataIndex: "Action",
-      key: "Action",
       align: "center",
-    },
-  ];
-
-  const data = [
-    {
-      Name: "John Doe",
-      Email: "...@vanderbilt.edu",
-      Class: "2026",
-      Action: ActionButton,
-    },
-    {
-      Name: "Joe Bob",
-      Email: "...@vanderbilt.edu",
-      Class: "2027",
-      Action: ActionButton,
-    },
-    {
-      Name: "Billy Bob Joe",
-      Email: "...@vanderbilt.edu",
-      Class: "2025",
-      Action: ActionButton,
-    },
-    {
-      Name: "Joe Billy",
-      Email: "...@vanderbilt.edu",
-      Class: "2028",
-      Action: ActionButton,
+      render: (_, record) => (
+        ActionButton
+      ),
     },
   ];
 

@@ -8,6 +8,18 @@ import {
 } from "firebase/firestore";
 import { getAttendanceByEventId } from "./attendance";
 
+
+export const getAllParticipants = async () => {
+  const query = collection(db, "participants");
+  const snapshot = await getDocs(query);
+  const participants = [];
+  snapshot.forEach((doc) => {
+    participants.push({ ...doc.data(), participantId: doc.id });
+  }
+  );
+  return participants; 
+};
+
 export const getParticipantByEmail = async (email) => {
   // query firebase with email
   const query = collection(db, "participants");
