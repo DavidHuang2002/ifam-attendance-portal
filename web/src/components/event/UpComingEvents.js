@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Button, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, message, Dropdown, Menu, Table } from "antd";
 import emailjs from "emailjs-com";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -17,15 +17,42 @@ import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
 import { RsvpModalOpenAtom } from "@/jotaiStore/store";
+import { Modal } from "antd"
 
 // Define your EmailJS service IDs and template IDs
 const SERVICE_ID = "service_z6ftge9";
 const TEMPLATE_ID = "template_skqdme9";
 const USER_ID = "VYHdyH1a8DTcRyrEv"; // Corrected for illustration
 
-export function UpcomingEvents({ admin = false }) {
+const RSVPListModal = ({ visible, rsvpList, onClose }) => {
+  const columns = [
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      align: 'center',
+    },
+  ]
+  return (
+    <Modal
+      title="RSVP List"
+      visible={visible}
+      onCancel={onClose}
+      footer={null}
+    >
+      <Table dataSource={rsvpList} columns={columns} pagination={false} />
+    </Modal>
+  );
+};
+const mockRSVPList = [
+  { key: '1', email: 'john@example.com' },
+  { key: '2', email: 'jane@example.com' },
+];
+
+export function UpcomingEvents({ admin = false, eventId }) {
   const [events, setEvents] = useAtom(upcomingEventsAtom);
   const [_, setRsvpModalOpen] = useAtom(RsvpModalOpenAtom);
+  const [RSVPModalVisible, setRSVPModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -44,6 +71,12 @@ export function UpcomingEvents({ admin = false }) {
 
   const openRsvpModal = () => {
     setRsvpModalOpen(true);
+  };
+
+  const deleteEvent = (eventId) => {
+    // Filter out the event with the given eventId
+    const updatedEvents = events.filter((event) => event.eventId !== eventId);
+    setEvents(updatedEvents);
   };
 
   const notifyAllParticipants = async () => {
@@ -75,6 +108,26 @@ export function UpcomingEvents({ admin = false }) {
       message.error("Failed to notify some participants.");
     }
   };
+
+  const handleMenuClick = (key, eventId) => {
+    switch (key) {
+      case '1': // Delete
+        deleteEvent(eventId);
+        break;
+      case '2': // See RSVP
+        setRSVPModalVisible(true);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const menu = (
+    <Menu onClick={({ key }) => handleMenuClick(key, eventId)}>
+      <Menu.Item key="1">Delete</Menu.Item>
+      <Menu.Item key="2">See RSVP</Menu.Item>
+    </Menu>
+  )
 
   const getAdminActions = (event) => {
     // For now we assume that an event is notify-able, so admin can notify whenever they want
@@ -123,10 +176,15 @@ export function UpcomingEvents({ admin = false }) {
     }
 
     actions.push(
-      <span key="more">
-        <EllipsisOutlined />
-        More Actions
-      </span>
+      <Dropdown key="more" overlay={menu} trigger={['click']}>
+        <span>
+          <EllipsisOutlined /> More Actions
+        </span>
+      </Dropdown>
+      // <span key="more">
+      //   <EllipsisOutlined />
+      //   More Actions
+      // </span>
     );
 
     return actions;
@@ -169,6 +227,11 @@ export function UpcomingEvents({ admin = false }) {
           )}
         </div>
       </div>
+      <RSVPListModal
+        visible={RSVPModalVisible}
+        rsvpList={mockRSVPList} // Pass mock RSVP list data
+        onClose={() => setRSVPModalVisible(false)}
+      />
     </div>
   );
 }
