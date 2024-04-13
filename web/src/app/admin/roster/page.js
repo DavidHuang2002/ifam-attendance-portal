@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { Table, Layout, Button, Modal, Divider } from "antd";
 import { LayoutSider } from "@/components/dashBoard/LayoutSider";
+import Link from "next/link";
+import EditInfo from "@/components/roster/EditInfo";
 import {getAllParticipants} from "@/service/back-end/participant";
 import { renderGrade } from "@/utils/dateUtils";
 
@@ -51,12 +53,6 @@ export default function Roster() {
 
   const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
-
-  useEffect( () => {
-    // fetch data
-    getAllParticipants().then((data) => setData(data));
-  }, []);
-
 
   const showAttendanceModal = () => {
     setAttendanceModalVisible(true);
@@ -139,7 +135,11 @@ export default function Roster() {
         title="Info on "
         open={detailsModalVisible}
         onCancel={handleDCancel}
-        onOk={handleDOk}
+        footer={[
+          <Button key="edit" onClick={showEditModal}>
+            Edit
+          </Button>
+        ]}
       >
         <ul>
           <li>
@@ -155,8 +155,13 @@ export default function Roster() {
             <strong>Note:</strong> {detailData[0].Note}
           </li>
         </ul>
-        <Button>Edit</Button>
       </Modal>
+      <EditInfo
+        participant={selectedParticipant}
+        visible={editModalVisible}
+        onCancel={handleEditCancel}
+        onSave={handleEditSave}
+      />
     </LayoutSider>
   );
 }
