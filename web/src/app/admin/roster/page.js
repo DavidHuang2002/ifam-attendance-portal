@@ -1,52 +1,40 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Layout, Button, Modal, Divider } from "antd";
 import { LayoutSider } from "@/components/dashBoard/LayoutSider";
+import { getAllParticipants } from "@/service/back-end/participant";
+import { renderGrade } from "@/utils/dateUtils";
+import AttendanceModal from "./AttendanceModal";
+import ParticipantDetailModal from "./ParticiapntDetailModal";
 
 const { Content } = Layout;
 
-const attendanceInfo = [
-  {
-    title: "Event",
-    dataIndex: "Event",
-    key: "Event",
-    align: "center",
-  },
-  {
-    title: "Date",
-    dataIndex: "Date",
-    key: "Date",
-    align: "center",
-  },
-];
 
 const attendanceData = [
   {
-    Event: "Dinner & Discussion",
-    Date: "xxxx",
-  },
-  {
-    Event: "Event 2",
-    Date: "xxxx",
-  },
-  {
-    Event: "Event 3",
-    Date: "xxxx",
+    event: "Dinner & Discussion",
+    date: "xxxx",
   },
 ];
 
-const detailData = [
-  {
-    Email: "john.doe@vanderbilt.edu",
-    Class: "2026",
-    Interest: "I-FAM Nashville",
-    Note: "John Doe is a cool dude",
-  },
-];
+const detailData = {
+  Email: "john.doe@vanderbilt.edu",
+  Class: "2026",
+  Interest: "I-FAM Nashville",
+  Note: "John Doe is a cool dude",
+};
 
 export default function Roster() {
+  const [data, setData] = useState([]);
+
   const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
+
+  useEffect(() => {
+    getAllParticipants().then((data) => setData(data));
+  }, []);
 
   const showAttendanceModal = () => {
     setAttendanceModalVisible(true);
@@ -54,6 +42,19 @@ export default function Roster() {
 
   const showDetailsModal = () => {
     setDetailsModalVisible(true);
+  };
+
+  const showEditModal = (selectedParticipant) => {
+    setEditModalVisible(true);
+    setSelectedParticipant(selectedParticipant);
+  };
+
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+  };
+
+  const handleEditSave = () => {
+    setEditModalVisible(false);
   };
 
   const handleAOk = () => {
@@ -74,7 +75,8 @@ export default function Roster() {
 
   const ActionButton = [
     <div>
-      <Button onClick={showAttendanceModal}>See Attendance</Button> |
+      <Button onClick={showAttendanceModal}>See Attendance</Button>{" "}
+      <Divider type="vertical" />
       <Button onClick={showDetailsModal}>See Details</Button>
     </div>,
   ];
@@ -82,54 +84,27 @@ export default function Roster() {
   const columns = [
     {
       title: "Name",
-      dataIndex: "Name",
-      key: "Name",
+      dataIndex: "name",
+      key: "name",
       align: "center",
     },
     {
       title: "Email",
-      dataIndex: "Email",
-      key: "Email",
+      dataIndex: "email",
+      key: "email",
       align: "center",
     },
     {
       title: "Class",
-      dataIndex: "Class",
-      key: "Class",
+      dataIndex: "class",
+      key: "class",
       align: "center",
+      render: renderGrade,
     },
     {
       title: "Action",
-      dataIndex: "Action",
-      key: "Action",
       align: "center",
-    },
-  ];
-
-  const data = [
-    {
-      Name: "John Doe",
-      Email: "...@vanderbilt.edu",
-      Class: "2026",
-      Action: ActionButton,
-    },
-    {
-      Name: "Joe Bob",
-      Email: "...@vanderbilt.edu",
-      Class: "2027",
-      Action: ActionButton,
-    },
-    {
-      Name: "Billy Bob Joe",
-      Email: "...@vanderbilt.edu",
-      Class: "2025",
-      Action: ActionButton,
-    },
-    {
-      Name: "Joe Billy",
-      Email: "...@vanderbilt.edu",
-      Class: "2028",
-      Action: ActionButton,
+      render: (_, record) => ActionButton,
     },
   ];
 
@@ -142,36 +117,19 @@ export default function Roster() {
         <Button style={{ marginLeft: "auto" }}>Export</Button>
         <Table columns={columns} dataSource={data} />
       </Content>
-      <Modal
-        title="Attendance for "
+      <AttendanceModal
         open={attendanceModalVisible}
         onCancel={handleACancel}
         onOk={handleAOk}
-      >
-        <Table columns={attendanceInfo} dataSource={attendanceData} />
-      </Modal>
-      <Modal
-        title="Info on "
+        attendanceData={attendanceData}
+      />
+
+      <ParticipantDetailModal
         open={detailsModalVisible}
         onCancel={handleDCancel}
         onOk={handleDOk}
-      >
-        <ul>
-          <li>
-            <strong>Email:</strong> {detailData[0].Email}
-          </li>
-          <li>
-            <strong>Class:</strong> {detailData[0].Class}
-          </li>
-          <li>
-            <strong>Interest:</strong> {detailData[0].Interest}
-          </li>
-          <li>
-            <strong>Note:</strong> {detailData[0].Note}
-          </li>
-        </ul>
-        <Button>Edit</Button>
-      </Modal>
+        participantData={detailData}
+      />
     </LayoutSider>
   );
 }
