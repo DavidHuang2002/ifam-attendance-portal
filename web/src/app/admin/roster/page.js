@@ -6,16 +6,10 @@ import { getAllParticipants } from "@/service/back-end/participant";
 import { renderGrade } from "@/utils/dateUtils";
 import AttendanceModal from "./AttendanceModal";
 import ParticipantDetailModal from "./ParticiapntDetailModal";
+import { getAttendanceByParticipantId } from "@/service/back-end/attendance";
 
 const { Content } = Layout;
 
-
-const attendanceData = [
-  {
-    event: "Dinner & Discussion",
-    date: "xxxx",
-  },
-];
 
 const detailData = {
   Email: "john.doe@vanderbilt.edu",
@@ -36,8 +30,9 @@ export default function Roster() {
     getAllParticipants().then((data) => setData(data));
   }, []);
 
-  const showAttendanceModal = () => {
+  const showAttendanceModal = (participant) => {
     setAttendanceModalVisible(true);
+    setSelectedParticipant(participant);
   };
 
   const showDetailsModal = () => {
@@ -73,9 +68,13 @@ export default function Roster() {
     setDetailsModalVisible(false);
   };
 
-  const ActionButton = [
+  const renderActions = (_, record)=>[
     <div>
-      <Button onClick={showAttendanceModal}>See Attendance</Button>{" "}
+      <Button 
+      onClick={() => showAttendanceModal(record)}
+      >
+        See Attendance
+      </Button>
       <Divider type="vertical" />
       <Button onClick={showDetailsModal}>See Details</Button>
     </div>,
@@ -104,7 +103,7 @@ export default function Roster() {
     {
       title: "Action",
       align: "center",
-      render: (_, record) => ActionButton,
+      render: renderActions,
     },
   ];
 
@@ -121,7 +120,7 @@ export default function Roster() {
         open={attendanceModalVisible}
         onCancel={handleACancel}
         onOk={handleAOk}
-        attendanceData={attendanceData}
+        participantId={selectedParticipant?.participantId}
       />
 
       <ParticipantDetailModal
