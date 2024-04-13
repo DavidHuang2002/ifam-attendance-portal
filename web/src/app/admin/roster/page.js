@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Table, Layout, Button, Modal, Divider } from "antd";
 import { LayoutSider } from "@/components/dashBoard/LayoutSider";
+import Link from "next/link";
+import EditInfo from "@/components/roster/EditInfo";
 
 const { Content } = Layout;
 
@@ -47,6 +49,22 @@ const detailData = [
 export default function Roster() {
   const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false); 
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
+
+  const showEditModal = (participant) => {
+    setSelectedParticipant(participant);
+    setEditModalVisible(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+  };
+
+  const handleEditSave = (editedParticipant) => {
+    console.log("Edited participant:", editedParticipant);
+    setEditModalVisible(false);
+  };
 
   const showAttendanceModal = () => {
     setAttendanceModalVisible(true);
@@ -154,7 +172,11 @@ export default function Roster() {
         title="Info on "
         open={detailsModalVisible}
         onCancel={handleDCancel}
-        onOk={handleDOk}
+        footer={[
+          <Button key="edit" onClick={showEditModal}>
+            Edit
+          </Button>
+        ]}
       >
         <ul>
           <li>
@@ -170,8 +192,13 @@ export default function Roster() {
             <strong>Note:</strong> {detailData[0].Note}
           </li>
         </ul>
-        <Button>Edit</Button>
       </Modal>
+      <EditInfo
+        participant={selectedParticipant}
+        visible={editModalVisible}
+        onCancel={handleEditCancel}
+        onSave={handleEditSave}
+      />
     </LayoutSider>
   );
 }
