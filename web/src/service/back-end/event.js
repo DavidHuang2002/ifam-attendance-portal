@@ -32,47 +32,9 @@ export async function getAllEvents() {
     const eventData = {
       ...data,
       eventId: doc.id, // Include the document ID as 'eventId'.
-      eventTime: data.eventTime,
-      // Convert each 'eventDate' to a JavaScript Date object, if any exist.
-      eventDates: data.eventDates,
     };
-
-    // If there are flyers associated with the event, prepare to fetch their URLs.
-    const flyers = data.eventFlyer || [];
-    flyers.forEach((filename) => {
-      // Create a reference to the flyer in Firebase Storage.
-      const flyerRef = ref(storage, `public/EventFlyer/${filename}`);
-      // Push a promise to fetch the download URL into the `flyerPromises` array.
-      flyerPromises.push(
-        getDownloadURL(flyerRef)
-          .then((url) => ({ filename, url })) // On success, store the filename and URL.
-          .catch((error) => null) // On failure, push null (which will be filtered out later).
-      );
-    });
-
-    // Add the event data object to the 'events' array.
+    
     events.push(eventData);
-  });
-
-  // Wait for all flyer URL fetch promises to resolve.
-  const flyerResults = await Promise.all(flyerPromises);
-
-  // Filter out any null results (failed fetches) and reduce the results into an object mapping filenames to URLs.
-  const flyerUrls = flyerResults
-    .filter((result) => result !== null)
-    .reduce((acc, { filename, url }) => {
-      acc[filename] = url;
-      return acc;
-    }, {});
-
-  // Attach flyer URLs to their corresponding events.
-  events.forEach((event) => {
-    if (event.eventFlyer) {
-      event.eventFlyer = event.eventFlyer.map((filename) => ({
-        filename,
-        url: flyerUrls[filename] || null, // Attach the URL or null if the fetch failed.
-      }));
-    }
   });
 
   // Return the array of events, each now potentially containing flyer URL(s).
@@ -86,9 +48,18 @@ export async function getUpComingEvents() {
   return (
     events
       .filter((event) => {
-        // const eventDate = moment(event.eventTime);
-        const { eventDates } = event;
-        const eventDate = moment(eventDates[0]);
+        let eventDate;
+        if (event.eventDate) {
+          // turm date in the format of YYYY-MM-DD into a moment object
+          eventDate = moment(event.eventDate);
+        } else if (event.eventDates) {
+          // when eventDate is not defined, use eventDates to support legacy event types
+          eventDate = moment(event.eventDates[0]);
+        } else {
+          // if neither eventDate nor eventDates is defined, throw an error
+          console.error("Event date is not defined for event: ", event);
+        }
+        
         // filter out event dates that is before. But keep the ones that are today
         return eventDate.isSameOrAfter(today, "day");
       })

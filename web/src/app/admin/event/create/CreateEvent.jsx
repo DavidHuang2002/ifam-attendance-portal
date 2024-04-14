@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { db } from "@/firebase/config";
 import { addDoc, collection } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Fixed imports
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   Form,
   Input,
@@ -12,13 +12,13 @@ import {
   Upload,
   Checkbox,
   message,
+  Row,
+  Col,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { redirect } from "next/navigation";
-import { EventTimePicker } from "@/components/event/EventTimePicker";
+import moment from 'moment-timezone';
 
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 const storage = getStorage();
 
 function CreateEventComponent({ afterSave }) {
@@ -26,33 +26,39 @@ function CreateEventComponent({ afterSave }) {
     eventName: "",
     eventLocation: "",
     eventDetails: "",
-    eventTime: null,
-    eventDates: [],
-    eventFlyer: "",
+    startTime: moment().startOf('day').format("h:mm:ss A"), // Default start of the day
+    endTime: moment().endOf('day').format("h:mm:ss A"), // Default end of the day
+    eventDate: moment().format("YYYY-MM-DD"), // Today's date by default
+    eventFlyer: [],
     eventCategory: "",
     eventPublished: false,
   });
 
-  const handleChange = (e) => {
-    // This now checks if the event is from an input or a Select component
-    const target = e.target ? e.target : { name: "eventCategory", value: e };
-    const { name, value } = target;
-    setFormData({ ...formData, [name]: value });
-  };
-  const handleCheckboxChange = (e) => {
-    setFormData({ ...formData, eventPublished: e.target.checked });
+  const handleChange = (name, value) => {
+    setFormData(prev => {
+      const updatedForm = { ...prev, [name]: value };
+      if (name === "eventPublished" && !value) {
+        updatedForm.someOtherField = false; // Adjust according to your needs
+      }
+
+      return updatedForm;
+    });
   };
 
-  const handleDateTimeChange = (value, name) => {
-    if (name === "eventTime") {
-      // For TimePicker, convert the moment object to a suitable format (e.g., ISO string)
-      const timeValue = value ? value.toISOString() : null;
-      setFormData({ ...formData, [name]: timeValue });
-    } else {
-      // For RangePicker, convert the moment array to an array of ISO strings
-      const datesValue = value ? value.map((date) => date.toISOString()) : [];
-      setFormData({ ...formData, [name]: datesValue });
+  const handleTimeChange = (time, type) => {
+    if (!time) {
+        handleChange(type, null);
+        return;
     }
+
+    // Convert the moment object to a JavaScript Date object
+    const date = time.toDate(); // This ensures you're working with a standard Date object
+
+    // Format the Date object back to a time string using moment
+    const formattedTime = moment(date).format("h:mm:ss A");
+
+    // Update the state with the new time
+    handleChange(type, formattedTime);
   };
 
   const handleFileChange = async ({ file, onSuccess, onError }) => {
@@ -61,145 +67,85 @@ function CreateEventComponent({ afterSave }) {
 
     try {
       await uploadBytes(fileRef, file);
-      // Optionally, get the download URL
       const downloadURL = await getDownloadURL(fileRef);
-      // Append new file name or download URL to the eventFlyer array
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        eventFlyer: [...prevFormData.eventFlyer, file.name], // or downloadURL if you prefer
-      }));
+      handleChange('eventFlyer', [...formData.eventFlyer, downloadURL]);
       onSuccess("ok");
-      message.success(`${file.name} uploaded successfully`); // Show success message
+      message.success(`${file.name} uploaded successfully`);
     } catch (error) {
-      console.error("Error uploading file: ", error);
       onError(error);
-      //message.error(`Upload failed for ${file.name}`); // Show error message
+      message.error(`Upload failed for ${file.name}`);
     }
-  };
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
   };
 
   const handleSave = async () => {
-    console.log(db);
+    const startTime = moment(formData.startTime, "h:mm:ss A");
+    const endTime = moment(formData.endTime, "h:mm:ss A");
+
+    if (!endTime.isAfter(startTime)) {
+        message.error("Cannot save: End time must be later than start time.");
+        return; // Stop the save operation
+    }
     const messagesRef = collection(db, "events");
     try {
       await addDoc(messagesRef, formData);
       message.success("Event Created Successfully!");
-      console.log("Document written");
+      if (afterSave) afterSave();
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error adding document:", error);
       message.error("Error creating event. Contact Admin for support.");
-    }
-
-    if (afterSave) {
-      afterSave();
     }
   };
 
   return (
     <div>
       <Form onFinish={handleSave}>
-        <Form.Item
-          label="Event Name"
-          name="eventName"
-          rules={[
-            {
-              required: true,
-              message: "Please input the event name!",
-            },
-            {
-              // len: 10,
-              // message: 'Event name must be exactly 10 characters long!',
-            },
-          ]}
-        >
-          <Input
-            name="eventName"
-            onChange={handleChange}
-            placeholder="Enter the event name"
-          />
+        <Form.Item label="Event Name" name="eventName" rules={[{ required: true, message: "Please input the event name!" }]}>
+          <Input onChange={e => handleChange('eventName', e.target.value)} placeholder="Enter the event name" />
         </Form.Item>
-        <Form.Item
-          label="Event Location"
-          name="eventLocation"
-          rules={[
-            {
-              required: true,
-              message: "Please input the event location!",
-            },
-            {
-              max: 20,
-              message: "Location must be up to 20 characters long!",
-            },
-            {
-              // TODO - we must also allow for space
-              // pattern: new RegExp(/^[a-z0-9]+$/i),
-              // message: "Location must be alphanumeric!",
-            },
-          ]}
-        >
-          <Input
-            name="eventLocation"
-            onChange={handleChange}
-            placeholder="Enter the event location"
-          />
+        <Form.Item label="Event Location" name="eventLocation" rules={[{ required: true, message: "Please input the event location!" }]}>
+          <Input onChange={e => handleChange('eventLocation', e.target.value)} placeholder="Enter the event location" />
         </Form.Item>
         <Form.Item label="Event Category" name="eventCategory">
-          <Select
-            placeholder="Select a category"
-            onChange={handleChange}
-            options={[
-              { value: "Weekly", label: "Weekly" },
-              { value: "Special", label: "Special" },
-              { value: "Monthly", label: "Monthly" },
-            ]}
-          />
+          <Select onChange={value => handleChange('eventCategory', value)} placeholder="Select a category">
+            {["Weekly", "Special", "Monthly"].map(category => (
+              <Select.Option key={category} value={category}>{category}</Select.Option>
+            ))}
+          </Select>
         </Form.Item>
-        <Form.Item label="Event Published" name="eventPublished">
-          <Checkbox onChange={handleCheckboxChange}></Checkbox>
-        </Form.Item>
-        <Form.Item label="Event Details" name="eventDetails">
-          <TextArea
-            rows={4}
-            name="eventDetails"
-            onChange={handleChange}
-            placeholder="Describe the event details"
-          />
-        </Form.Item>
-        <Form.Item label="Event Time" name="eventTime">
-          <EventTimePicker
-            onChange={(time) => handleDateTimeChange(time, "eventTime")}
-          />
-        </Form.Item>
-        <Form.Item label="Event Date" name="eventDates">
-          <RangePicker
-            onChange={(dates) => handleDateTimeChange(dates, "eventDates")}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Upload Flyer"
-          name="eventFlyer"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <Upload
-            listType="picture-card"
-            customRequest={handleFileChange}
-            multiple={true} // Allow multiple files
-            showUploadList={true} // Show the list of files
+         <Form.Item
+            label="Event Published"
+            name="eventPublished"
+            valuePropName="checked" // This tells Form.Item to use 'checked' as the prop for the Checkbox
           >
+            <Checkbox onChange={e => handleChange('eventPublished', e.target.checked)}>
+              
+            </Checkbox>
+          </Form.Item>
+        <Form.Item label="Event Details" name="eventDetails">
+          <TextArea onChange={e => handleChange('eventDetails', e.target.value)} rows={4} placeholder="Describe the event details" />
+        </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Start Time" name="startTime">
+              <TimePicker onChange={time => handleTimeChange(time, 'startTime')} format="h:mm:ss A" use12Hours />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="End Time" name="endTime">
+              <TimePicker onChange={time => handleTimeChange(time, 'endTime')} format="h:mm:ss A" use12Hours />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="Event Date" name="eventDate">
+          <DatePicker onChange={(date, dateString) => handleChange('eventDate', dateString)} />
+        </Form.Item>
+        <Form.Item label="Upload Flyer" name="eventFlyer" valuePropName="fileList" getValueFromEvent={e => e && e.fileList}>
+          <Upload listType="picture-card" customRequest={handleFileChange} multiple={true} showUploadList={true}>
             <Button icon={<PlusOutlined />}>Upload Flyer</Button>
           </Upload>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Save Event
-          </Button>
+          <Button type="primary" htmlType="submit">Save Event</Button>
         </Form.Item>
       </Form>
     </div>
