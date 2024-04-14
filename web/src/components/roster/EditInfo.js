@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import { Button, Input, Modal, Form } from "antd"
+import { updateParticipantDetails } from "@/service/back-end/participant";
 
 export default function EditInfo({ participant, visible, onCancel, onSave}) {
     const [form] = Form.useForm();
     const [editedParticipant, setEditedParticipant] = useState({ ...participant });
 
+    const handleFormChange = (changedValues, allValues) => {
+        setEditedParticipant({ ...editedParticipant, ...changedValues });
+      };
+
     const handleSave = () => {
         form.validateFields().then((values) => {
-            onSave({ ...editedParticipant, ...values });
+            // console.log("OG participant", participant)
+            const updatedParticipant = { ...editedParticipant, ...values };
+            // console.log("Edited Participant", editedParticipant)
+            onSave(updatedParticipant);
+            updateParticipantDetails(updatedParticipant);
+            // console.log("Saved Statements: ", updatedParticipant)
           });
     };
   
@@ -25,7 +35,8 @@ export default function EditInfo({ participant, visible, onCancel, onSave}) {
         </Button>,
       ]}
     >
-      <Form form={form} initialValues={participant} layout="vertical">
+      <Form form={form} initialValues={participant} layout="vertical"
+      onValuesChange={handleFormChange}>
         <Form.Item
           label="Email"
           name="Email"

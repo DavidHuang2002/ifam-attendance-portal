@@ -11,12 +11,12 @@ import { getAttendanceByParticipantId } from "@/service/back-end/attendance";
 const { Content } = Layout;
 
 
-const detailData = {
-  Email: "john.doe@vanderbilt.edu",
-  Class: "2026",
-  Interest: "I-FAM Nashville",
-  Note: "John Doe is a cool dude",
-};
+// const detailData = {
+//   Email: "john.doe@vanderbilt.edu",
+//   Class: "2026",
+//   Interest: "I-FAM Nashville",
+//   Note: "John Doe is a cool dude",
+// };
 
 export default function Roster() {
   const [data, setData] = useState([]);
@@ -35,8 +35,9 @@ export default function Roster() {
     setSelectedParticipant(participant);
   };
 
-  const showDetailsModal = () => {
+  const showDetailsModal = (participant) => {
     setDetailsModalVisible(true);
+    setSelectedParticipant(participant);
   };
 
   const showEditModal = (selectedParticipant) => {
@@ -76,7 +77,7 @@ export default function Roster() {
         See Attendance
       </Button>
       <Divider type="vertical" />
-      <Button onClick={showDetailsModal}>See Details</Button>
+      <Button onClick={() => showDetailsModal(record)}>See Details</Button>
     </div>,
   ];
 
@@ -127,7 +128,7 @@ export default function Roster() {
         open={detailsModalVisible}
         onCancel={handleDCancel}
         onOk={handleDOk}
-        participantData={detailData}
+        participantData={selectedParticipant}
       />
     </LayoutSider>
   );
