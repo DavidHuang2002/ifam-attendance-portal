@@ -75,8 +75,8 @@ export async function getPastEvents() {
   return (
     events
       .filter((event) => {
-        const { eventDates } = event;
-        const eventDate = moment(eventDates[0]);
+        const { eventDate } = event;
+        // const eventDate = moment(eventDates[0]);
         // TODO: no filtering for now for testing, change it later
         // filter out event dates that is before. But keep the ones that are today
         // return eventDate.isBefore(today, "day");
