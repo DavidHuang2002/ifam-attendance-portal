@@ -16,17 +16,13 @@ export async function exportEventDetails(eventId) {
   const participants = await getParticipantByEventId(eventId);
 
   const event = await getEventById(eventId);
-  let { eventName, eventDates, eventTime, eventLocation } = event;
-
-  let eventDate = eventDates[0];
-  eventDate = dateTimeToDate(eventDate);
-  eventTime = dateTimeToTime(eventTime);
-
+  let { eventName, eventDate, startTime, endTime, eventLocation } = event;
 
   const includedEventDetails = {
     eventName,
     eventDate,
-    eventTime,
+    startTime,
+    endTime,
     eventLocation,
   };
   const includedParticipantDetails = ["name", "email", "class"];
