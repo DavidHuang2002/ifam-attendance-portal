@@ -21,7 +21,7 @@ const EventCard = ({ event, actions, admin }) => {
   } = event;
 
 
-  // console.log("event", event);
+  console.log("eventflyer", eventFlyer);
 
   return (
     <Card
