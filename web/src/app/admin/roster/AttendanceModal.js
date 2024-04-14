@@ -36,7 +36,7 @@ export default function AttendanceModal({
   participantId
 }) {
   const [attendanceData, setAttendanceData] = useState([]);
-  console.log("participantId: ", participantId);
+  // console.log("participantId: ", participantId);
   useEffect(() => {
     getAttendanceByParticipantId(participantId).then((data) => {
       console.log("data from backend", data);

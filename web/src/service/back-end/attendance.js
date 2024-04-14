@@ -101,8 +101,6 @@ export const getAttendanceByParticipantId = async (participantId) => {
         data.event = event;
         attendance.push(data);
       }
-
-      attendance.push(data);
     }
   }
 
