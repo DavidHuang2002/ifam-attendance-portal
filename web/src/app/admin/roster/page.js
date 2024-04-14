@@ -23,11 +23,15 @@ export default function Roster() {
 
   const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
 
+  const fetchAllParticipantsData = async () => {
+    const participants = await getAllParticipants();
+    setData(participants);
+  }
+
   useEffect(() => {
-    getAllParticipants().then((data) => setData(data));
+    fetchAllParticipantsData();
   }, []);
 
   const showAttendanceModal = (participant) => {
@@ -40,19 +44,6 @@ export default function Roster() {
     setSelectedParticipant(participant);
   };
 
-  const showEditModal = (selectedParticipant) => {
-    setEditModalVisible(true);
-    setSelectedParticipant(selectedParticipant);
-  };
-
-  const handleEditCancel = () => {
-    setEditModalVisible(false);
-  };
-
-  const handleEditSave = () => {
-    setEditModalVisible(false);
-  };
-
   const handleAOk = () => {
     setAttendanceModalVisible(false);
   };
@@ -61,13 +52,16 @@ export default function Roster() {
     setAttendanceModalVisible(false);
   };
 
-  const handleDOk = () => {
-    setDetailsModalVisible(false);
-  };
-
   const handleDCancel = () => {
     setDetailsModalVisible(false);
   };
+
+  const handleEditSave = () => {
+    // once the participant details are saved, close the modal and refresh the data
+    setDetailsModalVisible(false);
+    fetchAllParticipantsData();
+  }
+
 
   const renderActions = (_, record)=>[
     <div>
@@ -127,8 +121,8 @@ export default function Roster() {
       <ParticipantDetailModal
         open={detailsModalVisible}
         onCancel={handleDCancel}
-        onOk={handleDOk}
         participantData={selectedParticipant}
+        onEditSave={handleEditSave}
       />
     </LayoutSider>
   );
