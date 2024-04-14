@@ -86,9 +86,18 @@ export async function getUpComingEvents() {
   return (
     events
       .filter((event) => {
-        // const eventDate = moment(event.eventTime);
-        const { eventDates } = event;
-        const eventDate = moment(eventDates[0]);
+        let eventDate;
+        if (event.eventDate) {
+          // turm date in the format of YYYY-MM-DD into a moment object
+          eventDate = moment(event.eventDate);
+        } else if (event.eventDates) {
+          // when eventDate is not defined, use eventDates to support legacy event types
+          eventDate = moment(event.eventDates[0]);
+        } else {
+          // if neither eventDate nor eventDates is defined, throw an error
+          console.error("Event date is not defined for event: ", event);
+        }
+        
         // filter out event dates that is before. But keep the ones that are today
         return eventDate.isSameOrAfter(today, "day");
       })

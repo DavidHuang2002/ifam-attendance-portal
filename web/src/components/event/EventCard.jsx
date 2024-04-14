@@ -10,24 +10,18 @@ const EventCard = ({ event, actions, admin }) => {
   const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg";
   const {
     eventName,
-    eventTime,
+    // eventTime,
+    startTime,
+    endTime,
     eventLocation,
     eventDetails,
     eventFlyer,
-    eventDates,
+    eventDate,
     eventId,
   } = event;
-  // only taking the first date for now (assuming there is no multi-day event)
-  const eventDate = eventDates[0];
+
 
   // console.log("event", event);
-
-  // format time to only keep the time without the date
-  const formattedTime = new Date(eventTime).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
 
   return (
     <Card
@@ -54,7 +48,8 @@ const EventCard = ({ event, actions, admin }) => {
           {/* Ensure text does not overflow */}
           <p>
             <strong>Time:</strong>{" "}
-            <time dateTime={eventTime}>{formattedTime}</time>
+            <time dateTime={startTime}>{startTime}</time> -{" "}
+            <time dateTime={endTime}>{endTime}</time>
           </p>
           <p>
             <strong>Dates: </strong>
