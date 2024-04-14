@@ -98,7 +98,7 @@ export default function ManagePastEvents() {
       <Content
         style={{ marginLeft: "200px", padding: "24px", minHeight: "100vh" }}
       >
-        <h1>Past events</h1>
+        <h1>All events</h1>
         <Table columns={columns} dataSource={data} />
         <EventAttendanceModal
           eventId={selectedEvent}
