@@ -49,7 +49,8 @@ const Signin = () => {
 
   // Your component's JSX with styling adjustments
   return (
-    // Use the styles object for class names
+    <div>
+    <NavBar />
     <div className={styles.container}> {/* Custom CSS for centering */}
       <Card className={styles.card} bordered={false}> {/* Custom CSS for Card styling */}
       <Form
@@ -57,7 +58,7 @@ const Signin = () => {
         initialValues={{ remember: true }}
         onFinish={onFinish}
       >
-          <h2 style={{ color: 'blue', textAlign: 'center' }}>Login</h2>
+          <h2 style={{ color: '#DDA722', textAlign: 'center' }}>Login</h2>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <Form.Item
             name="username"
@@ -79,7 +80,7 @@ const Signin = () => {
           </Form.Item>
           
           <Form.Item>
-            <Button type="primary" htmlType="submit" className={styles.loginFormButton}> 
+            <Button type="primary" htmlType="submit" className={styles.loginFormButton} style={{background: '#DDA722'}}> 
               Log in
             </Button>
             
@@ -92,7 +93,7 @@ const Signin = () => {
                         e.preventDefault();
                         handleForgotPassword();
                       }}
-                      style={{ color: 'blue' }}
+                      style={{ color: '#385B97' }}
                     >
                       Forgot password?
                     </a>
@@ -100,7 +101,7 @@ const Signin = () => {
         </Form>
         </Card>
     </div>
-        
+  </div>
     
   );
 };
