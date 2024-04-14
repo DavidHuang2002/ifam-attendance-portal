@@ -12,11 +12,11 @@ import {
   MailOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
 import { RsvpModalOpenAtom } from "@/jotaiStore/store";
+import { getUpComingEvents } from "@/service/back-end/event";
 
 // Define your EmailJS service IDs and template IDs
 const SERVICE_ID = "service_z6ftge9";
@@ -30,9 +30,8 @@ export function UpcomingEvents({ admin = false }) {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetchUpComingEvents();
-        if (!response.ok) throw new Error("Network response was not ok");
-        const data = await response.json();
+        const data = await getUpComingEvents();
+        console.log("Fetched events:", data);
         setEvents(data);
       } catch (error) {
         console.error("Failed to fetch events:", error);

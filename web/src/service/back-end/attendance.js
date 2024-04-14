@@ -98,11 +98,6 @@ export const getAttendanceByParticipantId = async (participantId) => {
       // get event info
       const event = await getEventById(data.eventId);
       if (event) {
-        // TODO change this part when event data is refactored to have only single date
-        if (event?.eventDates) {
-          event.eventDate = event.eventDates[0];
-        }
-
         data.event = event;
         attendance.push(data);
       }
