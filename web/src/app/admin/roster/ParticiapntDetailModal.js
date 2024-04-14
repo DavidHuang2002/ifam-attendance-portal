@@ -3,6 +3,7 @@ import { Modal, Button, Table, Tag } from 'antd';
 import EditInfo from '@/components/roster/EditInfo';
 import { getAllParticipants } from '@/service/back-end/participant';
 import { render } from '@testing-library/react';
+import { GRAD_STUDENT_CLASS } from '@/constants/participant';
 
 const participantInfo = [
   {
@@ -12,7 +13,7 @@ const participantInfo = [
     align: "center",
     // render the class as a string to handle the case when class is Graduate
     render: (classYear) => {
-      return classYear == -1 ? "Graduate" : classYear;
+      return classYear == GRAD_STUDENT_CLASS ? "Graduate" : classYear;
     }
   },
   {

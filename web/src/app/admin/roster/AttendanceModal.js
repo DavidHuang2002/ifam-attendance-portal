@@ -39,7 +39,7 @@ export default function AttendanceModal({
   // console.log("participantId: ", participantId);
   useEffect(() => {
     getAttendanceByParticipantId(participantId).then((data) => {
-      console.log("data from backend", data);
+      // console.log("data from backend", data);
       data = prepareAttendanceData(data);
       setAttendanceData(data);
       
