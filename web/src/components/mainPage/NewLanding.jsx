@@ -241,6 +241,7 @@ const ContactUsHeading = styled.h2`
   font-size: 2.8rem;
   color: black;
   padding: 3rem;
+  text-lign: center;
 `;
 
 const ContactUsText = styled.p`

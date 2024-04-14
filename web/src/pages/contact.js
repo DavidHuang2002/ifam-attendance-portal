@@ -18,7 +18,7 @@ const HeadingSection = styled.section`
     background: white;
 `;
 
-const PageHeading = styled.h1`
+const PageHeading = styled.h2`
   font-size: 2.5rem;
   font-weight: bold;
   text-align: center;

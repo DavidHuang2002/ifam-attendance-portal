@@ -14,13 +14,13 @@ export function NavBar() {
     {
       key: "1",
       label: (
-        <Link href="/app/page">Home</Link>
+        <Link href="/">Home</Link>
       ),
     },
     {
       key: "2",
       label: (
-        <Link href="/pages/events" passHref>Events</Link>
+        <Link href="/events" passHref>Events</Link>
       ),
     },
     // Assuming "About Us" is meant to be an anchor link to a section on this page
@@ -34,7 +34,7 @@ export function NavBar() {
     {
       key: "4",
       label: (
-        <Link href="/pages/contact" passHref>
+        <Link href="/contact" passHref>
           Contact Us
         </Link>
       ),
@@ -44,7 +44,7 @@ export function NavBar() {
     {
       key: "6",
       label: (
-        <Link href="/pages/signin" passHref>
+        <Link href="/signin" passHref>
          Admin Portal
         </Link>
       ),
