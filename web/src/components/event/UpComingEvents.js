@@ -18,6 +18,7 @@ import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";
 import { RsvpModalOpenAtom } from "@/jotaiStore/store";
 import { Modal } from "antd"
+import { handleDeleteEvent } from "./DeleteEvent";
 
 // Define your EmailJS service IDs and template IDs
 const SERVICE_ID = "service_z6ftge9";
@@ -73,12 +74,6 @@ export function UpcomingEvents({ admin = false, eventId }) {
     setRsvpModalOpen(true);
   };
 
-  const deleteEvent = (eventId) => {
-    // Filter out the event with the given eventId
-    const updatedEvents = events.filter((event) => event.eventId !== eventId);
-    setEvents(updatedEvents);
-  };
-
   const notifyAllParticipants = async () => {
     try {
       const participantsColRef = collection(db, "participants");
@@ -112,7 +107,8 @@ export function UpcomingEvents({ admin = false, eventId }) {
   const handleMenuClick = (key, eventId) => {
     switch (key) {
       case '1': // Delete
-        deleteEvent(eventId);
+        console.log("ID1", eventId)
+        handleDeleteEvent(eventId, setEvents);
         break;
       case '2': // See RSVP
         setRSVPModalVisible(true);
@@ -122,7 +118,7 @@ export function UpcomingEvents({ admin = false, eventId }) {
     }
   };
 
-  const menu = (
+  const menu = (eventId) => (
     <Menu onClick={({ key }) => handleMenuClick(key, eventId)}>
       <Menu.Item key="1">Delete</Menu.Item>
       <Menu.Item key="2">See RSVP</Menu.Item>
@@ -174,17 +170,13 @@ export function UpcomingEvents({ admin = false, eventId }) {
         </span>
       );
     }
-
+ 
     actions.push(
-      <Dropdown key="more" overlay={menu} trigger={['click']}>
+      <Dropdown key="more" overlay={menu(event.eventId)} trigger={['click']}>
         <span>
           <EllipsisOutlined /> More Actions
         </span>
       </Dropdown>
-      // <span key="more">
-      //   <EllipsisOutlined />
-      //   More Actions
-      // </span>
     );
 
     return actions;
