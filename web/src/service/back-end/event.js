@@ -10,6 +10,9 @@ import moment from "moment";
 
 import { getEventAttendanceNumber } from "./attendance";
 import { getParticipantByEventId } from "./participant";
+import { getRSVPNumber } from "./rsvp";
+
+
 /**
  * Asynchronously fetches all events from the Firestore database.
  * @return {Promise<Array>} A promise that resolves to an array of event objects,
@@ -91,10 +94,11 @@ export async function getPastEventsOverview() {
   const pastEventsOverview = await Promise.all(
     pastEvents.map(async (event) => {
       const participantNumber = await getEventAttendanceNumber(event.eventId);
+      const rsvpNumber = await getRSVPNumber(event.eventId);
       return {
         ...event,
         participantNumber,
-        rsvpNumber: 0,
+        rsvpNumber,
       };
     })
   );
