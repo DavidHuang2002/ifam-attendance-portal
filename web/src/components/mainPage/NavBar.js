@@ -14,7 +14,7 @@ export function NavBar() {
     {
       key: "1",
       label: (
-        <Link href="/page">Home</Link>
+        <Link href="/app/page">Home</Link>
       ),
     },
     {

@@ -90,7 +90,7 @@ const HeroImage = styled.img`
 
 const HeroHeading = styled.h1`
   position: absolute;
-  top: 50%;
+  top:30%;
   left: 55%;
   transform: translate(-50%, -50%);
   font-size: 4.5rem;
@@ -108,14 +108,14 @@ const HeroText = styled.p`
 
 const HeroButton = styled.a`
   position: absolute;
-  top: 80%;
+  top: 62%;
   left: 48%;
   background-color: #2C5C9B; /* Blue background */
   color: white; /* White text */
   padding: 20px 20px; /* Adjust padding as needed */
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 18px;
   cursor: pointer;
   text-decoration: none; /* Remove default underline */
   font-family: 'Quicksand', sans-serif;
@@ -176,18 +176,37 @@ const PopularEventsDivider = styled.p`
 
 const PopularEventsList = styled.ul`
  list-style-type: none;
- padding: 0;
+ padding: 30px;
  text-align: center;
  max-width: 400px;
  margin: 0 auto;
  line-height: 2;
- margin-top: 1.5rem;
+ margin-top: 0.5rem;
+ margin-bottom: 2rem;
  font-size: 1.2rem;
  width: 50%
 
  li {
    margin-bottom: 1rem;
  }
+`;
+
+const PopularEventsButton = styled.a`
+  background-color: #DDA722; /* Gold background */
+  color: white; /* White text */
+  padding: 20px 20px; /* Adjust padding as needed */
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none; /* Remove default underline */
+  font-family: 'Quicksand', sans-serif;
+
+
+  /* Hover effect */
+  &:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
 `;
 /*
 const PopularEventsImage = styled(HeroSection)`
@@ -205,6 +224,52 @@ const PopularEventsImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+`;
+
+const ContactUsSection = styled.section`
+  background: #F7F4BA;
+  height: 400px;
+  position: relative;
+  justify-content: center;
+
+`;
+
+const ContactUsHeading = styled.h2`
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-top: 4rem;
+  font-size: 2.8rem;
+  color: black;
+  padding: 3rem;
+`;
+
+const ContactUsText = styled.p`
+  font-size: 1.2rem;
+  padding: 0;
+  line-height: 2;
+  margin-bottom: 3rem;
+  text-align: center;
+`;
+
+const ContactUsButton = styled.a`
+  background-color: #385B97; /* Blue background */
+  color: white; /* White text */
+  padding: 20px 20px; /* Adjust padding as needed */
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none; /* Remove default underline */
+  font-family: 'Quicksand', sans-serif;
+  position: absolute;
+  top: 62%;
+  left: 44%;
+  
+
+  /* Hover effect */
+  &:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
 `;
 
 const FooterSection = styled.footer`
@@ -270,11 +335,18 @@ export default function LandingPage() {
             <li>Grocery Store Runs</li>
             <li>Airport Pickups</li>
           </PopularEventsList>
+          <PopularEventsButton> Check Out Our Upcoming Events!</PopularEventsButton>
         </PopularEventsText>
         <PopularEventsImageWrapper>
           <PopularEventsImage src="/hero-section/I-FAM.png" alt="Hero Image" />
         </PopularEventsImageWrapper>
       </PopularEventsSection>
+
+      <ContactUsSection>
+        <ContactUsHeading>Connect With Us</ContactUsHeading>
+        <ContactUsText>We'd love to connect with you and get to know you. Join us for a fun trip or a lovely dinner and discussions!</ContactUsText>
+        <ContactUsButton>Send Us a Message!</ContactUsButton>
+      </ContactUsSection>
     </Wrapper>
   );
 }

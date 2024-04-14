@@ -72,7 +72,6 @@ export default function HomePage() {
             color: "white" }} />
       </Header>
       <LandingContent />
-      <UpcomingEvents />
       <Footer style={{ textAlign: "center" }}>
         I-Fam International Family ©2024
       </Footer>
