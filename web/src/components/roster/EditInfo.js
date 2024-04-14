@@ -1,7 +1,8 @@
 import React, { useState, useEffect} from "react";
-import { Button, Input, Modal, Form, Checkbox } from "antd"
+import { Button, Input, Modal, Form, Checkbox, Select} from "antd"
 import { updateParticipantDetails } from "@/service/back-end/participant";
 import { PROGRAM_OPTIONS } from "@/constants/participant";
+import { getGraduationYear } from "@/utils/dateUtils";
 
 export default function EditInfo({ participant, visible, onCancel, onSave}) {
     const [form] = Form.useForm();
@@ -52,8 +53,33 @@ export default function EditInfo({ participant, visible, onCancel, onSave}) {
           <Form.Item label="Email" name="email" rules={[{ required: false }]}>
             <Input placeholder="Edit Email" />
           </Form.Item>
-          <Form.Item label="Class" name="class" rules={[{ required: false }]}>
-            <Input placeholder="Edit Class" />
+          <Form.Item name={"class"} label="Class">
+            <Select
+              showSearch
+              placeholder="Select your grade"
+              options={[
+                {
+                  value: getGraduationYear("Undergraduate Freshman"),
+                  label: "Undergraduate Freshman",
+                },
+                {
+                  value: getGraduationYear("Undergraduate Sophomore"),
+                  label: "Undergraduate Sophomore",
+                },
+                {
+                  value: getGraduationYear("Undergraduate Junior"),
+                  label: "Undergraduate Junior",
+                },
+                {
+                  value: getGraduationYear("Undergraduate Senior"),
+                  label: "Undergraduate Senior",
+                },
+                {
+                  value: getGraduationYear("Graduate"),
+                  label: "Graduate",
+                },
+              ]}
+            />
           </Form.Item>
           <Form.Item name={"interests"} label="Interests">
             <Checkbox.Group options={PROGRAM_OPTIONS} />

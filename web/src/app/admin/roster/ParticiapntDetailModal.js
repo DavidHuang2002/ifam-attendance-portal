@@ -10,6 +10,10 @@ const participantInfo = [
     dataIndex: "class",
     key: "class",
     align: "center",
+    // render the class as a string to handle the case when class is Graduate
+    render: (classYear) => {
+      return classYear == -1 ? "Graduate" : classYear;
+    }
   },
   {
     title: "Email",
