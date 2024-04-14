@@ -41,7 +41,7 @@ export async function getAllEvents() {
   return events;
 }
 
-// get upcoming events, sorted by eventTime in ascending order
+// get upcoming events, sorted by eventDate in ascending order
 export async function getUpComingEvents() {
   const events = await getAllEvents();
   const today = moment();
@@ -51,24 +51,21 @@ export async function getUpComingEvents() {
         let eventDate;
         if (event.eventDate) {
           // turm date in the format of YYYY-MM-DD into a moment object
-          eventDate = moment(event.eventDate);
-        } else if (event.eventDates) {
-          // when eventDate is not defined, use eventDates to support legacy event types
-          eventDate = moment(event.eventDates[0]);
+          eventDate = moment(event.eventDate);        
         } else {
-          // if neither eventDate nor eventDates is defined, throw an error
+          // not defined, throw an error
           console.error("Event date is not defined for event: ", event);
         }
         
         // filter out event dates that is before. But keep the ones that are today
         return eventDate.isSameOrAfter(today, "day");
       })
-      // sort the events by eventTime in ascending order
-      .sort((a, b) => moment(a.eventDates[0]).diff(moment(b.eventDates[0])))
+      // sort the events by eventDate in ascending order
+      .sort((a, b) => moment(a.eventDate).diff(moment(b.eventDate)))
   );
 }
 
-// get past events, sorted by eventTime in descending order
+// get past events, sorted by eventDate in descending order
 export async function getPastEvents() {
   const events = await getAllEvents();
   const today = moment();
@@ -76,14 +73,13 @@ export async function getPastEvents() {
     events
       .filter((event) => {
         const { eventDate } = event;
-        // const eventDate = moment(eventDates[0]);
         // TODO: no filtering for now for testing, change it later
         // filter out event dates that is before. But keep the ones that are today
         // return eventDate.isBefore(today, "day");
         return true
       })
-      // sort the events by eventTime in descending order
-      .sort((a, b) => moment(b.eventDates[0]).diff(moment(a.eventDates[0])))
+      // sort the events by eventDate in descending order
+      .sort((a, b) => moment(b.eventDate).diff(moment(a.eventDate)))
   );
 }
 
