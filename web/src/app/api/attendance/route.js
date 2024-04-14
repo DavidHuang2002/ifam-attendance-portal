@@ -21,6 +21,7 @@ export async function POST(request) {
   }
 }
 
+// rebuild for deployment
 export async function GET(request) {
   try {
     const attendance = await getAllAttendance();
