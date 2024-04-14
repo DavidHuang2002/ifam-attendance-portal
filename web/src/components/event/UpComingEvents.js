@@ -143,8 +143,7 @@ export function UpcomingEvents({ admin = false }) {
 
   return (
     <div id="events">
-      <h1 style={{ marginBottom: "20px" }}>Our Upcoming Events</h1>
-      <div style={{ background: "#ECECEC" }}>
+      <div style={{ background: "#DDA722" }}>
         <div
           style={{
             display: "flex",

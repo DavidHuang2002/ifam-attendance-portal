@@ -171,6 +171,7 @@ const PopularEventsDivider = styled.p`
  margin-bottom: 1.5rem;
  font-size: 1.5rem;
  text-align: center;
+ color: DDA722;
 `;
 
 const PopularEventsList = styled.ul`
@@ -242,7 +243,7 @@ export default function LandingPage() {
 
       <WhoWeAreSection>
         <WhoWeAreHeading>Who We Are</WhoWeAreHeading>
-        <WhoWeAreText> ------------------------------------ </WhoWeAreText>
+        <WhoWeAreText style={{color: 'DDA722'}}> ------------------------------------ </WhoWeAreText>
         <WhoWeAreText>
           I-FAM is a non-profit Christian student group that serves
           international students from all backgrounds and faiths at Vanderbilt

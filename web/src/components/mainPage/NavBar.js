@@ -1,35 +1,26 @@
-"use client";
 import React from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
 import Link from "next/link";
 import styled from 'styled-components';
 import 'typeface-quicksand';
 
-import HeroSection from "@/components/mainPage/HeroSection";
-//import {UpcomingEvents} from "@/components/event/UpComingEvents"; // Assuming default export
-import {ContactInfo} from "@/components/mainPage/ContactInfo"; // Assuming default export
-import { UpcomingEvents } from "@/components/event/UpComingEvents";
-import LandingContent from "@/components/mainPage/NewLanding";
-
 
 
 const { Header, Content, Footer } = Layout;
-
-
-export default function HomePage() {
-  // Define menu items
-  const menuItems = [
+   
+export function NavBar() {
     // Assuming you have a section with id="events" on this page for anchor link
+    const menuItems = [
     {
       key: "1",
       label: (
-        <Link href="">Home</Link>
+        <Link href="/page">Home</Link>
       ),
     },
     {
       key: "2",
       label: (
-        <Link href="/events">Events</Link>
+        <Link href="/pages/events" passHref>Events</Link>
       ),
     },
     // Assuming "About Us" is meant to be an anchor link to a section on this page
@@ -43,7 +34,7 @@ export default function HomePage() {
     {
       key: "4",
       label: (
-        <Link href="/contact" passHref>
+        <Link href="/pages/contact" passHref>
           Contact Us
         </Link>
       ),
@@ -53,7 +44,7 @@ export default function HomePage() {
     {
       key: "6",
       label: (
-        <Link href="/signin" passHref>
+        <Link href="/pages/signin" passHref>
          Admin Portal
         </Link>
       ),
@@ -62,20 +53,15 @@ export default function HomePage() {
   ];
 
   return (
-    <Layout className="layout" style={{background: '#fff'}}>
-      <Header style={{ background: "#385B97"}}>
-        <div className="logo" />
+    <Header style={{ background: "#385B97"}}>
+      <div className="logo">
         <Menu mode="horizontal" items={menuItems} selectable={false} 
           style={{ 
             flex: 1,
             background: "#385B97",
             color: "white" }} />
+      
+      </div>
       </Header>
-      <LandingContent />
-      <UpcomingEvents />
-      <Footer style={{ textAlign: "center" }}>
-        I-Fam International Family ©2024
-      </Footer>
-    </Layout>
-  );
+      );
 }
