@@ -4,9 +4,10 @@ import { Button, Form, Input, Select, Checkbox, message } from "antd";
 import Link from "next/link";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { postAttednace, postParticipant } from "@/constants/api-endpoints";
-import { GRAD_STUDENT_CLASS } from "@/constants/participant";
+import { PROGRAM_OPTIONS } from "@/constants/participant";
 import { useRouter } from "next/navigation";
 import { getGraduationYear } from "@/utils/dateUtils";
+
 
 const layout = {
   position: "absolute",
@@ -141,11 +142,9 @@ export default function Attendance({ params: { eventId } }) {
             ]}
           />
         </Form.Item>
-        <Form.Item>
-          <p>What I-Fam program are you interested in?</p>
-          <Checkbox onChange={onChange}>I-FAM Vanderbilt</Checkbox>
-          <Checkbox onChange={onChange}>Nashville xxx Community</Checkbox>
-          <Checkbox onChange={onChange}>Program c</Checkbox>
+        <p>What I-Fam program are you interested in?</p>
+        <Form.Item name={["user", "interests"]} label="interests">
+          <Checkbox.Group options={PROGRAM_OPTIONS} />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">

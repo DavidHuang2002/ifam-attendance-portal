@@ -7,6 +7,14 @@ const getCurrentAcademicYear = () => {
   return academicYear;
 };
 
+export const renderGrade = (year) => {
+  if (year === GRAD_STUDENT_CLASS) {
+    return "Graduate";
+  } else {
+    return year;
+  }
+}
+
 export const getGraduationYear = (text) => {
   if (text === "Graduate") {
     return GRAD_STUDENT_CLASS;
