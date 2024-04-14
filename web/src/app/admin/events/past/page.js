@@ -4,7 +4,6 @@ import { Space, Table, Tag } from "antd";
 import { LayoutSider } from "@/components/dashBoard/LayoutSider";
 import { Layout, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
-import { EVENTS_RECORD, get_event_record_export_route } from "@/constants/api-endpoints";
 import { useState, useEffect } from "react";
 import EventAttendanceModal from "@/components/pastEvents/EventAttendanceModal";
 import { getPastEventsOverview } from "@/service/back-end/event";

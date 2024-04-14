@@ -12,7 +12,6 @@ import {
   MailOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { fetchUpComingEvents } from "@/constants/api-endpoints";
 import { getOldMemberAttendanceRoute } from "@/constants/front-end-routes";
 import { upcomingEventsAtom } from "@/jotaiStore/store";
 import { useAtom } from "jotai";

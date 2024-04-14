@@ -28,25 +28,6 @@ export const postAttednace = async (eventId, participantEmail) => {
 };
 
 
-// ------- events -------
-export const EVENTS = "/api/events";
-
-export const UPCOMING_EVENTS = `${EVENTS}/upcoming`;
-
-export const EVENTS_RECORD = `${EVENTS}/record`;
-
-export const get_event_record_route = (eventId) => {
-  return `${EVENTS_RECORD}/${eventId}`;
-};
-
-export const get_event_record_export_route = (eventId) => {
-  return `${EVENTS_RECORD}/${eventId}/export`;
-};
-
-export const fetchUpComingEvents = () => {
-  return fetch(UPCOMING_EVENTS);
-};
-
 // ------- participants -------
 export const PARTICIPANTS = "/api/participants";
 export const PARTICIPANTS_RECORD = `${PARTICIPANTS}/record`;
