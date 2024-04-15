@@ -9,7 +9,7 @@ import { Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider"; // Importing Sider component directly from its source.
 import { usePathname } from "next/navigation"; // Next.js hook to get the current pathname for route-aware logic.
 import Link from "next/link"; // Next.js Link component for client-side navigation.
-import { QuitPortal } from "../../components/dashBoard/QuitPortalButton"; // Custom component, possibly for logging out or exiting the portal.
+//import { QuitPortal } from "../../components/dashBoard/QuitPortalButton"; // Custom component, possibly for logging out or exiting the portal.
 
 export function SideBar() {
   const pathname = usePathname(); // Hook to access the current pathname.
@@ -70,7 +70,7 @@ export function SideBar() {
         selectedKeys={[getSelectedKey()]} // Array with the current active menu item based on the pathname.
         items={menuItems} // Dynamically generated menu items.
       />
-      <QuitPortal />
+      
     </Sider>
   );
 }
