@@ -120,7 +120,7 @@ export function UpcomingEvents({ admin = false, eventId }) {
   const menu = (eventId) => (
     <Menu onClick={({ key }) => handleMenuClick(key, eventId)}>
       <Menu.Item key="1">Delete</Menu.Item>
-      <Menu.Item key="2">See RSVP</Menu.Item>
+      {/* <Menu.Item key="2">See RSVP</Menu.Item> */}
     </Menu>
   )
 
