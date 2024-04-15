@@ -47,7 +47,7 @@ export function SideBar() {
     // Additional disabled menu items serving as placeholders for future features.
     {
       key: "4",
-      label: <Link href="/admin/events/past"> Past Events </Link>,
+      label: <Link href="/admin/events/past"> All Events </Link>,
       // disabled: true,
     },
     {

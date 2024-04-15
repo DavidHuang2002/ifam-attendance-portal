@@ -336,7 +336,7 @@ export default function LandingPage() {
             <li>Grocery Store Runs</li>
             <li>Airport Pickups</li>
           </PopularEventsList>
-          <PopularEventsButton> Check Out Our Upcoming Events!</PopularEventsButton>
+          <PopularEventsButton href='/events'> Check Out Our Upcoming Events!</PopularEventsButton>
         </PopularEventsText>
         <PopularEventsImageWrapper>
           <PopularEventsImage src="/hero-section/I-FAM.png" alt="Hero Image" />
@@ -346,7 +346,7 @@ export default function LandingPage() {
       <ContactUsSection>
         <ContactUsHeading>Connect With Us</ContactUsHeading>
         <ContactUsText>We'd love to connect with you and get to know you. Join us for a fun trip or a lovely dinner and discussions!</ContactUsText>
-        <ContactUsButton>Send Us a Message!</ContactUsButton>
+        <ContactUsButton href='/contact'>Send Us a Message!</ContactUsButton>
       </ContactUsSection>
     </Wrapper>
   );

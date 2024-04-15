@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import EventAttendanceModal from "@/components/pastEvents/EventAttendanceModal";
 import { getPastEventsOverview } from "@/service/back-end/event";
 import { exportEventDetails } from "@/service/back-end/exportRecord";
+import { downloadFile } from "@/utils/downloadUtils";
 
 const { Content } = Layout;
 
@@ -33,24 +34,9 @@ export default function ManagePastEvents() {
 
   const downloadEventRecord = async (eventId) => {
     const exportFile = await exportEventDetails(eventId);
-    console.log(exportFile);
     // format of export file
-    
-//     {
-//     "data": "eventName,eventDate,startTime,endTime,eventLocation,name,email,class\r\ntest new event model,2024-04-19,10:00:00 AM,11:00:00 AM,test loc,df,david.j.huang@vanderbilt.edu,2024",
-//     "fileType": "text/csv",
-//     "fileName": "2024-04-19-test new event model.csv"
-// }
-
     // download the file
-    const blob = new Blob([exportFile.data], { type: exportFile.fileType });
-    const url = window.URL.createObjectURL(blob); // Create a URL for the blob
-    const a = document.createElement("a"); // Create an <a> element
-    a.href = url; // Set the href of the <a> element to the blob URL
-    a.download = exportFile.fileName; // Set the download attribute to the file name
-    document.body.appendChild(a); // Append the <a> element to the body
-    a.click(); // Programmatically click the <a> element to start the download
-    a.remove(); // Remove the <a> element from the DOM
+    downloadFile(exportFile);
   };
 
   const columns = [
@@ -112,7 +98,7 @@ export default function ManagePastEvents() {
       <Content
         style={{ marginLeft: "200px", padding: "24px", minHeight: "100vh" }}
       >
-        <h1>Past events</h1>
+        <h1>All events</h1>
         <Table columns={columns} dataSource={data} />
         <EventAttendanceModal
           eventId={selectedEvent}
