@@ -99,6 +99,7 @@ export default function Roster() {
       dataIndex: "name",
       key: "name",
       align: "center",
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Email",
@@ -112,6 +113,7 @@ export default function Roster() {
       key: "class",
       align: "center",
       render: renderGrade,
+      sorter: (a, b) => a.class - b.class,
     },
     {
       title: "Action",
