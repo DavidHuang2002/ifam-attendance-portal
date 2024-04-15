@@ -117,14 +117,14 @@ export default function Roster() {
         <Button style={{ marginLeft: "auto" }}>Export</Button>
         <Table columns={columns} dataSource={data} />
       </Content>
-      {/* <AttendanceModal
+      <AttendanceModal
         open={attendanceModalVisible}
         onCancel={handleACancel}
         onOk={handleAOk}
         participantId={selectedParticipant?.participantId}
       />
 
-      <ParticipantDetailModal
+      {/* <ParticipantDetailModal
         open={detailsModalVisible}
         onCancel={handleDCancel}
         onOk={handleDOk}
