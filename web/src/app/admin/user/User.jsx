@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from "@/firebase/config";
 import { Modal, Form, Input, Select, Button, Space, Table } from 'antd';
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
-import { EditOutlined, DeleteOutlined, StopOutlined , PlusOutlined, DownloadOutlined} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, StopOutlined , PlusOutlined, DownloadOutlined,NotificationOutlined} from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { useRouter } from "next/navigation"; // Correct import for Next.js
 // Define the columns for your table with specified widths
@@ -127,6 +127,10 @@ const User = () => {
     router.push("/admin/user/createuser/")
   };
 
+  const navigateToNotificationForm = () => {
+    router.push("/admin/user/usernotification/")
+  };
+
   const onExportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(data.map(({ key, ...item }) => item));
     const wb = XLSX.utils.book_new();
@@ -199,6 +203,9 @@ const User = () => {
     <Space>
     <Button type="primary" icon={<PlusOutlined />} onClick={onAddUser}>Add User</Button>
           <Button type="primary" icon={<DownloadOutlined />} onClick={onExportToExcel}>Export to Excel</Button>
+          <Button type="primary" icon={<NotificationOutlined />} onClick={navigateToNotificationForm}>Send Notification</Button>
+
+
         </Space>
         
         </div>
