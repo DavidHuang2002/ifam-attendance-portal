@@ -2,8 +2,30 @@ import React from 'react';
 import { Button, Form, Input, Typography } from 'antd';
 import emailjs from 'emailjs-com';
 import { useRouter } from 'next/router'; // Import useRouter from next/router
+import styled from 'styled-components';
+
+import { NavBar } from '@/components/mainPage/NavBar';
+import { Head } from 'next/document';
 
 const { Title } = Typography;
+
+// formatting components on the page
+const Wrapper = styled.div`
+  width: 100%;
+`;
+
+const HeadingSection = styled.section`
+    background: white;
+`;
+
+const PageHeading = styled.h2`
+  font-size: 2.5rem;
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  margin-top: 6rem;
+`;
 
 const layout = {
   labelCol: { span: 6 },
@@ -52,8 +74,10 @@ const ContactForm = () => {
     });
 };
   return (
+  <Wrapper>
+    <NavBar />
+    <PageHeading>Contact Us</PageHeading>
     <div style={{ paddingTop: '20px', maxWidth: 600, margin: '20px auto' }}>
-      <Title level={2} style={{ textAlign: 'center' }}>Contact Us</Title>
       <Form
         {...layout}
         name="contact-form"
@@ -94,12 +118,13 @@ const ContactForm = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" style={{background: "#DDA722"}}>
             Send Message
           </Button>
         </Form.Item>
       </Form>
     </div>
+    </Wrapper>
   );
 };
 

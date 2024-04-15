@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Spin } from "antd";
 import ParticipantTable from "./AttendedParticipantTable";
-import { get_event_record_route } from "@/constants/api-endpoints";
+// import { get_event_record_route } from "@/constants/api-endpoints";
+import { getEventAttendanceDetail } from "@/service/back-end/event";
 
 export default function EventAttendanceModal({ eventId, open, setOpen }) {
   const [data, setData] = useState([]);
@@ -22,8 +23,8 @@ export default function EventAttendanceModal({ eventId, open, setOpen }) {
   }, [eventId]);
 
   const fetchAttendance = async (eventId) => {
-    const response = await fetch(get_event_record_route(eventId));
-    const data = await response.json();
+    // const response = await fetch(get_event_record_route(eventId));
+    const data = await getEventAttendanceDetail(eventId);
     return data;
   };
 

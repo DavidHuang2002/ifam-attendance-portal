@@ -1,6 +1,6 @@
 import { getParticipantByEmail } from "./participant";
 import { db } from "@/firebase/config";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { resultToDocRef } from "@/firebase/dbUtils";
 
 export async function createRSVP(email, eventId) {
@@ -26,4 +26,26 @@ export async function createRSVP(email, eventId) {
 
   // console.log("New RSVP created:", rsvpDocRef);
   return rsvpDocRef;
+}
+
+
+export async function getRSVPByEventId(eventId) {
+  // get all RSVPs for the event
+  const querySnapshot = await getDocs(collection(db, "rsvp"));
+  const rsvps = [];
+  querySnapshot.forEach((doc) => {
+    const rsvp = doc.data();
+    if (rsvp.eventId === eventId) {
+      rsvps.push({
+        ...rsvp,
+        rsvpId: doc.id,
+      });
+    }
+  });
+  return rsvps;
+}
+
+export async function getRSVPNumber(eventId) {
+  const rsvps = await getRSVPByEventId(eventId);
+  return rsvps.length;
 }

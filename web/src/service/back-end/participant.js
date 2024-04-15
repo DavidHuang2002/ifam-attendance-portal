@@ -72,4 +72,26 @@ export const getParticipantByEventId = async (eventId) => {
   }
 
   return participants;
-}
+};
+
+export const updateParticipantDetails = async (participant) => {
+  try {
+    console.log("BACKEND", participant)
+    const existingParticipant = await getParticipantByEmail(participant.email);
+    const participantRef = doc(db, "participants", existingParticipant.participantId);
+    // console.log("EXIST", existingParticipant)
+    // console.log("PARTREF", participantRef)
+
+
+    await updateDoc(participantRef, {
+      email: participant.email,
+      class: parseInt(participant.class),
+      interests: participant.interests || [],
+      note: participant.note || "",
+    });
+    console.log("Participant details updated successfully.");
+  } catch (error) {
+    console.error("Error updating participant details:", error);
+    throw error;
+  }
+};

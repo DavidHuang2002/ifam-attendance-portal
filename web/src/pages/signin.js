@@ -8,6 +8,8 @@ import { Form, Input, Card,Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 
+import { NavBar } from '@/components/mainPage/NavBar';
+
 // Import the styles object from the CSS Module
 // Adjust the path if necessary to match the location of your CSS file
 import styles from '@/app/page.module.css'; // This should be the path to your CSS module
@@ -62,8 +64,6 @@ const Signin = () => {
   // Your component's JSX with styling adjustments
   return (
     // Use the styles object for class names
-   
-     
     <div className={styles.container}> {/* Custom CSS for centering */}
       <Card className={styles.card} bordered={false}> {/* Custom CSS for Card styling */}
       <Form

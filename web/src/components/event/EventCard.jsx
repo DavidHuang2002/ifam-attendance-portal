@@ -10,7 +10,6 @@ const EventCard = ({ event, actions, admin }) => {
   const defaultFlyer = "/EventFlyer/defaultFlyer.jpeg";
   const {
     eventName,
-    // eventTime,
     startTime,
     endTime,
     eventLocation,
