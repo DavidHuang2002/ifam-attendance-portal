@@ -80,11 +80,11 @@ export default function ParticipantDetailModal({
         Edit
       </Button>
     ]}>
-      {participantData ? (
+      {/* {participantData ? (
         <Table columns={participantInfo} dataSource={[participantData]} size='large'/>
       ) : (
         <p>Loading...</p>
-      )}
+      )} */}
     </Modal>
     {/* <EditInfo
     participant={participantData}
