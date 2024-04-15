@@ -5,7 +5,7 @@ import { LayoutSider } from "@/components/dashBoard/LayoutSider";
 import { getAllParticipants } from "@/service/back-end/participant";
 import { renderGrade } from "@/utils/dateUtils";
 import AttendanceModal from "./AttendanceModal";
-import ParticipantDetailModal from "./ParticiapntDetailModal";
+// import ParticipantDetailModal from "./ParticiapntDetailModal";
 import { getAttendanceByParticipantId } from "@/service/back-end/attendance";
 
 const { Content } = Layout;
