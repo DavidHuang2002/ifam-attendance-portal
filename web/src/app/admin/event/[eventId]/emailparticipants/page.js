@@ -7,20 +7,25 @@ import EmailParticipants from './EmailParticipants'; // Adjust the import path t
 
 const { Content } = Layout;
 
-function Page() {
-  
-
+function Page({ params: { eventId } }) {
   // callback for redirecting to the admin page after the event is saved
-  const afterSave = () => router.push('/admin/');
+  const afterSave = () => router.push("/admin/");
 
   return (
     <LayoutSider>
       <Layout style={{ marginLeft: 180 }}>
-        <Content style={{ padding: '100px', margin: 0, minHeight: '280px' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+        <Content style={{ padding: "100px", margin: 0, minHeight: "280px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
             <h1>Select Participants to Email</h1>
           </div>
-          <EmailParticipants   />
+          <EmailParticipants eventId={eventId} />
         </Content>
       </Layout>
     </LayoutSider>

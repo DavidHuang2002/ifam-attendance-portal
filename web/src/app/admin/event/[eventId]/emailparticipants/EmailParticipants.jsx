@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, Table, Typography, Button, message } from 'antd';
+import { Checkbox, Table, Button, message, Tag } from 'antd';
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import { getAllParticipants } from '@/service/back-end/participant';
+import { getRSVPByEventId } from '@/service/back-end/rsvp';
 
 const EmailParticipants = ({ eventId = "DahdqaVm3RbxTTf3vh6i" }) => {
     const [participants, setParticipants] = useState([]);
@@ -14,14 +16,43 @@ const EmailParticipants = ({ eventId = "DahdqaVm3RbxTTf3vh6i" }) => {
 
     const fetchParticipants = async () => {
         try {
-            const q = query(collection(db, "event_notifications"), where("eventId", "==", eventId), where("notified", "==", true));
-            const notifiedSnapshot = await getDocs(q);
-            const notifiedEmails = new Set(notifiedSnapshot.docs.map(doc => doc.data().email));
+            // for now, allow for notifying participants multiple times. Later we can display a table showing who have been notified already
+            // TODO: ^see the line above
+            // const q = query(collection(db, "event_notifications"), where("eventId", "==", eventId), where("notified", "==", true));
+            // const notifiedSnapshot = await getDocs(q);
+            // const notifiedEmails = new Set(notifiedSnapshot.docs.map(doc => doc.data().email));
 
-            const participantsSnapshot = await getDocs(collection(db, "participants"));
-            const data = participantsSnapshot.docs
-                .map(doc => ({ key: doc.id, name: doc.data().name, email: doc.data().email }))
-                .filter(participant => !notifiedEmails.has(participant.email));
+            const participants = await getAllParticipants();
+            const rsvps = await getRSVPByEventId(eventId);
+            
+            console.log("Event ID:", eventId);
+            console.log("Participants:", participants);
+            console.log("RSVPs:", rsvps);
+
+
+            const data = participants.map(participant => (
+                {
+                    key: participant.participantId,
+                    name: participant.name,
+                    email: participant.email,
+                }
+            ));
+
+            // for each RSVP, if the participant is not in the list, add them
+            // if the participant is in the list, mark them as rsvp'd
+            for (let rsvp of rsvps) {
+                const participant = data.find(participant => participant.key === rsvp.participantId);
+                if (participant) {
+                    participant.rsvpd = true;
+                } else {
+                    data.push({
+                        key: rsvp.rsvpId,
+                        email: rsvp.email,
+                        name: "RSVP participant",
+                        rsvpd: true,
+                    });
+                }
+            }
 
             setParticipants(data);
         } catch (error) {
@@ -74,7 +105,24 @@ const EmailParticipants = ({ eventId = "DahdqaVm3RbxTTf3vh6i" }) => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: text => <a>{text}</a>,
+            render: (text, record) => (
+                // if the participant rsvp'd show a Tage next to name to indicate that
+                <div>
+                    {text}
+                    {record.rsvpd && <Tag color="green" style={{ marginLeft: 8 }}>RSVP'd</Tag>}
+                </div>
+            ),
+            
+            // sort by RSVP status first, then by name
+            sorter: (a, b) => {
+                if (a.rsvpd && !b.rsvpd) {
+                    return -1;
+                } else if (!a.rsvpd && b.rsvpd) {
+                    return 1;
+                } else {
+                    return a.name.localeCompare(b.name);
+                }
+            }
         },
         {
             title: 'Email',
