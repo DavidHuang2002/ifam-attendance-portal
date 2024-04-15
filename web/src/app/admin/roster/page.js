@@ -59,7 +59,7 @@ export default function Roster() {
   const handleEditSave = () => {
     // once the participant details are saved, close the modal and refresh the data
     setDetailsModalVisible(false);
-    fetchAllParticipantsData();
+    // fetchAllParticipantsData();
   }
 
 
