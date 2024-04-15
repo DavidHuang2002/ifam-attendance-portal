@@ -10,6 +10,9 @@ import moment from "moment";
 
 import { getEventAttendanceNumber } from "./attendance";
 import { getParticipantByEventId } from "./participant";
+import { getRSVPNumber } from "./rsvp";
+
+
 /**
  * Asynchronously fetches all events from the Firestore database.
  * @return {Promise<Array>} A promise that resolves to an array of event objects,
@@ -32,87 +35,54 @@ export async function getAllEvents() {
     const eventData = {
       ...data,
       eventId: doc.id, // Include the document ID as 'eventId'.
-      eventTime: data.eventTime,
-      // Convert each 'eventDate' to a JavaScript Date object, if any exist.
-      eventDates: data.eventDates,
     };
-
-    // If there are flyers associated with the event, prepare to fetch their URLs.
-    const flyers = data.eventFlyer || [];
-    flyers.forEach((filename) => {
-      // Create a reference to the flyer in Firebase Storage.
-      const flyerRef = ref(storage, `public/EventFlyer/${filename}`);
-      // Push a promise to fetch the download URL into the `flyerPromises` array.
-      flyerPromises.push(
-        getDownloadURL(flyerRef)
-          .then((url) => ({ filename, url })) // On success, store the filename and URL.
-          .catch((error) => null) // On failure, push null (which will be filtered out later).
-      );
-    });
-
-    // Add the event data object to the 'events' array.
+    
     events.push(eventData);
-  });
-
-  // Wait for all flyer URL fetch promises to resolve.
-  const flyerResults = await Promise.all(flyerPromises);
-
-  // Filter out any null results (failed fetches) and reduce the results into an object mapping filenames to URLs.
-  const flyerUrls = flyerResults
-    .filter((result) => result !== null)
-    .reduce((acc, { filename, url }) => {
-      acc[filename] = url;
-      return acc;
-    }, {});
-
-  // Attach flyer URLs to their corresponding events.
-  events.forEach((event) => {
-    if (event.eventFlyer) {
-      event.eventFlyer = event.eventFlyer.map((filename) => ({
-        filename,
-        url: flyerUrls[filename] || null, // Attach the URL or null if the fetch failed.
-      }));
-    }
   });
 
   // Return the array of events, each now potentially containing flyer URL(s).
   return events;
 }
 
-// get upcoming events, sorted by eventTime in ascending order
+// get upcoming events, sorted by eventDate in ascending order
 export async function getUpComingEvents() {
   const events = await getAllEvents();
   const today = moment();
   return (
     events
       .filter((event) => {
-        // const eventDate = moment(event.eventTime);
-        const { eventDates } = event;
-        const eventDate = moment(eventDates[0]);
+        let eventDate;
+        if (event.eventDate) {
+          // turm date in the format of YYYY-MM-DD into a moment object
+          eventDate = moment(event.eventDate);        
+        } else {
+          // not defined, throw an error
+          console.error("Event date is not defined for event: ", event);
+        }
+        
         // filter out event dates that is before. But keep the ones that are today
         return eventDate.isSameOrAfter(today, "day");
       })
-      // sort the events by eventTime in ascending order
-      .sort((a, b) => moment(a.eventDates[0]).diff(moment(b.eventDates[0])))
+      // sort the events by eventDate in ascending order
+      .sort((a, b) => moment(a.eventDate).diff(moment(b.eventDate)))
   );
 }
 
-// get past events, sorted by eventTime in descending order
+// get past events, sorted by eventDate in descending order
 export async function getPastEvents() {
   const events = await getAllEvents();
   const today = moment();
   return (
     events
       .filter((event) => {
-        const { eventDates } = event;
-        const eventDate = moment(eventDates[0]);
+        const { eventDate } = event;
         // TODO: no filtering for now for testing, change it later
         // filter out event dates that is before. But keep the ones that are today
         // return eventDate.isBefore(today, "day");
         return true
       })
-      // sort the events by eventTime in descending order
-      .sort((a, b) => moment(b.eventDates[0]).diff(moment(a.eventDates[0])))
+      // sort the events by eventDate in descending order
+      .sort((a, b) => moment(b.eventDate).diff(moment(a.eventDate)))
   );
 }
 
@@ -124,10 +94,11 @@ export async function getPastEventsOverview() {
   const pastEventsOverview = await Promise.all(
     pastEvents.map(async (event) => {
       const participantNumber = await getEventAttendanceNumber(event.eventId);
+      const rsvpNumber = await getRSVPNumber(event.eventId);
       return {
         ...event,
         participantNumber,
-        rsvpNumber: 0,
+        rsvpNumber,
       };
     })
   );

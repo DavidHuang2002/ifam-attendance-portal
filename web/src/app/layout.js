@@ -2,6 +2,7 @@
 import "./globals.css";
 import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import StyledComponentsRegistry from "@/components/StyledComponentRegistry";
 
 
 // these config are for setting font
@@ -19,7 +20,11 @@ export default function RootLayout({ children }) {
       <body 
         // className={inter.className}
       >
-        <AntdRegistry>{children}</AntdRegistry>
+        <StyledComponentsRegistry>
+          <AntdRegistry>
+            {children}
+          </AntdRegistry>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );

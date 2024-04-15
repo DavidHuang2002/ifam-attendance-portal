@@ -8,6 +8,18 @@ import {
 } from "firebase/firestore";
 import { getAttendanceByEventId } from "./attendance";
 
+
+export const getAllParticipants = async () => {
+  const query = collection(db, "participants");
+  const snapshot = await getDocs(query);
+  const participants = [];
+  snapshot.forEach((doc) => {
+    participants.push({ ...doc.data(), participantId: doc.id });
+  }
+  );
+  return participants; 
+};
+
 export const getParticipantByEmail = async (email) => {
   // query firebase with email
   const query = collection(db, "participants");
@@ -60,4 +72,26 @@ export const getParticipantByEventId = async (eventId) => {
   }
 
   return participants;
-}
+};
+
+export const updateParticipantDetails = async (participant) => {
+  try {
+    console.log("BACKEND", participant)
+    const existingParticipant = await getParticipantByEmail(participant.email);
+    const participantRef = doc(db, "participants", existingParticipant.participantId);
+    // console.log("EXIST", existingParticipant)
+    // console.log("PARTREF", participantRef)
+
+
+    await updateDoc(participantRef, {
+      email: participant.email,
+      class: parseInt(participant.class),
+      interests: participant.interests || [],
+      note: participant.note || "",
+    });
+    console.log("Participant details updated successfully.");
+  } catch (error) {
+    console.error("Error updating participant details:", error);
+    throw error;
+  }
+};

@@ -4,6 +4,7 @@ import { addDoc, collection, getDocs } from "firebase/firestore";
 import { getAllDocs } from "@/firebase/dbUtils";
 import { db } from "@/firebase/config";
 import { getParticipantByEmail } from "@/service/back-end/participant";
+import { getEventById } from "@/service/back-end/event";
 
 export class ParticipantNotFound extends Error {
   constructor(message) {
@@ -79,5 +80,29 @@ export const getAttendanceByEventId = async (eventId) => {
       attendance.push(data);
     }
   });
+  return attendance;
+};
+
+export const getAttendanceByParticipantId = async (participantId) => {
+  // for the given participant id, query the attendance records
+  // for each attendance record, include the event info associated with the event id
+  const query = collection(db, "attendance");
+  const snapshot = await getDocs(query);
+  const attendance = [];
+  // console.log("backend participantId: ", participantId);
+
+  for (const doc of snapshot.docs) {
+    const data = doc.data();
+    if (data.participantId === participantId) {
+      // console.log("data: ", data);
+      // get event info
+      const event = await getEventById(data.eventId);
+      if (event) {
+        data.event = event;
+        attendance.push(data);
+      }
+    }
+  }
+
   return attendance;
 };

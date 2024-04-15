@@ -1,59 +1,65 @@
 "use client";
-import React, { useState } from "react";
-import { Table, Layout, Button, Modal, Divider } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Layout, Button, Modal, Divider, Spin } from "antd";
 import { LayoutSider } from "@/components/dashBoard/LayoutSider";
-
+import { getAllParticipants } from "@/service/back-end/participant";
+import { renderGrade } from "@/utils/dateUtils";
+import AttendanceModal from "./AttendanceModal";
+import ParticipantDetailModal from "./ParticiapntDetailModal";
+import { getAttendanceByParticipantId } from "@/service/back-end/attendance";
+import { DownloadOutlined } from "@ant-design/icons";
+import { exportAllParticipants, exportParticipantAttendance } from "@/service/back-end/exportRecord";
+import { downloadFile } from "@/utils/downloadUtils";
 const { Content } = Layout;
 
-const attendanceInfo = [
-  {
-    title: "Event",
-    dataIndex: "Event",
-    key: "Event",
-    align: "center",
-  },
-  {
-    title: "Date",
-    dataIndex: "Date",
-    key: "Date",
-    align: "center",
-  },
-];
 
-const attendanceData = [
-  {
-    Event: "Dinner & Discussion",
-    Date: "xxxx",
-  },
-  {
-    Event: "Event 2",
-    Date: "xxxx",
-  },
-  {
-    Event: "Event 3",
-    Date: "xxxx",
-  },
-];
+// const detailData = {
+//   Email: "john.doe@vanderbilt.edu",
+//   Class: "2026",
+//   Interest: "I-FAM Nashville",
+//   Note: "John Doe is a cool dude",
+// };
 
-const detailData = [
-  {
-    Email: "john.doe@vanderbilt.edu",
-    Class: "2026",
-    Interest: "I-FAM Nashville",
-    Note: "John Doe is a cool dude",
-  },
-];
 
 export default function Roster() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
 
-  const showAttendanceModal = () => {
-    setAttendanceModalVisible(true);
+  const fetchAllParticipantsData = async () => {
+    const participants = await getAllParticipants();
+    setData(participants);
+  }
+
+  useEffect(() => {
+    fetchAllParticipantsData();
+  }, []);
+
+  const downloadParticipants = async () => {
+    setLoading(true);
+    const exportFile = await exportAllParticipants();
+    downloadFile(exportFile);
+    setLoading(false);
   };
 
-  const showDetailsModal = () => {
+  const downloadAttendance = async (participantId) => {
+    setLoading(true);
+    const exportFile = await exportParticipantAttendance(participantId);
+    downloadFile(exportFile);
+    setLoading(false);
+  };
+
+  const showAttendanceModal = (participant) => {
+    setAttendanceModalVisible(true);
+    setSelectedParticipant(participant);
+  };
+
+  const showDetailsModal = (participant) => {
     setDetailsModalVisible(true);
+    setSelectedParticipant(participant);
   };
 
   const handleAOk = () => {
@@ -64,72 +70,53 @@ export default function Roster() {
     setAttendanceModalVisible(false);
   };
 
-  const handleDOk = () => {
-    setDetailsModalVisible(false);
-  };
-
   const handleDCancel = () => {
     setDetailsModalVisible(false);
   };
 
-  const ActionButton = [
+  const handleEditSave = () => {
+    // once the participant details are saved, close the modal and refresh the data
+    setDetailsModalVisible(false);
+    fetchAllParticipantsData();
+  }
+
+
+  const renderActions = (_, record)=>[
     <div>
-      <Button onClick={showAttendanceModal}>See Attendance</Button> |
-      <Button onClick={showDetailsModal}>See Details</Button>
+      <Button 
+      onClick={() => showAttendanceModal(record)}
+      >
+        See Attendance
+      </Button>
+      <Divider type="vertical" />
+      <Button onClick={() => showDetailsModal(record)}>See Details</Button>
     </div>,
   ];
 
   const columns = [
     {
       title: "Name",
-      dataIndex: "Name",
-      key: "Name",
+      dataIndex: "name",
+      key: "name",
       align: "center",
     },
     {
       title: "Email",
-      dataIndex: "Email",
-      key: "Email",
+      dataIndex: "email",
+      key: "email",
       align: "center",
     },
     {
       title: "Class",
-      dataIndex: "Class",
-      key: "Class",
+      dataIndex: "class",
+      key: "class",
       align: "center",
+      render: renderGrade,
     },
     {
       title: "Action",
-      dataIndex: "Action",
-      key: "Action",
       align: "center",
-    },
-  ];
-
-  const data = [
-    {
-      Name: "John Doe",
-      Email: "...@vanderbilt.edu",
-      Class: "2026",
-      Action: ActionButton,
-    },
-    {
-      Name: "Joe Bob",
-      Email: "...@vanderbilt.edu",
-      Class: "2027",
-      Action: ActionButton,
-    },
-    {
-      Name: "Billy Bob Joe",
-      Email: "...@vanderbilt.edu",
-      Class: "2025",
-      Action: ActionButton,
-    },
-    {
-      Name: "Joe Billy",
-      Email: "...@vanderbilt.edu",
-      Class: "2028",
-      Action: ActionButton,
+      render: renderActions,
     },
   ];
 
@@ -138,40 +125,47 @@ export default function Roster() {
       <Content
         style={{ marginLeft: "200px", padding: "24px", minHeight: "100vh" }}
       >
-        <h1>Participant Roster</h1>
-        <Button style={{ marginLeft: "auto" }}>Export</Button>
-        <Table columns={columns} dataSource={data} />
+        <Spin spinning={loading}>
+          <h1>Participant Roster</h1>
+          <div
+            style={{
+              margin: "20px",
+              display: "flex",
+              alignSelf: "flex-start",
+            }}
+          >
+            <Button
+              onClick={() => downloadParticipants()}
+              icon={<DownloadOutlined />}
+              style={{ width: "200px", marginRight: "20px" }}
+            >
+              Export Roster
+            </Button>
+            <Button
+              onClick={() => downloadAttendance()}
+              icon={<DownloadOutlined />}
+              style={{ width: "200px" }}
+            >
+              Export Attendance
+            </Button>
+          </div>
+
+          <Table columns={columns} dataSource={data} />
+        </Spin>
       </Content>
-      <Modal
-        title="Attendance for "
+      <AttendanceModal
         open={attendanceModalVisible}
         onCancel={handleACancel}
         onOk={handleAOk}
-      >
-        <Table columns={attendanceInfo} dataSource={attendanceData} />
-      </Modal>
-      <Modal
-        title="Info on "
+        participantId={selectedParticipant?.participantId}
+      />
+
+      <ParticipantDetailModal
         open={detailsModalVisible}
         onCancel={handleDCancel}
-        onOk={handleDOk}
-      >
-        <ul>
-          <li>
-            <strong>Email:</strong> {detailData[0].Email}
-          </li>
-          <li>
-            <strong>Class:</strong> {detailData[0].Class}
-          </li>
-          <li>
-            <strong>Interest:</strong> {detailData[0].Interest}
-          </li>
-          <li>
-            <strong>Note:</strong> {detailData[0].Note}
-          </li>
-        </ul>
-        <Button>Edit</Button>
-      </Modal>
+        participantData={selectedParticipant}
+        onEditSave={handleEditSave}
+      />
     </LayoutSider>
   );
 }
