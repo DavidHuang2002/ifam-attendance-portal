@@ -26,7 +26,7 @@ export default function EditInfo({ participant, visible, onCancel, onSave}) {
             onSave(updatedParticipant);
           });
     };
-  
+  // dummy
     return (
       <Modal
         title="Edit Participant Details"
