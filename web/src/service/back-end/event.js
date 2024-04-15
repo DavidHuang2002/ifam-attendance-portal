@@ -1,5 +1,5 @@
 // Firebase imports for accessing Firestore and Storage functionalities.
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 
 // Import your Firebase project's configuration for database and storage.
@@ -114,5 +114,17 @@ export async function getEventById(eventId) {
 export async function getEventAttendanceDetail(eventId) {
   const participants = await getParticipantByEventId(eventId);
   return participants;
+}
+
+export async function deleteEvent(eventId) {
+  try {
+    console.log("ID", eventId)
+    const eventRef = doc(db, 'events', eventId); // Get a reference to the event document
+    await deleteDoc(eventRef); // Delete the document
+    console.log('Event deleted successfully');
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw error;
+  }
 }
 
