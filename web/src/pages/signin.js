@@ -6,6 +6,7 @@ import { app } from "@/firebase/config";
 import { useRouter } from 'next/router';
 import { Form, Input, Card,Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 
 // Import the styles object from the CSS Module
 // Adjust the path if necessary to match the location of your CSS file
@@ -21,15 +22,28 @@ const Signin = () => {
   const [error, setError] = useState('');
 
   // Function to handle form submission
-  const onFinish = async (values) => {
-    try {
-      const auth = getAuth();
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/admin");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+        const onFinish = async (values) => {
+        const auth = getAuth(app);
+        const firestore = getFirestore(app);
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const userDocRef = doc(firestore, "users", email);  // assuming 'email' is the document ID
+          const userDoc = await getDoc(userDocRef);
+
+          if (!userDoc.exists()) {
+            throw new Error('No user data available');
+          }
+
+          const userName = userDoc.data().name;  // assuming 'username' is the field
+          localStorage.setItem('userName', userName);  // store the username in localStorage
+          localStorage.setItem('userEmail', email);
+          router.push("/admin");
+        } catch (error) {
+          console.error("Login Error: ", error);
+          setError(error.message);
+        }
+      };
+
 
   const handleForgotPassword = async () => {
     const auth = getAuth();
