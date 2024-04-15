@@ -31,7 +31,7 @@ export default function EditInfo({ participant, visible, onCancel, onSave}) {
     return (
       <Modal
         title="Edit Participant Details"
-        visible={visible}
+        open={visible}
         onCancel={onCancel}
         footer={[
           <Button key="cancel" onClick={onCancel}>
