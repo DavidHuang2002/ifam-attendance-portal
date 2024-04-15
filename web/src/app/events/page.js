@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import styled from 'styled-components';
 import {useState} from 'react';
@@ -28,23 +30,15 @@ const PageHeading = styled.h1`
   margin-top: 6rem;
 `;
 
-const EventsSection = styled.p`
-    padding: 2rem 8rem;
-    height: 600px;
-    background: white;`
-;
-
 
 export default function EventsPage() {
     return (
-      <Layout className="layout" style={{background: '#fff'}}>
+      <Layout className="layout" style={{ background: "#fff" }}>
         <NavBar />
         <HeadingSection>
-            <PageHeading> Our Upcoming Events</PageHeading>
+          <PageHeading> Our Upcoming Events</PageHeading>
         </HeadingSection>
-        <EventsSection>
-            <UpcomingEvents />
-        </EventsSection>
+        <UpcomingEvents />
         <Footer style={{ textAlign: "center" }}>
           I-Fam International Family ©2024
         </Footer>
