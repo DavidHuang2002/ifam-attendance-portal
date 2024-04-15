@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Table, Tag } from 'antd';
 import EditInfo from '@/components/roster/EditInfo';
 import { getAllParticipants } from '@/service/back-end/participant';
-import { render } from '@testing-library/react';
 import { GRAD_STUDENT_CLASS } from '@/constants/participant';
 
 const participantInfo = [
