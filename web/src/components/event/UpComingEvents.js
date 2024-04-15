@@ -71,7 +71,7 @@ export function UpcomingEvents({ admin = false }) {
         </span>
       </Link>,
       <Link
-      href={`/admin/event/${event.eventId}/edit/emailparticipants`}
+      href={`/admin/event/${event.eventId}/emailparticipants`}
       key="emailparticipants"
       passHref
     >
