@@ -24,17 +24,17 @@ const participantInfo = [
     align: "center",
     // the render function render the interests list as a list of Tags
     // render the tags in a vertical row
-    render: (interests) => {
-      return (
-        <div>
-          {interests?.map((interest) => (
-            <Tag key={interest} color="blue">
-              {interest}
-            </Tag>
-          ))}
-        </div>
-      );
-    }
+    // render: (interests) => {
+    //   return (
+    //     <div>
+    //       {interests?.map((interest) => (
+    //         <Tag key={interest} color="blue">
+    //           {interest}
+    //         </Tag>
+    //       ))}
+    //     </div>
+    //   );
+    // }
   },
   {
     title: "Note",
