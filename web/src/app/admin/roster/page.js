@@ -117,7 +117,7 @@ export default function Roster() {
         <Button style={{ marginLeft: "auto" }}>Export</Button>
         <Table columns={columns} dataSource={data} />
       </Content>
-      <AttendanceModal
+      {/* <AttendanceModal
         open={attendanceModalVisible}
         onCancel={handleACancel}
         onOk={handleAOk}
@@ -129,7 +129,7 @@ export default function Roster() {
         onCancel={handleDCancel}
         onOk={handleDOk}
         participantData={selectedParticipant}
-      />
+      /> */}
     </LayoutSider>
   );
 }
