@@ -76,12 +76,12 @@ export default function ParticipantDetailModal({
         <p>Loading...</p>
       )}
     </Modal>
-    <EditInfo
+    {/* <EditInfo
     participant={participantData}
     visible={editModalVisible}
     onCancel={handleEditCancel}
     onSave={handleEditSave}
-  />
+  /> */}
   </>
   );
 }

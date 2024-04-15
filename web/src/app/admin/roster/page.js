@@ -124,12 +124,12 @@ export default function Roster() {
         participantId={selectedParticipant?.participantId}
       />
 
-      {/* <ParticipantDetailModal
+      <ParticipantDetailModal
         open={detailsModalVisible}
         onCancel={handleDCancel}
         onOk={handleDOk}
         participantData={selectedParticipant}
-      /> */}
+      />
     </LayoutSider>
   );
 }
