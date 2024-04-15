@@ -24,12 +24,12 @@ export function NavBar() {
       ),
     },
     // Assuming "About Us" is meant to be an anchor link to a section on this page
-    {
-      key: "3",
-      label: (
-        <Link href="#contact">About Us</Link>
-      ),
-    },
+    // {
+    //   key: "3",
+    //   label: (
+    //     <Link href="#contact">About Us</Link>
+    //   ),
+    // },
     // For navigation with Next.js Link
     {
       key: "4",

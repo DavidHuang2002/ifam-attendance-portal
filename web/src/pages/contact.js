@@ -20,16 +20,11 @@ const HeadingSection = styled.section`
 
 const PageHeading = styled.h2`
   font-size: 2.5rem;
+  width: 100%;
   font-weight: bold;
   text-align: center;
   margin-bottom: 2rem;
   margin-top: 6rem;
-`;
-
-const FormSection = styled.section`
-  paddingTop: 20px;
-  maxWidth: 600;
-  margin: 20px;
 `;
 
 const layout = {
