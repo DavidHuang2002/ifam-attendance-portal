@@ -25,14 +25,14 @@ export default function Roster() {
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
 
-  const fetchAllParticipantsData = async () => {
-    const participants = await getAllParticipants();
-    setData(participants);
-  }
+  // const fetchAllParticipantsData = async () => {
+  //   const participants = await getAllParticipants();
+  //   setData(participants);
+  // }
 
-  useEffect(() => {
-    fetchAllParticipantsData();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllParticipantsData();
+  // }, []);
 
   const showAttendanceModal = (participant) => {
     setAttendanceModalVisible(true);
