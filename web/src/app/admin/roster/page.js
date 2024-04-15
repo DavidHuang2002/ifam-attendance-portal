@@ -13,14 +13,6 @@ import { downloadFile } from "@/utils/downloadUtils";
 const { Content } = Layout;
 
 
-// const detailData = {
-//   Email: "john.doe@vanderbilt.edu",
-//   Class: "2026",
-//   Interest: "I-FAM Nashville",
-//   Note: "John Doe is a cool dude",
-// };
-
-
 export default function Roster() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,12 +26,12 @@ export default function Roster() {
   //   setData(participants);
   // }
 
-  useEffect(() => {
-    // fetchAllParticipantsData();
-    getAllParticipants().then((participants) => {
-      setData(participants);
-    });
-  }, []);
+  // useEffect(() => {
+  //   // fetchAllParticipantsData();
+  //   getAllParticipants().then((participants) => {
+  //     setData(participants);
+  //   });
+  // }, []);
 
   const downloadParticipants = async () => {
     setLoading(true);
