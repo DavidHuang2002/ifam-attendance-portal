@@ -48,7 +48,7 @@ const EmailParticipants = ({ eventId = "DahdqaVm3RbxTTf3vh6i" }) => {
                     data.push({
                         key: rsvp.rsvpId,
                         email: rsvp.email,
-                        name: "RSVP participant",
+                        name: "RSVP'd guest",
                         rsvpd: true,
                     });
                 }
