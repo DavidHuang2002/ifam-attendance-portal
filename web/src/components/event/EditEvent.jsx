@@ -41,7 +41,6 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
         ...eventData,
         eventFlyer: flyers,
         eventTime: eventData.eventTime ? moment(eventData.eventTime) : null,
-        eventDates: eventData.eventDates ? [moment(eventData.eventDates[0]), moment(eventData.eventDates[1])] : [],
         startTime: eventData.startTime ? moment(eventData.startTime, "HH:mm A") : moment().startOf('day'),
         endTime: eventData.endTime ? moment(eventData.endTime, "HH:mm A") : moment().endOf('day'),
         eventDate: eventData.eventDate ? moment(eventData.eventDate) : moment()
@@ -74,7 +73,6 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
     const eventDataToSave = {
       ...values,
       eventTime: values.eventTime ? values.eventTime.toISOString() : null,
-      eventDates: values.eventDates ? values.eventDates.map(date => date.toISOString()) : [],
       eventFlyer: values.eventFlyer.map(flyer => flyer.name || flyer.uid),
       startTime: values.startTime ? values.startTime.format("HH:mm A") : null,
       endTime: values.endTime ? values.endTime.format("HH:mm A") : null,
