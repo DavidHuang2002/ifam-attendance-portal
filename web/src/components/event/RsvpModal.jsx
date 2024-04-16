@@ -32,7 +32,7 @@ export default function RsvpModal({ eventId, eventName}) {
       console.log("RSVP created:", docRef);
     } catch (error) {
       console.error("Failed to submit RSVP:", error);
-      message.error("Failed to submit RSVP. Please try again later.");
+      message.error("Failed to submit RSVP. Please enter in an email.");
       setLoading(false);
     }
   };
