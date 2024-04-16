@@ -202,7 +202,7 @@ export const ContactUsButton = styled.a`
   font-family: 'Quicksand', sans-serif;
   position: absolute;
   top: 62%;
-  left: 44%;
+  left: 43%;
   
 
   /* Hover effect */

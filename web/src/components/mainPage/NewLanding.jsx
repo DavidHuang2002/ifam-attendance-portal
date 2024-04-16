@@ -65,7 +65,7 @@ export default function LandingPage() {
           <PopularEventsButton href='/events'> Check Out Our Upcoming Events!</PopularEventsButton>
         </PopularEventsText>
         <PopularEventsImageWrapper>
-          <PopularEventsImage src="/hero-section/I-FAM.png" alt="Hero Image" />
+          <PopularEventsImage src="/hero-section/dinner.jpg" alt="Hero Image" />
         </PopularEventsImageWrapper>
       </PopularEventsSection>
 
