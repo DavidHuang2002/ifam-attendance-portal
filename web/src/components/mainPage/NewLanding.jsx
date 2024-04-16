@@ -6,7 +6,7 @@ import Image from 'next/image';
 import HeroSection from '@/components/mainPage/HeroSection';
 import {GlobalStyle} from '@/styling/GlobalFonts';
 
-import { Wrapper, HeroImgSection, HeroHeading, HeroButton, 
+import { Wrapper, HeroImgSection, HeroHeading, HeroButton, HeroText,
          WhoWeAreSection, WhoWeAreDivider, WhoWeAreHeading, WhoWeAreText,
          PopularEventsSection, PopularEventsDivider, PopularEventsButton, PopularEventsImage, PopularEventsImageWrapper, PopularEventsText, PopularEventsHeading, PopularEventsList,
          ContactUsSection, ContactUsHeading, ContactUsText, ContactUsButton} from '@/styling/HomePage';

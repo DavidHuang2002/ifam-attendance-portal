@@ -12,7 +12,11 @@ import { UpcomingEvents } from "@/components/event/UpComingEvents";
 import LandingContent from "@/components/mainPage/NewLanding";
 import { NavBar } from "@/components/mainPage/NavBar";
 
-
+const PageWrapper = styled.div`
+  background: url("/hero-section/I-FAM.png");
+  background-size: cover;
+  min-height: 100vh;
+`;
 
 const { Header, Content, Footer } = Layout;
 
@@ -20,11 +24,13 @@ const { Header, Content, Footer } = Layout;
 export default function HomePage() {
     return (
     <Layout className="layout" style={{background: '#fff'}}>
+      <PageWrapper>
       <NavBar />
       <LandingContent />
-      <Footer style={{ textAlign: "center" }}>
+      <Footer style={{ textAlign: "center"}}>
         I-Fam International Family ©2024
       </Footer>
+      </PageWrapper>
     </Layout>
   );
 }
