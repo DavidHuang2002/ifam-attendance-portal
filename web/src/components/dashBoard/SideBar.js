@@ -18,11 +18,11 @@ export function SideBar() {
   const getSelectedKey = () => {
     const pathMap = {
       "/admin": "1",
-      "/admin/manageMainPage": "2",
-      "/admin/event/create": "3",
-      "/admin/events/past": "4",
-      "/admin/roster": "5",
-      "/admin/user": "6",
+      // "/admin/manageMainPage": "2",
+      "/admin/event/create": "2",
+      "/admin/events/past": "3",
+      "/admin/roster": "4",
+      "/admin/user": "5",
 
       // Additional mappings can be added to handle more paths.
     };
@@ -35,27 +35,27 @@ export function SideBar() {
       key: "1",
       label: <Link href="/admin">Main Dashboard</Link>, // Link to the main dashboard.
     },
+    // {
+    //   key: "2",
+    //   label: <Link href="/admin/manageMainPage">Manage Main Page</Link>,
+    //   disabled: true, // Placeholder item, currently disabled.
+    // },
     {
       key: "2",
-      label: <Link href="/admin/manageMainPage">Manage Main Page</Link>,
-      disabled: true, // Placeholder item, currently disabled.
-    },
-    {
-      key: "3",
       label: <Link href="/admin/event/create">Create Event</Link>, // Link to create a new event.
     },
     // Additional disabled menu items serving as placeholders for future features.
     {
-      key: "4",
+      key: "3",
       label: <Link href="/admin/events/past"> All Events </Link>,
       // disabled: true,
     },
     {
-      key: "5",
+      key: "4",
       label: <Link href="/admin/roster">Roster</Link>,
     },
     {
-      key: "6",
+      key: "5",
       label: <Link href="/admin/user">Users</Link>,
     },
   ];
