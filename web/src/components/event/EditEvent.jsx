@@ -1,8 +1,4 @@
-// Component for editing an event. It fetches the event data from Firestore and initializes the form with the data.
-// It also handles form submission to update the event data in Firestore.
-// In next iteration, we plan to extract the data based related logic into API services
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { db } from "@/firebase/config";
 import { doc, updateDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -32,18 +28,18 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
     if (editMode) {
       const flyers = eventData.eventFlyer?.map(flyer => ({
         uid: flyer,
-        name: flyer,
+        name: "Uploaded Flyer", // Assuming placeholder text for flyer names
         status: 'done',
-        url: flyer // Assuming URL is stored directly; replace logic if needed to fetch URLs
+        url: flyer
       })) || [];
 
       form.setFieldsValue({
         ...eventData,
         eventFlyer: flyers,
         eventTime: eventData.eventTime ? moment(eventData.eventTime) : null,
-        startTime: eventData.startTime ? moment(eventData.startTime, "HH:mm A") : moment().startOf('day'),
-        endTime: eventData.endTime ? moment(eventData.endTime, "HH:mm A") : moment().endOf('day'),
-        eventDate: eventData.eventDate ? moment(eventData.eventDate) : moment()
+        startTime: eventData.startTime ? moment(eventData.startTime, "HH:mm A") : null,
+        endTime: eventData.endTime ? moment(eventData.endTime, "HH:mm A") : null,
+        eventDate: eventData.eventDate ? moment(eventData.eventDate) : null
       });
     }
   }, [editMode, eventData, form]);
@@ -55,25 +51,26 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
     try {
       await uploadBytes(fileRef, file);
       const downloadURL = await getDownloadURL(fileRef);
-      onSuccess(null, {
-        ...file,
-        url: downloadURL,
-        status: "done",
-        uid: file.name
-      });
+      onSuccess(null, { ...file, url: downloadURL, status: "done", uid: file.name });
       message.success(`${file.name} uploaded successfully`);
     } catch (error) {
-      console.error("Error uploading file: ", error);
       onError(error);
       message.error(`Upload failed for ${file.name}`);
     }
+  };
+
+  const handleTimeChange = (time, fieldName) => {
+    // This function ensures the time is set immediately in the form state
+    form.setFieldsValue({
+      [fieldName]: time
+    });
   };
 
   const handleSave = async (values) => {
     const eventDataToSave = {
       ...values,
       eventTime: values.eventTime ? values.eventTime.toISOString() : null,
-      eventFlyer: values.eventFlyer.map(flyer => flyer.name || flyer.uid),
+      eventFlyer: values.eventFlyer.map(flyer => flyer.url || flyer.name),
       startTime: values.startTime ? values.startTime.format("HH:mm A") : null,
       endTime: values.endTime ? values.endTime.format("HH:mm A") : null,
       eventDate: values.eventDate ? values.eventDate.format("YYYY-MM-DD") : null
@@ -93,7 +90,7 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
 
   return (
     <div>
-      <Form form={form} onFinish={handleSave}>
+      <Form form={form} onFinish={handleSave} layout="vertical">
         <Form.Item name="eventName" label="Event Name" rules={[{ required: true, message: "Please input the event name!" }]}>
           <Input placeholder="Enter the event name" />
         </Form.Item>
@@ -108,7 +105,7 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
           </Select>
         </Form.Item>
         <Form.Item name="eventPublished" label="Event Published" valuePropName="checked">
-          <Checkbox></Checkbox>
+          <Checkbox />
         </Form.Item>
         <Form.Item name="eventDetails" label="Event Details">
           <TextArea rows={4} placeholder="Describe the event details" />
@@ -116,28 +113,38 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name="startTime" label="Start Time">
-              <TimePicker use12Hours format="HH:mm A" minuteStep={15} onChange={(time) => form.setFieldsValue({startTime: time})} onBlur={() => console.log('Start Time Changed:', form.getFieldValue('startTime'))} />
+              <TimePicker 
+                use12Hours 
+                format="h:mm a" 
+                minuteStep={15} 
+                value={form.getFieldValue('startTime')} 
+                onChange={(time) => handleTimeChange(time, 'startTime')} 
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="endTime" label="End Time">
-              <TimePicker use12Hours format="HH:mm A" minuteStep={15} onChange={(time) => form.setFieldsValue({endTime: time})} onBlur={() => console.log('End Time Changed:', form.getFieldValue('endTime'))} />
+              <TimePicker 
+                use12Hours 
+                format="h:mm a" 
+                minuteStep={15} 
+                value={form.getFieldValue('endTime')} 
+                onChange={(time) => handleTimeChange(time, 'endTime')} 
+              />
             </Form.Item>
           </Col>
         </Row>
         <Form.Item name="eventDate" label="Event Date">
-          <DatePicker />
+          <DatePicker onChange={(date) => form.setFieldsValue({ eventDate: date })} />
         </Form.Item>
-        <Form.Item name="eventFlyer" label="Upload Flyer" valuePropName="fileList" getValueFromEvent={e => e.fileList}>
+        <Form.Item name="eventFlyer" label="Upload Flyer" valuePropName="fileList" getValueFromEvent={e => e && e.fileList}>
           <Upload listType="picture-card" customRequest={handleFileChange} multiple={true}>
-            <Button icon={<PlusOutlined />}>Upload</Button>
+            <div><PlusOutlined /> Upload</div>
           </Upload>
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            {editMode ? "Update Event" : "Create Event"}
-          </Button>
-        </Form.Item>
+        <Button type="primary" htmlType="submit">
+          {editMode ? "Update Event" : "Create Event"}
+        </Button>
       </Form>
     </div>
   );
