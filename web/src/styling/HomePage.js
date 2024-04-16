@@ -21,25 +21,25 @@ export const HeroImage = styled.img`
 
 export const HeroHeading = styled.h1`
   position: absolute;
-  top:30%;
+  top:38%;
   left: 55%;
   transform: translate(-50%, -50%);
-  font-size: 4.5rem;
+  font-size: 5rem;
   color: #2C5C9B;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0);
 `;
 
 export const HeroText = styled.p`
-  position: absolute;
-  top: 65%;
-  left: 55%;
+  position: center;
+  top: 42%;
+  left: 47%;
   font-size: 1.5rem;
   color: #2C5C9B;
 `;
 
 export const HeroButton = styled.a`
   position: absolute;
-  top: 62%;
+  top: 55%;
   left: 48%;
   background-color: #2C5C9B; /* Blue background */
   color: white; /* White text */
@@ -73,7 +73,7 @@ export const WhoWeAreHeading = styled.h2`
 
 export const WhoWeAreText = styled.p`
   font-size: 1.2rem;
-  padding: 0 18rem;
+  padding: 0 16rem;
   line-height: 2;
 `;
 
@@ -82,13 +82,13 @@ export const WhoWeAreDivider = styled.p`
   padding: 0;
   line-height: 1;
   color: #DDA722;
+  margin-bottom: 1rem;
 `;
 
 // Popular Events Section
 export const PopularEventsSection = styled.section`
  display: flex;
  padding: 4rem 6rem;
- font-family: 'Quicksand', sans-serif;
  background: white;
 `;
 
@@ -119,6 +119,7 @@ export const PopularEventsList = styled.ul`
  line-height: 2;
  font-size: 1.2rem;
  width: 50%
+ margin-bottom: 1rem;
 
  li {
    margin-bottom: 1rem;
@@ -134,7 +135,6 @@ export const PopularEventsButton = styled.a`
   font-size: 16px;
   cursor: pointer;
   text-decoration: none; /* Remove default underline */
-  font-family: 'Quicksand', sans-serif;
 
 
   /* Hover effect */
