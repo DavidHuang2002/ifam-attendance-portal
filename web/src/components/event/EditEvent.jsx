@@ -66,9 +66,10 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
   };
 
   const handleSave = async (values) => {
+    console.log("Form values", values);
     const eventDataToSave = {
       ...values,
-      eventFlyer: values.eventFlyer.map(flyer => flyer.url || flyer.name),
+      eventFlyer: values.eventFlyer.map(flyer => flyer.xhr.url),
       startTime: values.startTime ? values.startTime.format("HH:mm A") : null,
       endTime: values.endTime ? values.endTime.format("HH:mm A") : null,
       eventDate: values.eventDate ? values.eventDate.format("YYYY-MM-DD") : null
