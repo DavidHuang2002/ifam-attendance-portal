@@ -16,7 +16,7 @@ import {
   Col
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 const storage = getStorage();
@@ -36,10 +36,9 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
       form.setFieldsValue({
         ...eventData,
         eventFlyer: flyers,
-        eventTime: eventData.eventTime ? moment(eventData.eventTime) : null,
-        startTime: eventData.startTime ? moment(eventData.startTime, "HH:mm A") : null,
-        endTime: eventData.endTime ? moment(eventData.endTime, "HH:mm A") : null,
-        eventDate: eventData.eventDate ? moment(eventData.eventDate) : null
+        startTime: eventData.startTime ? dayjs(eventData.startTime, "HH:mm A") : null,
+        endTime: eventData.endTime ? dayjs(eventData.endTime, "HH:mm A") : null,
+        eventDate: eventData.eventDate ? dayjs(eventData.eventDate) : null
       });
     }
   }, [editMode, eventData, form]);
@@ -69,7 +68,6 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
   const handleSave = async (values) => {
     const eventDataToSave = {
       ...values,
-      eventTime: values.eventTime ? values.eventTime.toISOString() : null,
       eventFlyer: values.eventFlyer.map(flyer => flyer.url || flyer.name),
       startTime: values.startTime ? values.startTime.format("HH:mm A") : null,
       endTime: values.endTime ? values.endTime.format("HH:mm A") : null,
@@ -119,6 +117,7 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
                 minuteStep={15} 
                 value={form.getFieldValue('startTime')} 
                 onChange={(time) => handleTimeChange(time, 'startTime')} 
+                changeOnBlur
               />
             </Form.Item>
           </Col>
@@ -130,6 +129,7 @@ function EditEventComponent({ afterSave, editMode = false, eventData = {} }) {
                 minuteStep={15} 
                 value={form.getFieldValue('endTime')} 
                 onChange={(time) => handleTimeChange(time, 'endTime')} 
+                changeOnBlur
               />
             </Form.Item>
           </Col>
