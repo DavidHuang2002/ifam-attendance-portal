@@ -53,11 +53,12 @@ const EventCard = ({ event, actions, admin }) => {
           <p>
             <strong>Dates: </strong>
             <time dateTime={eventDate}>
-              {new Date(eventDate).toLocaleDateString("en-US", {
+              {/* {new Date(eventDate).toLocaleDateString(undefined, {
                 month: "short",
                 day: "numeric",
                 year: "numeric",
-              })}
+              })} */}
+              {eventDate}
             </time>
           </p>
           <p>
