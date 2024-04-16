@@ -36,7 +36,7 @@ export default function RsvpModal({ eventId, eventName}) {
       setLoading(false);
     }
   };
-
+  
   const handleSubmit = () => {
     submitRSVP(email, eventId);
   };
